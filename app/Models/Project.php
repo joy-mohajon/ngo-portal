@@ -12,7 +12,11 @@ class Project extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name',
+        'title',
+        'description',
+        'location',
+        'budget',
+        'focus_area',
         'holder_id',
         'runner_id',
         'start_date',
@@ -23,6 +27,7 @@ class Project extends Model
     protected $casts = [
         'start_date' => 'date',
         'end_date' => 'date',
+        'budget' => 'decimal:2',
     ];
 
     public function holder(): BelongsTo

@@ -15,12 +15,14 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('name');
+            $table->string('registration_id')->unique();
             $table->string('phone_number');
             $table->string('email')->unique();
             $table->string('location');
+            $table->text('focus_area')->nullable();
             $table->string('certificate_path')->nullable();
             $table->string('image_path')->nullable();
-            $table->boolean('is_approved')->default(false);
+            $table->enum('status', ['pending', 'approved', 'rejected', 'suspended'])->default('pending');
             $table->timestamps();
         });
     }

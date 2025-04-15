@@ -1,5 +1,8 @@
 <nav class="bg-blue-500 p-4 flex items-center justify-between fixed top-0 right-0 md:left-64 left-0 z-10">
-    <div>
+    <div class="flex items-center gap-4">
+        <button @click="isOpenSidebar = true" class="md:hidden  text-white">
+            <i class="fas fa-bars"></i>
+        </button>
         <h1 class="text-white text-xl font-semibold">
             NGO Management System
         </h1>

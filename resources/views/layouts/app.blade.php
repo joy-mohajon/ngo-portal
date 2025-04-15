@@ -20,7 +20,7 @@
 </head>
 
 <body class="font-sans antialiased">
-    <div class="flex min-h-screen bg-gray-100">
+    <div x-data="{ isOpenSidebar: false }" class="flex min-h-screen bg-gray-100">
         <!-- Sidebar -->
         @include('layouts.sidebar')
 

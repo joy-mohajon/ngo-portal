@@ -11,20 +11,30 @@ class Ngo extends Model
 
     protected $fillable = [
         'name',
+        'registration_id',
         'phone_number',
         'email',
         'location',
+        'focus_area',
         'certificate_path',
         'image_path',
-        'is_approved'
+        'status'
     ];
 
     protected $casts = [
-        'is_approved' => 'boolean',
+        'status' => 'string',
     ];
 
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get the status label for display
+     */
+    public function getStatusLabelAttribute(): string
+    {
+        return ucfirst($this->status);
     }
 }
