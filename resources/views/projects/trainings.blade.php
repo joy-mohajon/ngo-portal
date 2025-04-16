@@ -47,7 +47,7 @@
         </div>
 
         <!-- Trainings Table -->
-        <div class="overflow-x-auto">
+        <div class="overflow-x-auto max-h-[calc(100vh-400px)] overflow-y-auto">
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>

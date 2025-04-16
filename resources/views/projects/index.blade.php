@@ -90,8 +90,7 @@
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
                     @forelse($projects as $project)
-                    <tr class="hover:bg-gray-50 cursor-pointer"
-                        onclick="window.location='{{ route('projects.trainings', $project->id) }}'">
+                    <tr class="hover:bg-gray-50">
                         <td class="px-6 py-4">
                             <div class="flex items-center">
                                 <div class="flex-shrink-0 h-10 w-10">

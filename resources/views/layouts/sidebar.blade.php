@@ -13,7 +13,7 @@
             <ul class="space-y-2">
                 <!-- Dashboard - For all roles -->
                 <li>
-                    <a href="/dashboard" class="flex items-center p-2 hover:bg-gray-700 rounded">
+                    <a href="{{ route('dashboard') }}" class="flex items-center p-2 hover:bg-gray-700 rounded">
                         <i class="fas fa-home mr-3"></i>
                         <span>Dashboard</span>
                     </a>
@@ -59,35 +59,21 @@
                 </li>
                 @endhasrole
 
-                <!-- Projects - For admin and ngo roles only -->
+                <!-- Projects Section -->
                 @hasrole(['admin', 'ngo'])
-                <li x-data="{ ProjectsDropdownOpen: false }">
-                    <div @click="ProjectsDropdownOpen = !ProjectsDropdownOpen"
-                        class="flex items-center justify-between p-2 hover:bg-gray-700 rounded cursor-pointer">
-                        <div class="flex items-center">
-                            <i class="fas fa-chalkboard-teacher mr-3"></i>
-                            <span>Projects</span>
-                        </div>
-                        <i class="fas fa-chevron-down text-xs transition-transform duration-300 ease-in-out"
-                            :class="{'rotate-180': ProjectsDropdownOpen}"></i>
-                    </div>
-                    <ul x-show="ProjectsDropdownOpen" class="ml-8">
-                        <li>
-                            <a href="{{ route('projects.create') }}"
-                                class="p-2 hover:bg-gray-700 rounded flex items-center gap-3">
-                                <i class="fa fa-angle-right" aria-hidden="true"></i>
-                                <span>Create New Project</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ route('projects.index') }}"
-                                class="p-2 hover:bg-gray-700 rounded flex items-center gap-3">
-                                <i class="fa fa-angle-right" aria-hidden="true"></i>
-                                <span>All Projects</span>
-                            </a>
-                        </li>
-                    </ul>
+                <li>
+                    <a href="{{ route('direct.projects') }}" class="flex items-center p-2 hover:bg-gray-700 rounded">
+                        <i class="fas fa-chalkboard-teacher mr-3"></i>
+                        <span>Projects</span>
+                    </a>
                 </li>
+                <script>
+                function goToProjects() {
+                    // console.log('Navigating to projects page directly');
+                    window.location.href = '/direct-projects';
+                    return false;
+                }
+                </script>
                 @endhasrole
             </ul>
         </nav>
