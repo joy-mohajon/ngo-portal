@@ -90,7 +90,8 @@
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
                     @forelse($projects as $project)
-                    <tr class="hover:bg-gray-50">
+                    <tr class="hover:bg-gray-50 cursor-pointer"
+                        onclick="window.location='{{ route('projects.trainings', $project->id) }}'">
                         <td class="px-6 py-4">
                             <div class="flex items-center">
                                 <div class="flex-shrink-0 h-10 w-10">
@@ -128,8 +129,12 @@
                                 {{ ucfirst($status) }}
                             </span>
                         </td>
-                        <td class="px-6 py-4 text-sm font-medium">
+                        <td class="px-6 py-4 text-sm font-medium" onclick="event.stopPropagation()">
                             <div class="flex space-x-2">
+                                <a href="{{ route('projects.trainings', $project->id) }}"
+                                    class="text-indigo-600 hover:text-indigo-900" title="View Trainings">
+                                    <i class="fas fa-chalkboard-teacher"></i>
+                                </a>
                                 <a href="{{ route('projects.show', $project->id) }}"
                                     class="text-blue-600 hover:text-blue-900">
                                     <i class="fas fa-eye"></i>

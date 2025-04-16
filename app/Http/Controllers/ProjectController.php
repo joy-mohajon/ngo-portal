@@ -194,4 +194,21 @@ class ProjectController extends Controller
             'message' => 'Project deleted successfully'
         ]);
     }
+
+    /**
+     * Get trainings for a specific project
+     */
+    public function trainings(Project $project)
+    {
+        $trainings = $project->trainings()
+            ->with('organizer')
+            ->latest()
+            ->paginate(10);
+            
+        return response()->json([
+            'success' => true,
+            'project' => $project->only(['id', 'title']),
+            'data' => $trainings
+        ]);
+    }
 }

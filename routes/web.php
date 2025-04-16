@@ -23,16 +23,20 @@ Route::middleware('auth')->group(function () {
     
     // Projects resource
     Route::resource('projects', ProjectController::class);
+    
+    // Project trainings
+    Route::get('projects/{project}/trainings', [App\Http\Controllers\ProjectTrainingsController::class, 'index'])
+        ->name('projects.trainings');
 });
 
 // API Routes
-Route::prefix('api')->group(function () {
-    // Project API endpoints
-    Route::get('/projects', [ProjectController::class, 'apiIndex']);
-    Route::get('/projects/{project}', [ProjectController::class, 'apiShow']);
-    Route::post('/projects', [ProjectController::class, 'apiStore']);
-    Route::put('/projects/{project}', [ProjectController::class, 'apiUpdate']);
-    Route::delete('/projects/{project}', [ProjectController::class, 'apiDestroy']);
-});
+// Route::prefix('api')->group(function () {
+//     // Project API endpoints
+//     Route::get('/projects', [ProjectController::class, 'apiIndex']);
+//     Route::get('/projects/{project}', [ProjectController::class, 'apiShow']);
+//     Route::post('/projects', [ProjectController::class, 'apiStore']);
+//     Route::put('/projects/{project}', [ProjectController::class, 'apiUpdate']);
+//     Route::delete('/projects/{project}', [ProjectController::class, 'apiDestroy']);
+// });
 
 require __DIR__.'/auth.php';

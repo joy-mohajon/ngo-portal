@@ -21,10 +21,11 @@ class TrainingController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
         $projects = Project::pluck('title', 'id');
-        return view('trainings.create', compact('projects'));
+        $selectedProjectId = $request->input('project_id');
+        return view('trainings.create', compact('projects', 'selectedProjectId'));
     }
 
     /**
@@ -43,6 +44,7 @@ class TrainingController extends Controller
             'category' => 'required|string|max:100',
             'status' => 'required|string|in:upcoming,ongoing,completed,cancelled',
             'project_id' => 'required|exists:projects,id',
+            'organizer_id' => 'required|exists:organizer,id',
         ]);
 
         $validated['organizer_id'] = Auth::id();
