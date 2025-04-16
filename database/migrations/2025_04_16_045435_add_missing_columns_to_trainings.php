@@ -32,7 +32,7 @@ return new class extends Migration
                 $table->timestamps();
             });
         } else {
-            Schema::table('trainings', function (Blueprint $table) {
+        Schema::table('trainings', function (Blueprint $table) {
                 if (!Schema::hasColumn('trainings', 'title')) {
                     $table->string('title')->nullable();
                 }

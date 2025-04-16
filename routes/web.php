@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TrainingController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\ReportController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -27,6 +28,13 @@ Route::middleware('auth')->group(function () {
     // Project trainings
     Route::get('projects/{project}/trainings', [App\Http\Controllers\ProjectTrainingsController::class, 'index'])
         ->name('projects.trainings');
+        
+    // Reports
+    Route::resource('reports', ReportController::class)->except(['edit', 'update']);
+    Route::post('projects/{project}/upload-reports', [ReportController::class, 'store'])
+        ->name('projects.upload-reports');
+    Route::get('projects/{project}/download-reports', [ReportController::class, 'downloadProjectReports'])
+        ->name('projects.download-reports');
 });
 
 // API Routes

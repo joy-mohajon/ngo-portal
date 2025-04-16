@@ -11,11 +11,16 @@ class Report extends Model
     use HasFactory;
 
     protected $fillable = [
-        'title',
-        'content',
-        'status',
         'project_id',
         'submitted_by',
+        'title',
+        'file_path',
+        'file_name',
+        'file_size',
+        'file_type',
+        'month',
+        'description',
+        'status'
     ];
 
     public function project(): BelongsTo

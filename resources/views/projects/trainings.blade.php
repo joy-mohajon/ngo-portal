@@ -97,6 +97,7 @@
                                     class="text-blue-600 hover:text-blue-900">
                                     <i class="fas fa-eye"></i>
                                 </a>
+                                @hasrole(['admin', 'ngo'])
                                 <a href="{{ route('trainings.edit', $training->id) }}"
                                     class="text-yellow-600 hover:text-yellow-900">
                                     <i class="fas fa-edit"></i>
@@ -109,6 +110,7 @@
                                         <i class="fas fa-trash-alt"></i>
                                     </button>
                                 </form>
+                                @endhasrole
                             </div>
                         </td>
                     </tr>

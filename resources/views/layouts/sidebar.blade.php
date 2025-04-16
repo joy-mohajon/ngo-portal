@@ -21,7 +21,7 @@
 
                 <!-- NGO Management - For authority and admin roles only -->
                 @hasrole(['admin', 'authority'])
-                <li x-data="{ open: false }" class="opcion-con-desplegable">
+                <!-- <li x-data="{ open: false }" class="opcion-con-desplegable">
                     <div @click="open = !open"
                         class="flex items-center justify-between p-2 hover:bg-gray-700 rounded cursor-pointer">
                         <div class="flex items-center">
@@ -46,24 +46,24 @@
                             </a>
                         </li>
                     </ul>
-                </li>
+                </li> -->
                 @endhasrole
 
                 <!-- Projects Overview - For authority and admin roles only -->
-                @hasrole(['admin', 'authority'])
+                <!-- @hasrole(['admin', 'authority'])
                 <li>
                     <a href="#" class="flex items-center p-2 hover:bg-gray-700 rounded">
                         <i class="fas fa-project-diagram mr-3"></i>
                         <span>Projects Overview</span>
                     </a>
                 </li>
-                @endhasrole
+                @endhasrole -->
 
                 <!-- Projects Section -->
-                @hasrole(['admin', 'ngo'])
+
                 <li>
                     <a href="{{ route('direct.projects') }}" class="flex items-center p-2 hover:bg-gray-700 rounded">
-                        <i class="fas fa-chalkboard-teacher mr-3"></i>
+                            <i class="fas fa-chalkboard-teacher mr-3"></i>
                         <span>Projects</span>
                     </a>
                 </li>
@@ -74,7 +74,7 @@
                     return false;
                 }
                 </script>
-                @endhasrole
+
             </ul>
         </nav>
     </div>
