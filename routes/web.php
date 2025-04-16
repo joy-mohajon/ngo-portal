@@ -28,32 +28,16 @@ Route::middleware('auth')->group(function () {
     // Project trainings
     Route::get('projects/{project}/trainings', [App\Http\Controllers\ProjectTrainingsController::class, 'index'])
         ->name('projects.trainings');
-        
-    // Reports
-    Route::resource('reports', ReportController::class)->except(['edit', 'update']);
     Route::post('projects/{project}/upload-reports', [ReportController::class, 'store'])
         ->name('projects.upload-reports');
     Route::get('projects/{project}/download-reports', [ReportController::class, 'downloadProjectReports'])
         ->name('projects.download-reports');
+        
+    // Reports
+    Route::resource('reports', ReportController::class)->except(['edit', 'update']);
+
 });
 
-// API Routes
-Route::prefix('api')->group(function () {
-    // Project API endpoints
-    Route::get('/projects', [ProjectController::class, 'apiIndex']);
-    Route::get('/projects/{project}', [ProjectController::class, 'apiShow']);
-    Route::post('/projects', [ProjectController::class, 'apiStore']);
-    Route::put('/projects/{project}', [ProjectController::class, 'apiUpdate']);
-    Route::delete('/projects/{project}', [ProjectController::class, 'apiDestroy']);
-});
 
-// Direct projects route to prevent redirection issues
-Route::get('/direct-projects', function () {
-    return redirect('/projects');
-})->middleware(['auth'])->name('direct.projects');
-
-Route::get('/test-page', function () {
-    return view('dashboard')->with('message', 'This is a test page');
-})->middleware(['auth'])->name('test.page');
 
 require __DIR__.'/auth.php';

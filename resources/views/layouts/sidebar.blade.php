@@ -62,18 +62,18 @@
                 <!-- Projects Section -->
 
                 <li>
-                    <a href="{{ route('direct.projects') }}" class="flex items-center p-2 hover:bg-gray-700 rounded">
-                            <i class="fas fa-chalkboard-teacher mr-3"></i>
+                    <a href="{{ route('projects.index') }}" class="flex items-center p-2 hover:bg-gray-700 rounded">
+                        <i class="fas fa-chalkboard-teacher mr-3"></i>
                         <span>Projects</span>
                     </a>
                 </li>
-                <script>
+                <!-- <script>
                 function goToProjects() {
                     // console.log('Navigating to projects page directly');
                     window.location.href = '/direct-projects';
                     return false;
                 }
-                </script>
+                </script> -->
 
             </ul>
         </nav>
