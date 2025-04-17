@@ -19,34 +19,14 @@ class ProjectSeeder extends Seeder
         try {
             // Make sure we have at least one user for holders and runners
             if (User::count() == 0) {
-                // Create users with different roles
-                User::factory()->create([
-                    'name' => 'Admin User',
-                    'email' => 'admin@example.com',
-                    'password' => bcrypt('password')
-                ]);
-                
-                User::factory()->create([
-                    'name' => 'NGO User',
-                    'email' => 'ngo@example.com',
-                    'password' => bcrypt('password')
-                ]);
-                
-                User::factory()->create([
-                    'name' => 'Authority User',
-                    'email' => 'authority@example.com',
-                    'password' => bcrypt('password')
-                ]);
-                
-                User::factory()->count(3)->create(); // 3 more random users
-                
-                Log::info('Created test users for project seeding');
+                Log::warning('No users found. Please run UserSeeder first.');
+                return;
             }
             
-            // Create 15 projects with different statuses
-            Project::factory()->count(5)->active()->create();
-            Project::factory()->count(4)->completed()->create();
-            Project::factory()->count(3)->pending()->create();
+            // Create 25 projects with different statuses
+            Project::factory()->count(10)->active()->create();
+            Project::factory()->count(8)->completed()->create();
+            Project::factory()->count(4)->pending()->create();
             Project::factory()->count(3)->suspended()->create();
             
             // Get all projects
@@ -64,6 +44,7 @@ class ProjectSeeder extends Seeder
             Log::info('Created ' . $projects->count() . ' projects with trainings for API testing');
         } catch (\Exception $e) {
             Log::error('Error seeding projects: ' . $e->getMessage());
+            throw $e;
         }
     }
 }

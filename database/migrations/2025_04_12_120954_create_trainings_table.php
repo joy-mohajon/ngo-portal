@@ -10,14 +10,17 @@ class CreateTrainingsTable extends Migration
     {
         Schema::create('trainings', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->dateTime('schedule');
-            $table->string('duration');
-            $table->integer('available_seats');
-            $table->string('location');
-            $table->text('materials')->nullable();
+            $table->string('title');
             $table->text('description');
+            $table->string('location');
+            $table->foreignId('organizer_id')->nullable()->constrained('users')->onDelete('set null');
             $table->foreignId('project_id')->constrained()->onDelete('cascade');
+            $table->dateTime('start_date');
+            $table->dateTime('end_date');
+            $table->integer('capacity');
+            $table->dateTime('registration_deadline');
+            $table->string('category', 100);
+            $table->string('status')->default('upcoming');
             $table->timestamps();
         });
     }

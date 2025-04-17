@@ -17,54 +17,52 @@ class TrainingSeeder extends Seeder
     public function run(): void
     {
         try {
-            // Get all projects or create one if none exist
+            // Get all projects
             $projects = Project::all();
             
             if ($projects->isEmpty()) {
-                // No projects exist, let's create one
-                if (User::count() == 0) {
-                    // Create a test user if none exists
-                    $user = User::factory()->create([
-                        'name' => 'Test User',
-                        'email' => 'test@example.com',
-                        'password' => bcrypt('password'),
-                    ]);
-                } else {
-                    $user = User::first();
-                }
-                
-                // Create a test project
-                $project = Project::create([
-                    'title' => 'Test Project',
-                    'description' => 'This is a test project for training seeding',
-                    'location' => 'Test Location',
-                    'budget' => 10000,
-                    'focus_area' => 'Education',
-                    'holder_id' => $user->id,
-                    'runner_id' => $user->id,
-                    'start_date' => now(),
-                    'end_date' => now()->addMonths(6),
-                    'status' => 'active',
-                ]);
-                
-                $projects = collect([$project]);
+                Log::warning('No projects found. Please run ProjectSeeder first.');
+                return;
             }
             
-            // Create trainings for each project
+            // Create 50 trainings distributed across projects
+            $totalTrainings = 50;
+            $createdTrainings = 0;
+            
+            // First, create at least 2 trainings for each project
             foreach ($projects as $project) {
-                // Create 3-5 trainings per project
-                $count = rand(3, 5);
+                $count = min(2, $totalTrainings - $createdTrainings);
+                if ($count <= 0) break;
+                
                 Training::factory()
                     ->count($count)
                     ->forProject($project->id)
                     ->create();
                 
+                $createdTrainings += $count;
                 Log::info("Created {$count} trainings for project ID: {$project->id}");
             }
             
-            Log::info('Training seeding completed successfully');
+            // Then, distribute the remaining trainings randomly
+            $remainingTrainings = $totalTrainings - $createdTrainings;
+            if ($remainingTrainings > 0) {
+                for ($i = 0; $i < $remainingTrainings; $i++) {
+                    $project = $projects->random();
+                    
+                    Training::factory()
+                        ->forProject($project->id)
+                        ->create();
+                    
+                    $createdTrainings++;
+                }
+                
+                Log::info("Created {$remainingTrainings} additional trainings distributed randomly");
+            }
+            
+            Log::info("Training seeding completed successfully. Total trainings created: {$createdTrainings}");
         } catch (\Exception $e) {
             Log::error('Error seeding trainings: ' . $e->getMessage());
+            throw $e;
         }
     }
 }

@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Log;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,17 +12,19 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
-
-        $this->call([
-            RoleAndPermissionSeeder::class,
-            ProjectSeeder::class,
-            TrainingSeeder::class,
-        ]);
+        try {
+            Log::info('Starting database seeding...');
+            
+            $this->call([
+                UserSeeder::class,
+                ProjectSeeder::class,
+                TrainingSeeder::class,
+            ]);
+            
+            Log::info('Database seeding completed successfully');
+        } catch (\Exception $e) {
+            Log::error('Error in database seeding: ' . $e->getMessage());
+            throw $e;
+        }
     }
 }

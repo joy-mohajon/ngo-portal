@@ -24,13 +24,6 @@ return new class extends Migration
                 // Assign the ngo role to the user
                 $user->assignRole('ngo');
                 
-                // Update NGO status based on is_approved field
-                if ($ngo->is_approved) {
-                    $ngo->status = 'approved';
-                } else {
-                    $ngo->status = 'pending';
-                }
-                
                 // Generate a registration ID if it's empty (using user_id + random string)
                 if (empty($ngo->registration_id)) {
                     $ngo->registration_id = 'NGO-' . $user->id . '-' . substr(md5(uniqid()), 0, 8);

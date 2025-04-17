@@ -10,10 +10,16 @@ class CreateReportsTable extends Migration
     {
         Schema::create('reports', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('project_id')->constrained()->onDelete('cascade');
+            $table->string('title')->nullable();
+            $table->text('description')->nullable();
             $table->string('month'); // Format: YYYY-MM
-            $table->string('pdf_path');
-            $table->string('images_path')->nullable();
+            $table->string('file_path');
+            $table->string('file_name');
+            $table->string('file_size')->nullable();
+            $table->string('file_type')->nullable();
+            $table->foreignId('submitted_by')->constrained('users')->onDelete('cascade');
+            $table->string('status')->default('submitted');
+            $table->foreignId('project_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }
