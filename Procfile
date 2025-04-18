@@ -1,1 +1,1 @@
-web: bash -c ".railway/start.sh && php artisan serve --host=0.0.0.0 --port=${PORT:-8000}"
+web: chmod +x .railway/start.sh && ./.railway/start.sh && php artisan serve --host=0.0.0.0 --port=${PORT:-8000}
