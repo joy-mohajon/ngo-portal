@@ -1,1 +1,1 @@
-web: bash .railway/start.sh && vendor/bin/heroku-php-apache2 public/
+web: bash -c ".railway/start.sh && php artisan serve --host=0.0.0.0 --port=${PORT:-8000}"
