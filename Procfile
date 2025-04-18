@@ -1,0 +1,1 @@
+web: bash .railway/start.sh && vendor/bin/heroku-php-apache2 public/
