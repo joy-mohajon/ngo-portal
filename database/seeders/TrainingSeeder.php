@@ -44,20 +44,20 @@ class TrainingSeeder extends Seeder
             }
             
             // Then, distribute the remaining trainings randomly
-            $remainingTrainings = $totalTrainings - $createdTrainings;
-            if ($remainingTrainings > 0) {
-                for ($i = 0; $i < $remainingTrainings; $i++) {
-                    $project = $projects->random();
+            //$remainingTrainings = $totalTrainings - $createdTrainings;
+            //if ($remainingTrainings > 0) {
+              //  for ($i = 0; $i < $remainingTrainings; $i++) {
+                //    $project = $projects->random();
                     
-                    Training::factory()
-                        ->forProject($project->id)
-                        ->create();
+                //    Training::factory()
+                //        ->forProject($project->id)
+                //      ->create();
                     
-                    $createdTrainings++;
-                }
+               //     $createdTrainings++;
+             //   }
                 
-                Log::info("Created {$remainingTrainings} additional trainings distributed randomly");
-            }
+              //  Log::info("Created {$remainingTrainings} additional trainings distributed randomly");
+           // }
             
             Log::info("Training seeding completed successfully. Total trainings created: {$createdTrainings}");
         } catch (\Exception $e) {
