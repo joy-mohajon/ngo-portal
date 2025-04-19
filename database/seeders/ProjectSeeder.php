@@ -24,10 +24,10 @@ class ProjectSeeder extends Seeder
             }
             
             // Create 25 projects with different statuses
-            Project::factory()->count(10)->active()->create();
-            Project::factory()->count(8)->completed()->create();
-            Project::factory()->count(4)->pending()->create();
-            Project::factory()->count(3)->suspended()->create();
+            Project::factory()->count(2)->active()->create();
+            Project::factory()->count(1)->completed()->create();
+            //Project::factory()->count(1)->pending()->create();
+            //Project::factory()->count(1)->suspended()->create();
             
             // Get all projects
             $projects = Project::all();
