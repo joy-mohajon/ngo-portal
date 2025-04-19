@@ -8,6 +8,8 @@ composer install --no-dev --optimize-autoloader --no-interaction
 
 echo "➔ Installing Node.js dependencies..."
 npm ci --no-audit --prefer-offline
+
+export NODE_ENV=production
 npm run build
 
 # =============================================
