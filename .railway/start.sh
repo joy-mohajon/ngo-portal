@@ -64,8 +64,8 @@ seed_tables() {
 seed_tables UsersTableSeeder
 
 # Seed larger tables with individual error handling
-seed_tables ProjectsTableSeeder || true  # Continue even if fails
-seed_tables TrainingsTableSeeder || true
+# seed_tables ProjectsTableSeeder || true  # Continue even if fails
+# seed_tables TrainingsTableSeeder || true
 
 # =============================================
 # 4. FINAL OPTIMIZATION
