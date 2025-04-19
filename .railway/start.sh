@@ -1,5 +1,4 @@
 #!/bin/bash
-set -eo pipefail
 
 # =============================================
 # 1. INSTALL DEPENDENCIES
@@ -16,11 +15,6 @@ npm run build
 # =============================================
 
 # Wait for MySQL to be truly ready (up to 2 mins)
-echo "➔ Waiting for MySQL to be ready..."
-timeout 120 bash -c 'until mysqladmin ping -h"$MYSQLHOST" -u"$MYSQLUSER" -p"$MYSQLPASSWORD" --silent; do sleep 5; echo "Waiting..."; done' || {
-    echo "⚠️ MySQL connection failed after 2 minutes"
-    exit 1
-}
 
 # Generate fresh .env if missing
 if [ ! -f .env ]; then
@@ -41,27 +35,10 @@ fi
 # Run migrations (without fresh to prevent data loss)
 echo "➔ Running migrations..."
 php artisan migrate --force
+php artisan db:seed --class=UserSeeder --force
 
 # Seed in phases with progress tracking
-seed_tables() {
-    local seeder=$1
-    local attempts=3
-    local delay=5
 
-    for ((i=1; i<=attempts; i++)); do
-        echo "➔ Seeding $seeder (attempt $i/$attempts)..."
-        if php artisan db:seed --class=$seeder --force; then
-            echo "✓ $seeder completed successfully"
-            return 0
-        fi
-        sleep $delay
-    done
-    echo "⚠️ Failed to seed $seeder after $attempts attempts"
-    return 1
-}
-
-# Seed critical tables first
-seed_tables UsersTableSeeder
 
 # Seed larger tables with individual error handling
 # seed_tables ProjectsTableSeeder || true  # Continue even if fails
