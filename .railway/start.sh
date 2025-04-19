@@ -35,7 +35,8 @@ fi
 # Run migrations (without fresh to prevent data loss)
 echo "➔ Running migrations..."
 php artisan migrate --force
-php artisan db:seed --class=UserSeeder --force
+php artisan db:seed --force 
+# php artisan db:seed --class=UserSeeder --force
 
 # Seed in phases with progress tracking
 
