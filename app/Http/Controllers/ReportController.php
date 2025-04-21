@@ -77,8 +77,7 @@ class ReportController extends Controller
         }
         
         // For regular form submissions, redirect back with success message
-        return redirect()->route('projects.index')
-            ->with('success', count($reports) . ' reports uploaded successfully');
+        return back()->with('success', count($reports) . ' reports uploaded successfully');
     }
 
     /**

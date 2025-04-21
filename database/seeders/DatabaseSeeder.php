@@ -17,10 +17,10 @@ class DatabaseSeeder extends Seeder
             
             $this->call([
                 UserSeeder::class,
-                ProjectSeeder::class,
-                TrainingSeeder::class,
-                // NgoSeeder::class,
-                // ProjectTrainingSeeder::class,
+                // ProjectSeeder::class,
+                // TrainingSeeder::class,
+                NgoSeeder::class,
+                ProjectTrainingSeeder::class,
             ]);
             
             Log::info('Database seeding completed successfully');

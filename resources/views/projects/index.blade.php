@@ -147,7 +147,7 @@
                                     <i class="fas fa-chalkboard-teacher"></i>
                                 </a>
                                 @hasrole(['admin', 'ngo'])
-                                <button onclick="openUploadModal({{ $project->id }}, '{{ $project->title }}')"
+                                <button onclick="openUploadModal('{{ $project->id }}', '{{ $project->title }}')"
                                     class="text-blue-500 hover:text-blue-700" title="Upload Reports">
                                     <i class="fas fa-file-upload"></i>
                                 </button>

@@ -65,7 +65,7 @@ class NgoSeeder extends Seeder
 
         foreach ($ngos as $ngoData) {
             $user = User::create([
-                'name' => $ngoData['name'] . ' Admin',
+                'name' => $ngoData['name'] . ' NGO',
                 'email' => $ngoData['email'],
                 'password' => Hash::make('password'),
             ])->assignRole($ngoRole);

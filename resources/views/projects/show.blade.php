@@ -223,71 +223,168 @@
     </div>
     
     <!-- Upload Reports Modal -->
-    <div id="uploadModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full" style="z-index: 100;">
-        <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-1/2 lg:w-2/5 shadow-lg rounded-md bg-white">
-            <div class="mt-3">
-                <div class="flex justify-between items-center pb-3">
-                    <h3 class="text-lg font-medium text-gray-900" id="modalTitle">Upload Reports</h3>
-                    <button type="button" class="text-gray-400 hover:text-gray-500" onclick="closeUploadModal()">
-                        <i class="fas fa-times"></i>
-                    </button>
+    <div id="uploadReportModal" class="fixed inset-0 z-50 overflow-y-auto hidden" aria-labelledby="modal-title"
+        role="dialog" aria-modal="true">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <!-- Background overlay -->
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"
+                onclick="closeUploadModal()"></div>
+
+            <!-- Modal panel -->
+            <div
+                class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <div
+                            class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 sm:mx-0 sm:h-10 sm:w-10">
+                            <i class="fas fa-file-upload text-blue-600"></i>
+                        </div>
+                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
+                                Upload Reports for <span id="projectTitle"></span>
+                            </h3>
+                            <div class="mt-4">
+                                <form id="uploadReportForm" method="POST" enctype="multipart/form-data">
+                                    @csrf
+                                    <input type="hidden" id="projectId" name="project_id" value="">
+
+                                    <div class="mb-4">
+                                        <label for="title" class="block text-sm font-medium text-gray-700">Report
+                                            Title</label>
+                                        <input type="text" name="title" id="title"
+                                            class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                                    </div>
+
+                                    <div class="mb-4">
+                                        <label for="month" class="block text-sm font-medium text-gray-700">Report
+                                            Month</label>
+                                        <input type="month" name="month" id="month"
+                                            class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                                    </div>
+
+                                    <div class="mb-4">
+                                        <label for="description"
+                                            class="block text-sm font-medium text-gray-700">Description</label>
+                                        <textarea name="description" id="description" rows="3"
+                                            class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"></textarea>
+                                    </div>
+
+                                    <div class="mb-4">
+                                        <label for="files" class="block text-sm font-medium text-gray-700">Report
+                                            Files</label>
+                                        <div
+                                            class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+                                            <div class="space-y-1 text-center">
+                                                <i class="fas fa-file-upload mx-auto h-12 w-12 text-gray-400"></i>
+                                                <div class="flex text-sm text-gray-600">
+                                                    <label for="files"
+                                                        class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
+                                                        <span>Upload files</span>
+                                                        <input id="files" name="files[]" type="file" class="sr-only"
+                                                            multiple>
+                                                    </label>
+                                                    <p class="pl-1">or drag and drop</p>
+                                                </div>
+                                                <p class="text-xs text-gray-500">
+                                                    PDF, DOC, DOCX, XLS, XLSX up to 10MB each
+                                                </p>
+                                                <div id="fileList" class="mt-2 text-left"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                                        <button type="submit" id="uploadButton"
+                                            class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
+                                            Upload
+                                        </button>
+                                        <button type="button" onclick="closeUploadModal()"
+                                            class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <form id="reportUploadForm" action="" method="POST" enctype="multipart/form-data">
-                    @csrf
-                    <div class="mb-4">
-                        <label for="title" class="block text-sm font-medium text-gray-700">Report Title</label>
-                        <input type="text" name="title" id="title" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm">
-                    </div>
-                    
-                    <div class="mb-4">
-                        <label for="month" class="block text-sm font-medium text-gray-700">Month</label>
-                        <select name="month" id="month" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm">
-                            <option value="">Select Month</option>
-                            <option value="January">January</option>
-                            <option value="February">February</option>
-                            <option value="March">March</option>
-                            <option value="April">April</option>
-                            <option value="May">May</option>
-                            <option value="June">June</option>
-                            <option value="July">July</option>
-                            <option value="August">August</option>
-                            <option value="September">September</option>
-                            <option value="October">October</option>
-                            <option value="November">November</option>
-                            <option value="December">December</option>
-                        </select>
-                    </div>
-                    
-                    <div class="mb-4">
-                        <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
-                        <textarea name="description" id="description" rows="3" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"></textarea>
-                    </div>
-                    
-                    <div class="mb-4">
-                        <label for="files" class="block text-sm font-medium text-gray-700">Upload Files</label>
-                        <input type="file" name="files[]" id="files" multiple required class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm">
-                        <p class="text-xs text-gray-500 mt-1">You can upload multiple files (PDF, DOC, XLS, etc.). Max 10MB per file.</p>
-                    </div>
-                    
-                    <div class="flex justify-end gap-3">
-                        <button type="button" class="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400" onclick="closeUploadModal()">Cancel</button>
-                        <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Upload</button>
-                    </div>
-                </form>
             </div>
         </div>
     </div>
-    
+
     <script>
-        function openUploadModal(projectId, projectTitle) {
-            document.getElementById('modalTitle').textContent = 'Upload Reports for ' + projectTitle;
-            document.getElementById('reportUploadForm').action = '/projects/' + projectId + '/upload-reports';
-            document.getElementById('uploadModal').classList.remove('hidden');
-        }
-        
-        function closeUploadModal() {
-            document.getElementById('uploadModal').classList.add('hidden');
-            document.getElementById('reportUploadForm').reset();
-        }
+    // File upload functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize file input change event
+        const fileInput = document.getElementById('files');
+        const fileList = document.getElementById('fileList');
+        const uploadForm = document.getElementById('uploadReportForm');
+
+        fileInput.addEventListener('change', function() {
+            fileList.innerHTML = '';
+            for (let i = 0; i < this.files.length; i++) {
+                const file = this.files[i];
+                const fileItem = document.createElement('div');
+                fileItem.className = 'text-sm py-1';
+                fileItem.innerHTML =
+                    `<i class="far fa-file mr-1"></i> ${file.name} (${formatFileSize(file.size)})`;
+                fileList.appendChild(fileItem);
+            }
+        });
+
+        // Set up form submit handler
+        uploadForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Validation
+            const title = document.getElementById('title').value;
+            const month = document.getElementById('month').value;
+
+            if (!title) {
+                alert('Please enter a report title');
+                return false;
+            }
+
+            if (!month) {
+                alert('Please select a report month');
+                return false;
+            }
+
+            if (fileInput.files.length === 0) {
+                alert('Please select at least one file to upload');
+                return false;
+            }
+
+            // Set the correct action URL
+            const projectId = document.getElementById('projectId').value;
+            this.action = `/projects/${projectId}/upload-reports`;
+
+            // Submit the form
+            this.submit();
+        });
+    });
+
+    function formatFileSize(bytes) {
+        if (bytes < 1024) return bytes + ' bytes';
+        else if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+        else return (bytes / 1048576).toFixed(1) + ' MB';
+    }
+
+    function openUploadModal(projectId, projectTitle) {
+        // Set project info
+        document.getElementById('projectId').value = projectId;
+        document.getElementById('projectTitle').textContent = projectTitle;
+
+        // Reset form
+        document.getElementById('uploadReportForm').reset();
+        document.getElementById('fileList').innerHTML = '';
+
+        // Show modal
+        document.getElementById('uploadReportModal').classList.remove('hidden');
+    }
+
+    function closeUploadModal() {
+        document.getElementById('uploadReportModal').classList.add('hidden');
+    }
     </script>
 </x-app-layout> 

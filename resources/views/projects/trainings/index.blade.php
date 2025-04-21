@@ -19,6 +19,7 @@
                     <i class="fas fa-eye mr-2"></i>
                     View Project Details
                 </a>
+                @hasrole(['admin', 'ngo'])
                 <!-- <a href="{{ route('projects.trainings.create',$project) }}"
                     class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md flex items-center"> -->
                 <a href="#"
@@ -26,6 +27,7 @@
                     <i class="fas fa-plus mr-2"></i>
                     Add New Training
                 </a>
+                @endhasrole
             </div>
         </div>
 
