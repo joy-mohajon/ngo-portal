@@ -189,7 +189,7 @@
                 <div class="bg-white p-6 rounded-lg shadow">
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="text-lg font-semibold">Related Trainings</h3>
-                        <a href="{{ route('projects.trainings', $project->id) }}" class="text-sm text-blue-600 hover:text-blue-800">View All</a>
+                        <a href="{{ route('projects.trainings.index', $project->id) }}" class="text-sm text-blue-600 hover:text-blue-800">View All</a>
                     </div>
                     
                     <div class="space-y-3">

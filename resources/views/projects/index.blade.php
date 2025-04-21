@@ -142,7 +142,7 @@
                         </td>
                         <td class="px-6 py-4 text-sm font-medium" onclick="event.stopPropagation()">
                             <div class="flex space-x-2">
-                                <a href="{{ route('projects.trainings', $project->id) }}"
+                                <a href="{{ route('projects.trainings.index', $project->id) }}"
                                     class="text-indigo-600 hover:text-indigo-900" title="View Trainings">
                                     <i class="fas fa-chalkboard-teacher"></i>
                                 </a>

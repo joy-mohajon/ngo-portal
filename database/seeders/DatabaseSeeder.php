@@ -19,6 +19,8 @@ class DatabaseSeeder extends Seeder
                 UserSeeder::class,
                 ProjectSeeder::class,
                 TrainingSeeder::class,
+                // NgoSeeder::class,
+                // ProjectTrainingSeeder::class,
             ]);
             
             Log::info('Database seeding completed successfully');

@@ -9,7 +9,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-                    <form method="POST" action="{{ route('trainings.store') }}">
+                    <form method="POST" action="{{ route('projects.trainings.store', $project) }}">
                         @csrf
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
@@ -110,7 +110,7 @@
                         </div>
 
                         <div class="flex items-center justify-end mt-4">
-                            <a href="{{ isset($selectedProjectId) ? route('projects.trainings', $selectedProjectId) : route('trainings.index') }}" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 mr-4">
+                            <a href="{{ isset($selectedProjectId) ? route('projects.projects.trainings', $selectedProjectId) : route('projects.trainings.index') }}" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 mr-4">
                                 {{ __('Cancel') }}
                             </a>
                             

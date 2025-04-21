@@ -19,7 +19,9 @@
                     <i class="fas fa-eye mr-2"></i>
                     View Project Details
                 </a>
-                <a href="{{ route('trainings.create', ['project_id' => $project->id]) }}"
+                <!-- <a href="{{ route('projects.trainings.create',$project) }}"
+                    class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md flex items-center"> -->
+                <a href="#"
                     class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md flex items-center">
                     <i class="fas fa-plus mr-2"></i>
                     Add New Training
@@ -93,16 +95,16 @@
                         </td>
                         <td class="px-6 py-4 text-sm font-medium">
                             <div class="flex space-x-2">
-                                <a href="{{ route('trainings.show', $training->id) }}"
+                                <a href="{{ route('projects.trainings.show', $training) }}"
                                     class="text-blue-600 hover:text-blue-900">
                                     <i class="fas fa-eye"></i>
                                 </a>
                                 @hasrole(['admin', 'ngo'])
-                                <a href="{{ route('trainings.edit', $training->id) }}"
+                                <a href="{{ route('projects.trainings.edit', $training) }}"
                                     class="text-yellow-600 hover:text-yellow-900">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <form action="{{ route('trainings.destroy', $training->id) }}" method="POST"
+                                <form action="{{ route('projects.trainings.destroy', $training) }}" method="POST"
                                     onsubmit="return confirm('Are you sure?');">
                                     @csrf
                                     @method('DELETE')
