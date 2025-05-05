@@ -11,14 +11,17 @@ class Ngo extends Model
 
     protected $fillable = [
         'name',
+        'Description',
         'registration_id',
         'phone_number',
         'email',
         'location',
         'focus_area',
         'certificate_path',
-        'image_path',
-        'status'
+        'logo',
+        'website',
+        'status',
+        'established_year'
     ];
 
     protected $casts = [

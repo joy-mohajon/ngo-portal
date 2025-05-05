@@ -32,12 +32,12 @@ class Project extends Model
 
     public function holder(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'holder_id');
+        return $this->belongsTo(Ngo::class, 'holder_id');
     }
 
     public function runner(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'runner_id');
+        return $this->belongsTo(Ngo::class, 'runner_id');
     }
 
     public function trainings(): HasMany

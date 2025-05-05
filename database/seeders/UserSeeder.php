@@ -66,10 +66,10 @@ class UserSeeder extends Seeder
     
             Ngo::create([
                 'user_id' => $ngoUser->id,
-                'name' => 'Test NGO',
+                'name' => $ngoUser->name,
                 'registration_id' => "NGO-111111",
                 'phone_number' => '0987654321',
-                'email' => 'ngo@example.com',
+                'email' => $ngoUser->email,
                 'location' => 'NGO Location',
             ]);
             

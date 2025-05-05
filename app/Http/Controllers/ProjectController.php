@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Project;
-use App\Models\User;
+use App\Models\Ngo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -23,8 +23,8 @@ class ProjectController extends Controller
      */
     public function create()
     {
-        $users = User::pluck('name', 'id');
-        return view('projects.create', compact('users'));
+        $ngos = Ngo::pluck('name', 'id');
+        return view('projects.create', compact('ngos'));
     }
 
     /**
@@ -38,8 +38,8 @@ class ProjectController extends Controller
             'location' => 'nullable|string|max:255',
             'budget' => 'nullable|numeric|min:0',
             'focus_area' => 'nullable|string|max:255',
-            'holder_id' => 'required|exists:users,id',
-            'runner_id' => 'required|exists:users,id',
+            'holder_id' => 'required|exists:ngos,id',
+            'runner_id' => 'required|exists:ngos,id',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
             'status' => 'required|string|in:active,completed,suspended,pending',
@@ -64,8 +64,8 @@ class ProjectController extends Controller
      */
     public function edit(Project $project)
     {
-        $users = User::pluck('name', 'id');
-        return view('projects.edit', compact('project', 'users'));
+        $ngos = Ngo::pluck('name', 'id');
+        return view('projects.edit', compact('project', 'ngos'));
     }
 
     /**
@@ -79,8 +79,8 @@ class ProjectController extends Controller
             'location' => 'nullable|string|max:255',
             'budget' => 'nullable|numeric|min:0',
             'focus_area' => 'nullable|string|max:255',
-            'holder_id' => 'required|exists:users,id',
-            'runner_id' => 'required|exists:users,id',
+            'holder_id' => 'required|exists:ngos,id',
+            'runner_id' => 'required|exists:ngos,id',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
             'status' => 'required|string|in:active,completed,suspended,pending',
@@ -139,8 +139,8 @@ class ProjectController extends Controller
             'location' => 'nullable|string|max:255',
             'budget' => 'nullable|numeric|min:0',
             'focus_area' => 'nullable|string|max:255',
-            'holder_id' => 'required|exists:users,id',
-            'runner_id' => 'required|exists:users,id',
+            'holder_id' => 'required|exists:ngos,id',
+            'runner_id' => 'required|exists:ngos,id',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
             'status' => 'required|string|in:active,completed,suspended,pending',
@@ -166,8 +166,8 @@ class ProjectController extends Controller
             'location' => 'sometimes|nullable|string|max:255',
             'budget' => 'sometimes|nullable|numeric|min:0',
             'focus_area' => 'sometimes|nullable|string|max:255',
-            'holder_id' => 'sometimes|required|exists:users,id',
-            'runner_id' => 'sometimes|required|exists:users,id',
+            'holder_id' => 'sometimes|required|exists:ngos,id',
+            'runner_id' => 'sometimes|required|exists:ngos,id',
             'start_date' => 'sometimes|required|date',
             'end_date' => 'sometimes|required|date|after_or_equal:start_date',
             'status' => 'sometimes|required|string|in:active,completed,suspended,pending',

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\NgoController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TrainingController;
 use App\Http\Controllers\ProjectController;
@@ -24,12 +25,15 @@ Route::middleware('auth')->group(function () {
     // Route::resource('projects.trainings', TrainingController::class);
     
     // Projects resource
+    Route::resource('ngos', NgoController::class);
+
+    // Projects resource
     Route::resource('projects', ProjectController::class);
     
 
     // Complete nested resource route with all actions
-Route::resource('projects.trainings', ProjectTrainingController::class)
-->shallow()->names('projects.trainings');
+    Route::resource('projects.trainings', ProjectTrainingController::class)
+    ->shallow()->names('projects.trainings');
 
     // Route::get('projects/{project}/trainings', [App\Http\Controllers\ProjectTrainingController::class, 'index'])
     //     ->name('projects.trainings');

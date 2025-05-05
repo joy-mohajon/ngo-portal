@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\{Project, Training, User};
+use App\Models\{Ngo, Project, Training, User};
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
 
@@ -276,12 +276,12 @@ class ProjectTrainingSeeder extends Seeder
         ];
 
         // Get all NGO users
-        $ngoUsers = User::role('ngo')->get();
+        $ngos = Ngo::where('status', 'approved')->get(); 
 
         foreach ($projects as $projectData) {
             // Assign random holder and runner (ensuring they're different)
-            $holder = $ngoUsers->random();
-            $runner = $ngoUsers->where('id', '!=', $holder->id)->random();
+            $holder = $ngos->random();
+            $runner = $ngos->where('id', '!=', $holder->id)->random();
 
             $project = Project::create([
                 'title' => $projectData['title'],

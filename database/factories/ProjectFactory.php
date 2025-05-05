@@ -3,7 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Project;
-use App\Models\User;
+use App\Models\Ngo;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -18,16 +18,16 @@ class ProjectFactory extends Factory
      */
     public function definition(): array
     {
-        // Get random users for holder and runner
-        $holderId = User::inRandomOrder()->first()?->id;
-        $runnerId = User::inRandomOrder()->first()?->id;
+        // Get random Ngos for holder and runner
+        $holderId = Ngo::where('status', 'approved')->inRandomOrder()->first()?->id;
+        $runnerId = Ngo::where('status', 'approved')->inRandomOrder()->first()?->id;
         
-        if (!$holderId) {
-            // Create a user if none exists
-            $holder = User::factory()->create();
-            $holderId = $holder->id;
-            $runnerId = $holder->id;
-        }
+        // if (!$holderId) {
+        //     // Create a Ngo if none exists
+        //     $holder = Ngo::factory()->create();
+        //     $holderId = $holder->id;
+        //     $runnerId = $holder->id;
+        // }
         
         // Set start date between 6 months in the past and now
         $startDate = $this->faker->dateTimeBetween('-6 months', 'now');

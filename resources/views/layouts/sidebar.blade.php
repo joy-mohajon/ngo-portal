@@ -21,12 +21,18 @@
 
                 <!-- NGO Management - For authority and admin roles only -->
                 @hasrole(['admin', 'authority'])
+                <li>
+                    <a href="{{ route('ngos.index') }}" class="p-2 hover:bg-gray-700 rounded flex items-center gap-3">
+                        <i class="fas fa-hands-helping"></i>
+                        <span>NGOs</span>
+                    </a>
+                </li> 
                 <!-- <li x-data="{ open: false }" class="opcion-con-desplegable">
                     <div @click="open = !open"
                         class="flex items-center justify-between p-2 hover:bg-gray-700 rounded cursor-pointer">
                         <div class="flex items-center">
                             <i class="fas fa-hands-helping mr-3"></i>
-                            <span>NGO Management</span>
+                            <span>NGOs</span>
                         </div>
                         <i class="fas fa-chevron-down text-xs transition-transform duration-300"
                             :class="{ 'rotate-180': open }"></i>
@@ -35,16 +41,17 @@
                         <li>
                             <a href="#" class="p-2 hover:bg-gray-700 rounded flex items-center gap-3">
                                 <i class="fa fa-angle-right" aria-hidden="true"></i>
-                                <span>Pending Approvals</span>
-                                <span class="ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full">5</span>
+                                <span>All NGOs</span>
                             </a>
-                        </li>
+                        </li>    
                         <li>
                             <a href="#" class="p-2 hover:bg-gray-700 rounded flex items-center gap-3">
                                 <i class="fa fa-angle-right" aria-hidden="true"></i>
-                                <span>Approved NGOs List</span>
+                                <span>Pending NGOs</span>
+                                <span class="ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full">5</span>
                             </a>
                         </li>
+                        
                     </ul>
                 </li> -->
                 @endhasrole

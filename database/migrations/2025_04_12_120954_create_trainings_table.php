@@ -13,7 +13,7 @@ class CreateTrainingsTable extends Migration
             $table->string('title');
             $table->text('description');
             $table->string('location');
-            $table->foreignId('organizer_id')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('organizer_id')->nullable()->constrained('ngos')->onDelete('set null');
             $table->foreignId('project_id')->constrained()->onDelete('cascade');
             $table->dateTime('start_date');
             $table->dateTime('end_date');
