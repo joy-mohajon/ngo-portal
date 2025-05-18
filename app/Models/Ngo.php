@@ -16,7 +16,6 @@ class Ngo extends Model
         'phone_number',
         'email',
         'location',
-        'focus_area',
         'certificate_path',
         'logo',
         'website',
@@ -31,6 +30,11 @@ class Ngo extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+     public function focusAreas()
+    {
+        return $this->belongsToMany(FocusArea::class, 'ngo_has_focus_area');
     }
 
     /**

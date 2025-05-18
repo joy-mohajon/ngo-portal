@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\FocusArea;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -20,7 +21,6 @@ return new class extends Migration
             $table->string('phone_number');
             $table->string('email')->unique();
             $table->string('location');
-            $table->text('focus_area')->nullable();
             $table->string('logo')->nullable();
             $table->string('website')->nullable();
             $table->string('certificate_path')->nullable();
@@ -29,6 +29,7 @@ return new class extends Migration
             $table->timestamps();
         });
     }
+
 
     /**
      * Reverse the migrations.

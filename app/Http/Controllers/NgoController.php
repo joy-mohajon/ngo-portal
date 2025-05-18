@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\FocusArea;
 use App\Models\Ngo;
 use App\Models\Project;
 use Illuminate\Http\Request;
@@ -13,13 +14,27 @@ class NgoController extends Controller
      */
     public function index()
     {
-        $ngos = Ngo::all();
-    
-        $grouped = $ngos->groupBy(function($ngo) {
+        // Get all approved NGOs with their focus areas
+        $ngos = Ngo::with('focusAreas')
+                    ->where('status', 'approved')
+                    ->get();
+        
+        // Group by first letter of name (A-Z)
+        $groupedByAlphabet = $ngos->groupBy(function($ngo) {
             return strtoupper(substr($ngo->name, 0, 1));
         })->sortKeys();
         
-        return view('ngos.index', ['grouped' => $grouped]);
+        // Get all focus areas with NGO counts
+        $focusAreas = FocusArea::withCount('ngos')
+                        ->having('ngos_count', '>', 0)
+                        ->orderBy('name')
+                        ->get();
+        
+        return view('ngos.index', [
+            'grouped' => $groupedByAlphabet,
+            'focusAreas' => $focusAreas,
+            'allNgos' => $ngos
+        ]);
     }
 
     /**

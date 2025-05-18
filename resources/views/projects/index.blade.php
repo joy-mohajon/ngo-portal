@@ -1,5 +1,5 @@
 <x-app-layout>
-    <div class="bg-white rounded-lg shadow p-6">
+    <div class="p-4">
         @if(session('success'))
         <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
             <span class="block sm:inline">{{ session('success') }}</span>
@@ -14,8 +14,8 @@
 
         <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-8">
             <div class="mb-4 md:mb-0">
-                <h1 class="text-3xl font-bold text-gray-900">Project Directory</h1>
-                <p class="text-gray-600 mt-1">Browse development projects alphabetically</p>
+                <h1 class="text-2xl font-bold text-gray-900">Project Directory</h1>
+                <p class="text-gray-600 text-sm mt-1">Browse development projects alphabetically</p>
             </div>
             <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
                 <a href="#" class="inline-flex items-center px-4 py-2.5 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-[#00ACC1] hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
@@ -178,7 +178,7 @@
                 @endphp
                 
                 @foreach($letters as $letter)
-                    <a href="#section-{{ $letter }}" class="w-10 h-10 flex items-center justify-center rounded-lg font-medium text-sm
+                    <a href="#section-{{ $letter }}" class="w-10 h-10 flex items-center justify-center rounded-lg font-medium text-sm shadow
                         {{ in_array($letter, $activeLetters) ? 'bg-[#9229AD] text-white hover:bg-[#7A1E93]' : 'bg-gray-100 text-gray-400 cursor-not-allowed' }}">
                         {{ $letter }}
                     </a>
@@ -196,7 +196,7 @@
                     $logoBgClass = $colorPalette[$colorName][1]; // 100-level for logo
                 @endphp
 
-                <section id="section-{{ $letter }}" class="scroll-mt-20">
+                <section id="section-{{ $letter }}" class="scroll-mt-20 p-6 rounded-2xl {{ ($loop->iteration % 2 == 0)? 'bg-[#E8D4F0]' : 'bg-[#D1E7EC]'}}">
                     <div class="mb-6">
                         <h2 class="text-2xl font-bold text-gray-800 border-b border-gray-200 pb-2">Section {{ $letter }}</h2>
                     </div>
@@ -205,20 +205,20 @@
                         @foreach($group as $index => $project)
                             @if($index < 2)
                                 <!-- Featured Cards -->
-                                <a href="#" class="flex flex-col {{ $bgClass }} rounded-lg p-4 w-[280px] border border-gray-200 hover:shadow-md transition-all">
+                                <a href="#" class="flex flex-col shadow bg-gradient-to-tl from-white to-transparent-300 rounded-lg p-4 w-[280px] border border-gray-200 hover:shadow-md transition-all">
                                     <div class="flex items-center mb-3">
-                                        <div class="w-16 h-16 {{ $logoBgClass }} rounded-lg flex items-center justify-center overflow-hidden mr-4 flex-shrink-0">
-                                            <span class="{{ str_replace('bg-', 'text-', str_replace('-200', '-600', $logoBgClass)) }} text-lg uppercase font-medium">{{ substr($project['organization'], 0, 2) }}</span>
+                                        <div class="w-16 h-16 bg-gradient-to-tr from-gray-100 to-gray-50 group-hover:from-gray-200 group-hover:to-gray-100 transition-all rounded-lg flex items-center justify-center overflow-hidden mr-4 flex-shrink-0">
+                                            <span class="text-green-600 text-lg uppercase font-medium">{{ substr($project['organization'], 0, 2) }}</span>
                                         </div>
                                         <div class="min-w-0">
                                             <h3 class="font-semibold text-gray-900 truncate">{{ $project['name'] }}</h3>
-                                            <p class="text-gray-600 text-sm mt-1 truncate">{{ $project['organization'] }}</p>
+                                            <p class="text-green-600 text-sm mt-1 truncate">{{ $project['organization'] }}</p>
                                         </div>
                                     </div>
                                     <div class="space-y-2">
                                         <div class="flex items-center text-sm">
                                             <span class="text-gray-500 mr-2">Sector:</span>
-                                            <span class="{{ str_replace('bg-', 'text-', str_replace('-100', '-600', $bgClass)) }} font-medium">{{ $project['sector'] }}</span>
+                                            <span class="text-gray-800 font-medium">{{ $project['sector'] }}</span>
                                         </div>
                                         <div class="flex items-center text-sm">
                                             <span class="text-gray-500 mr-2">Location:</span>

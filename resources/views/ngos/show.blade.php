@@ -1,5 +1,5 @@
 <x-app-layout>
-    <div x-data="{ activeTab: 'runner' }">
+    <div class="p-4" x-data="{ activeTab: 'runner' }">
         <!-- NGO Header Section - Premium Redesign -->
         <div class="bg-white rounded-xl shadow overflow-hidden border border-gray-100">
             <div class="flex flex-col md:flex-row">

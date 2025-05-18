@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Project;
 use App\Models\Training;
-use App\Models\User;
+use App\Models\Ngo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -29,7 +29,7 @@ class ProjectTrainingController extends Controller
     public function create(Project $project)
     {
         // If you need to select from multiple organizers:
-        $organizers = User::pluck('name', 'id');
+        $organizers = Ngo::pluck('name', 'id');
         
         return view('projects.trainings.create', compact('project', 'organizers'));
     }
@@ -89,7 +89,7 @@ class ProjectTrainingController extends Controller
             abort(404);
         }
     
-        $organizers = User::pluck('name', 'id');
+        $organizers = Ngo::pluck('name', 'id');
         return view('projects.trainings.edit', compact('project', 'training', 'organizers'));
     }
 

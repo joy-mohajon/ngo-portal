@@ -1,5 +1,5 @@
 <x-app-layout>
-    <div class="bg-white rounded-lg shadow p-6">
+    <div class="p-4">
         @if(session('success'))
         <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
             <span class="block sm:inline">{{ session('success') }}</span>
@@ -31,7 +31,7 @@
         <!-- Project Details -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <!-- Main Information -->
-            <div class="md:col-span-2 bg-white p-6 pb-0 rounded-lg">
+            <div class="md:col-span-2 bg-white p-6 pb-0 shadow rounded-lg">
                 <div class="flex items-center justify-between mb-4">
                     <h2 class="text-xl font-semibold">{{ $project->title }}</h2>
                     @php
@@ -56,23 +56,23 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                     <div>
                         <h3 class="text-sm font-medium text-gray-500">Focus Area</h3>
-                        <p class="mt-1 text-sm text-gray-900">{{ $project->focus_area }}</p>
+                        <p class="mt-1 text-sm font-medium text-gray-900">{{ $project->focus_area }}</p>
                     </div>
                     <div>
                         <h3 class="text-sm font-medium text-gray-500">Location</h3>
-                        <p class="mt-1 text-sm text-gray-900">{{ $project->location }}</p>
+                        <p class="mt-1 text-sm font-medium text-gray-900">{{ $project->location }}</p>
                     </div>
                     <div>
                         <h3 class="text-sm font-medium text-gray-500">Start Date</h3>
-                        <p class="mt-1 text-sm text-gray-900">{{ $project->start_date->format('M d, Y') }}</p>
+                        <p class="mt-1 text-sm font-medium text-gray-900">{{ $project->start_date->format('M d, Y') }}</p>
                     </div>
                     <div>
                         <h3 class="text-sm font-medium text-gray-500">End Date</h3>
-                        <p class="mt-1 text-sm text-gray-900">{{ $project->end_date ? $project->end_date->format('M d, Y') : 'Ongoing' }}</p>
+                        <p class="mt-1 text-sm font-medium text-gray-900">{{ $project->end_date ? $project->end_date->format('M d, Y') : 'Ongoing' }}</p>
                     </div>
                     <div>
                         <h3 class="text-sm font-medium text-gray-500">Budget</h3>
-                        <p class="mt-1 text-sm text-gray-900">${{ number_format($project->budget, 2) }}</p>
+                        <p class="mt-1 text-sm font-medium text-gray-900">${{ number_format($project->budget, 2) }}</p>
                     </div>
                 </div>
             </div>
@@ -81,7 +81,7 @@
             <div class="space-y-6">
                 <!-- Key People -->
                 <div class="bg-white p-6 rounded-lg shadow">
-                    <h3 class="text-lg font-semibold mb-4">Key People</h3>
+                    <h3 class="text-lg font-semibold mb-4">Key NGOs</h3>
                     
                     <div class="mb-4">
                         <h4 class="text-sm font-medium text-gray-500">Project Holder</h4>
@@ -91,7 +91,7 @@
                             </div>
                             <div class="ml-3">
                                 <p class="text-sm font-medium text-gray-900">{{ $project->holder->name ?? 'Not Assigned' }}</p>
-                                <p class="text-sm text-gray-500">{{ $project->holder->email ?? '' }}</p>
+                                <p class="text-sm text-blue-500">{{ $project->holder->email ?? '' }}</p>
                             </div>
                         </div>
                     </div>
@@ -104,7 +104,7 @@
                             </div>
                             <div class="ml-3">
                                 <p class="text-sm font-medium text-gray-900">{{ $project->runner->name ?? 'Not Assigned' }}</p>
-                                <p class="text-sm text-gray-500">{{ $project->runner->email ?? '' }}</p>
+                                <p class="text-sm text-blue-500">{{ $project->runner->email ?? '' }}</p>
                             </div>
                         </div>
                     </div>
@@ -147,9 +147,9 @@
         </div>
 
         <!-- Reports Section -->
-        <div class="mt-8 px-6">
+        <div class="mt-8">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-semibold">Project Reports</h3>
+                <h3 class="text-xl font-semibold">Project Reports</h3>
                 <div class="flex space-x-2">
                     @hasrole(['admin', 'ngo'])
                     <button onclick="openUploadModal({{ $project->id }}, '{{ $project->title }}')" class="text-blue-500 hover:text-blue-700 border border-blue-500 px-3 py-1 rounded text-sm">
@@ -222,9 +222,9 @@
         </div>
 
         <!-- Testimonial Section -->
-        <div x-data="testimonialApp()" class="mt-8 p-6">
+        <div x-data="testimonialApp()" class="mt-8">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-semibold">Project Testimonials</h3>
+                <h3 class="text-xl font-semibold">Project Testimonials</h3>
                 <div class="flex space-x-2">
                 @hasrole(['admin', 'ngo'])
                     <button @click="openRequestModal()" class="text-purple-600 hover:text-purple-800 border border-purple-600 px-3 py-1 rounded text-sm transition-colors duration-200">
@@ -242,13 +242,16 @@
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Requested By</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                            @hasrole(['admin', 'authority'])
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Application</th>
+                            @endhasrole
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Testimonial</th>
                             @hasrole(['admin', 'authority'])
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            <th class="px-6 py-3 text-left text-xs text-center font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                             @endhasrole
                         </tr>
                     </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
+                    <tbody class="bg-white divide-y divide-gray-200  text-sm">
                         <template x-for="(testimonial, index) in testimonials" :key="index">
                             <tr>
                                 <td class="px-6 py-4 whitespace-nowrap">
@@ -268,10 +271,24 @@
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="text-sm text-gray-900" x-text="testimonial.date"></div>
                                 </td>
+                                @hasrole(['admin', 'authority'])
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <template x-if="testimonial.status === 'approved'">
                                         <div class="flex items-center">
-                                            <a href="#" class="text-blue-600 hover:text-blue-900 mr-2" title="View Testimonial">
+                                            <button @click="downloadTestimonial(index)" class="text-blue-600 text-sm hover:text-blue-900" title="Download">
+                                                    <i class="fas fa-download"></i> Download
+                                                </button>
+                                        </div>
+                                    </template>
+                                    <template x-if="testimonial.status !== 'approved'">
+                                        <div class="text-sm text-gray-500">Not available</div>
+                                    </template>
+                                </td>
+                                @endhasrole
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <template x-if="testimonial.status === 'approved'">
+                                        <div class="flex items-center">
+                                            <a href="#" class="text-blue-600  text-sm hover:text-blue-900 mr-2" title="View Testimonial">
                                                 <i class="fas fa-eye"></i> View
                                             </a>
                                             <span class="text-sm text-gray-500" x-text="testimonial.fileSize"></span>
@@ -281,23 +298,31 @@
                                         <div class="text-sm text-gray-500">Not available</div>
                                     </template>
                                 </td>
+                                
                                 @hasrole(['admin', 'authority'])
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <td class="px-6 py-4 text-center whitespace-nowrap text-sm font-medium">
                                     <template x-if="testimonial.status === 'pending'">
                                         <div class="flex space-x-2">
-                                            <button @click="openApproveModal(index)" class="text-green-600 hover:text-green-900" title="Approve">
-                                                <i class="fas fa-check"></i> Approve
-                                            </button>
-                                            <button @click="rejectTestimonial(index)" class="text-red-600 hover:text-red-900" title="Reject">
-                                                <i class="fas fa-times"></i> Reject
-                                            </button>
+                                            @hasrole(['admin', 'authority'])
+                                                <button @click="openApproveModal(index)" class="text-green-600 hover:text-green-900" title="Approve">
+                                                    <i class="fas fa-check"></i> Approve
+                                                </button>
+                                                <button @click="rejectTestimonial(index)" class="text-red-600 hover:text-red-900" title="Reject">
+                                                    <i class="fas fa-times"></i> Reject
+                                                </button>
+                                            @endhasrole
+                                            @hasrole(['admin', 'ngo'])
+                                                <button @click="downloadTestimonial(index)" class="text-blue-600 hover:text-blue-900" title="Download">
+                                                    <i class="fas fa-download"></i> Download
+                                                </button>
+                                             @endhasrole
                                         </div>
                                     </template>
                                     <template x-if="testimonial.status === 'rejected'">
-                                        <!-- <button @click="resubmitTestimonial(index)" class="text-purple-600 hover:text-purple-900">
+                                        <button @click="resubmitTestimonial(index)" class="text-purple-600 hover:text-purple-900">
                                             <i class="fas fa-redo"></i> Resubmit
-                                        </button> -->
-                                        <p class="text-gray-400">Uncompleted</p>
+                                        </button>
+                                        <!-- <p class="text-gray-400">Uncompleted</p> -->
                                     </template>
                                     <template x-if="testimonial.status === 'approved'">
                                         <div class="text-gray-400">Completed</div>
@@ -329,6 +354,28 @@
                                 <input x-model="newTestimonial.title" type="text" id="testimonialTitle" 
                                     class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" 
                                     placeholder="Enter testimonial title">
+                            </div>
+                            <div class="mb-4">
+                                <label for="files" class="block text-left text-sm font-medium text-gray-700">Application</label>
+                                <div
+                                    class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+                                    <div class="space-y-1 text-center">
+                                        <i class="fas fa-file-upload mx-auto h-8 w-12 text-gray-400"></i>
+                                        <div class="flex text-sm text-gray-600">
+                                            <label for="files"
+                                                class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
+                                                <span>Upload file</span>
+                                                <input id="files" name="files[]" type="file" class="sr-only"
+                                                    multiple>
+                                            </label>
+                                            <p class="pl-1">or drag and drop</p>
+                                        </div>
+                                        <p class="text-xs text-gray-500">
+                                            PDF, DOC, DOCX up to 10MB each
+                                        </p>
+                                        <div id="fileList" class="mt-2 text-left"></div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="items-center px-4 py-3">

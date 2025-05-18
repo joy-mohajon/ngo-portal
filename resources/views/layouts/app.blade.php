@@ -30,7 +30,7 @@
             @include('layouts.navbar')
 
             <!-- Page Content -->
-            <main class="flex-1 overflow-y-auto mt-16 p-6 bg-gray-100">
+            <main class="flex-1 overflow-y-auto px-6 py-4 bg-[#F5F3EB]">
                 {{ $slot }}
             </main>
         </div>

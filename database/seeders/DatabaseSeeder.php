@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
                 UserSeeder::class,
                 // ProjectSeeder::class,
                 // TrainingSeeder::class,
+                FocusAreaSeeder::class,
                 NgoSeeder::class,
                 ProjectTrainingSeeder::class,
             ]);
