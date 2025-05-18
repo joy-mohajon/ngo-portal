@@ -187,7 +187,7 @@
         </div>
 
         <!-- Project Listings -->
-        <div class="space-y-12">
+        <div class="space-y-4">
             @foreach($grouped as $letter => $group)
                 @php
                     $letterIndex = array_search($letter, range('A', 'Z'));
