@@ -12,12 +12,76 @@ class ProjectController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        $projects = Project::with(['holder', 'runner'])->latest()->paginate(10);
-        return view('projects.index', compact('projects'));
+public function index(Request $request)
+{
+    // Start with base query
+    $query = Project::with(['holder', 'runner']);
+
+    // Apply filters if they exist
+    if ($request->has('status') && $request->status != '') {
+        $query->where('status', $request->status);
     }
 
+    if ($request->has('sector') && $request->sector != '') {
+        $query->where('focus_area', 'like', '%'.$request->sector.'%');
+    }
+
+    if ($request->has('location') && $request->location != '') {
+        $query->where('location', 'like', '%'.$request->location.'%');
+    }
+
+    if ($request->has('organization') && $request->organization != '') {
+        $query->whereHas('holder', function($q) use ($request) {
+            $q->where('name', 'like', '%'.$request->organization.'%');
+        });
+    }
+
+    // Get filtered projects
+    $projects = $query->latest()
+        ->get()
+        ->map(function ($project) {
+            return [
+                'id' => $project->id,
+                'name' => $project->title,
+                'organization' => $project->holder->name ?? 'Unknown',
+                'email' => $project->holder->email ?? '',
+                'start_date' => $project->start_date->format('Y-m-d'),
+                'sector' => $project->focus_area,
+                'location' => $project->location,
+                'status' => $project->status,
+            ];
+        });
+
+    // Get unique values for filter dropdowns
+    $statuses = Project::select('status')->distinct()->pluck('status');
+    $sectors = Project::select('focus_area as sector')->distinct()->pluck('sector');
+    $locations = Project::select('location')->distinct()->pluck('location');
+    $organizations = Ngo::select('name as organization')->distinct()->pluck('organization');
+
+    // Group projects by first letter of their name
+    $grouped = [];
+    foreach ($projects as $project) {
+        $firstLetter = strtoupper(substr($project['name'], 0, 1));
+        if (!isset($grouped[$firstLetter])) {
+            $grouped[$firstLetter] = [];
+        }
+        $grouped[$firstLetter][] = $project;
+    }
+
+    ksort($grouped);
+    $activeLetters = array_keys($grouped);
+    $letters = range('A', 'Z');
+
+    return view('projects.index', compact(
+        'grouped', 
+        'activeLetters', 
+        'letters',
+        'statuses',
+        'sectors',
+        'locations',
+        'organizations'
+    ));
+}
     /**
      * Show the form for creating a new resource.
      */

@@ -1,560 +1,341 @@
 <x-app-layout>
-    <div class="p-4">
+    <div class="p-6">
+        <!-- Flash Messages -->
         @if(session('success'))
-        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-            <span class="block sm:inline">{{ session('success') }}</span>
+        <div class="bg-emerald-100 border-l-4 border-emerald-500 text-emerald-700 p-4 mb-6 rounded-lg shadow-sm">
+            <div class="flex items-center">
+                <svg class="h-5 w-5 text-emerald-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                </svg>
+                <span class="font-medium">{{ session('success') }}</span>
+            </div>
         </div>
         @endif
 
         @if(session('error'))
-        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-            <span class="block sm:inline">{{ session('error') }}</span>
+        <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded-lg shadow-sm">
+            <div class="flex items-center">
+                <svg class="h-5 w-5 text-red-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                </svg>
+                <span class="font-medium">{{ session('error') }}</span>
+            </div>
         </div>
         @endif
 
-        <div class="flex justify-between items-center mb-6">
-            <h1 class="text-2xl font-bold">Project Details</h1>
-            <div class="flex space-x-3">
-                <a href="{{ route('projects.index') }}" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md flex items-center">
-                    <i class="fas fa-arrow-left mr-2"></i>
+        <!-- Header Section -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">{{ $project->title }}</h1>
+                <div class="flex items-center mt-2">
+                    <span class="px-3 py-1 rounded-full text-xs font-semibold {{ 
+                        $project->status == 'Active' ? 'bg-emerald-100 text-emerald-800' : 
+                        ($project->status == 'Inactive' ? 'bg-red-100 text-red-800' : 
+                        'bg-amber-100 text-amber-800') 
+                    }}">
+                        {{ $project->status }}
+                    </span>
+                    <span class="ml-3 text-gray-600 text-sm flex items-center">
+                        <svg class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        </svg>
+                        {{ $project->location }}
+                    </span>
+                </div>
+            </div>
+            <div class="mt-4 md:mt-0 flex space-x-3">
+                <a href="{{ route('projects.index') }}" class="flex items-center px-4 py-2 bg-white border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50">
+                    <svg class="h-5 w-5 mr-2 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                    </svg>
                     Back to List
                 </a>
                 @hasrole(['admin', 'ngo'])
-                <a href="{{ route('projects.edit', $project->id) }}" class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-md flex items-center">
-                    <i class="fas fa-edit mr-2"></i>
+                <a href="{{ route('projects.edit', $project->id) }}" class="flex items-center px-4 py-2 bg-indigo-600 rounded-lg shadow-sm text-sm font-medium text-white hover:bg-indigo-700">
+                    <svg class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                    </svg>
                     Edit Project
                 </a>
                 @endhasrole
             </div>
         </div>
 
-        <!-- Project Details -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <!-- Main Information -->
-            <div class="md:col-span-2 bg-white p-6 pb-0 shadow rounded-lg">
-                <div class="flex items-center justify-between mb-4">
-                    <h2 class="text-xl font-semibold">{{ $project->title }}</h2>
-                    @php
-                    $status = strtolower($project->status);
-                    $statusColors = [
-                        'active' => 'bg-green-100 text-green-800',
-                        'inactive' => 'bg-red-100 text-red-800',
-                        'suspended' => 'bg-yellow-100 text-yellow-800',
-                        'pending' => 'bg-yellow-100 text-yellow-800',
-                    ];
-                    $colorClass = $statusColors[$status] ?? 'bg-gray-100 text-gray-800';
-                    @endphp
-                    <span class="px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full {{ $colorClass }}">
-                        {{ ucfirst($status) }}
-                    </span>
+        <!-- Main Content Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Left Column - Project Details -->
+            <div class="lg:col-span-2 space-y-6">
+                <!-- Project Overview Card -->
+                <div class="bg-white overflow-hidden shadow rounded-lg">
+                    <div class="px-6 py-5 border-b border-gray-200">
+                        <h3 class="text-lg font-medium text-gray-900 flex items-center">
+                            <svg class="h-5 w-5 text-indigo-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            Project Overview
+                        </h3>
+                    </div>
+                    <div class="px-6 py-5">
+                        <div class="prose max-w-none text-gray-700 mb-6">
+                            {{ $project->description }}
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <h4 class="text-sm font-medium text-gray-500">Focus Area</h4>
+                                <p class="mt-1 text-sm text-gray-900">{{ $project->focus_area }}</p>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-medium text-gray-500">Budget</h4>
+                                <p class="mt-1 text-sm text-gray-900">${{ number_format($project->budget, 2) }}</p>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-medium text-gray-500">Start Date</h4>
+                                <p class="mt-1 text-sm text-gray-900">{{ $project->start_date->format('M d, Y') }}</p>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-medium text-gray-500">End Date</h4>
+                                <p class="mt-1 text-sm text-gray-900">{{ $project->end_date ? $project->end_date->format('M d, Y') : 'Ongoing' }}</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                
-                <div class="prose max-w-none mb-6">
-                    <p class="text-gray-700">{{ $project->description }}</p>
-                </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                    <div>
-                        <h3 class="text-sm font-medium text-gray-500">Focus Area</h3>
-                        <p class="mt-1 text-sm font-medium text-gray-900">{{ $project->focus_area }}</p>
+
+                <!-- Reports Section -->
+                <div class="bg-white overflow-hidden shadow rounded-lg">
+                    <div class="px-6 py-5 border-b border-gray-200 flex justify-between items-center">
+                        <h3 class="text-lg font-medium text-gray-900 flex items-center">
+                            <svg class="h-5 w-5 text-indigo-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            </svg>
+                            Project Reports
+                        </h3>
+                        <div class="flex space-x-2">
+                            @hasrole(['admin', 'ngo'])
+                            <button onclick="openUploadModal({{ $project->id }}, '{{ $project->title }}')" class="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700">
+                                <svg class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                                </svg>
+                                Upload
+                            </button>
+                            @endhasrole
+                            @hasrole(['admin', 'authority'])
+                            <a href="{{ route('projects.download-reports', $project->id) }}" class="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-emerald-600 hover:bg-emerald-700">
+                                <svg class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                                </svg>
+                                Download All
+                            </a>
+                            @endhasrole
+                        </div>
                     </div>
-                    <div>
-                        <h3 class="text-sm font-medium text-gray-500">Location</h3>
-                        <p class="mt-1 text-sm font-medium text-gray-900">{{ $project->location }}</p>
-                    </div>
-                    <div>
-                        <h3 class="text-sm font-medium text-gray-500">Start Date</h3>
-                        <p class="mt-1 text-sm font-medium text-gray-900">{{ $project->start_date->format('M d, Y') }}</p>
-                    </div>
-                    <div>
-                        <h3 class="text-sm font-medium text-gray-500">End Date</h3>
-                        <p class="mt-1 text-sm font-medium text-gray-900">{{ $project->end_date ? $project->end_date->format('M d, Y') : 'Ongoing' }}</p>
-                    </div>
-                    <div>
-                        <h3 class="text-sm font-medium text-gray-500">Budget</h3>
-                        <p class="mt-1 text-sm font-medium text-gray-900">${{ number_format($project->budget, 2) }}</p>
+                    <div class="px-6 py-4">
+                        @if($project->reports->count() > 0)
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Month</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Uploaded By</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">File</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    @foreach($project->reports as $report)
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm font-medium text-gray-900">{{ $report->title }}</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-500">{{ $report->month }}</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-500">{{ $report->submitter->name ?? 'N/A' }}</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-500">{{ $report->file_name }}</div>
+                                            <div class="text-xs text-gray-400">{{ number_format($report->file_size / 1024, 2) }} KB</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <div class="flex space-x-3">
+                                                <a href="{{ Storage::url($report->file_path) }}" target="_blank" class="text-indigo-600 hover:text-indigo-900" title="View">
+                                                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                                    </svg>
+                                                </a>
+                                                <a href="{{ Storage::url($report->file_path) }}" download class="text-emerald-600 hover:text-emerald-900" title="Download">
+                                                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                                                    </svg>
+                                                </a>
+                                                @hasrole(['admin', 'ngo'])
+                                                <form action="{{ route('reports.destroy', $report->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this report?');">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="text-red-600 hover:text-red-900" title="Delete">
+                                                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                                        </svg>
+                                                    </button>
+                                                </form>
+                                                @endhasrole
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                        @else
+                        <div class="text-center py-8">
+                            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <h3 class="mt-2 text-sm font-medium text-gray-900">No reports available</h3>
+                            <p class="mt-1 text-sm text-gray-500">Upload reports to track project progress.</p>
+                        </div>
+                        @endif
                     </div>
                 </div>
             </div>
-            
-            <!-- Side Information -->
+
+            <!-- Right Column - Sidebar -->
             <div class="space-y-6">
-                <!-- Key People -->
-                <div class="bg-white p-6 rounded-lg shadow">
-                    <h3 class="text-lg font-semibold mb-4">Key NGOs</h3>
-                    
-                    <div class="mb-4">
-                        <h4 class="text-sm font-medium text-gray-500">Project Holder</h4>
-                        <div class="mt-2 flex items-center">
-                            <div class="flex-shrink-0 h-10 w-10">
-                                <img class="h-10 w-10 rounded-full" src="https://ui-avatars.com/api/?name={{ $project->holder->name ?? 'Unknown' }}&background=random" alt="">
-                            </div>
-                            <div class="ml-3">
-                                <p class="text-sm font-medium text-gray-900">{{ $project->holder->name ?? 'Not Assigned' }}</p>
-                                <p class="text-sm text-blue-500">{{ $project->holder->email ?? '' }}</p>
-                            </div>
-                        </div>
+                <!-- Key Organizations -->
+                <div class="bg-white overflow-hidden shadow rounded-lg">
+                    <div class="px-6 py-5 border-b border-gray-200">
+                        <h3 class="text-lg font-medium text-gray-900 flex items-center">
+                            <svg class="h-5 w-5 text-indigo-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                            </svg>
+                            Key Organizations
+                        </h3>
                     </div>
-                    
-                    <div>
-                        <h4 class="text-sm font-medium text-gray-500">Project Runner</h4>
-                        <div class="mt-2 flex items-center">
-                            <div class="flex-shrink-0 h-10 w-10">
-                                <img class="h-10 w-10 rounded-full" src="https://ui-avatars.com/api/?name={{ $project->runner->name ?? 'Unknown' }}&background=random" alt="">
-                            </div>
-                            <div class="ml-3">
-                                <p class="text-sm font-medium text-gray-900">{{ $project->runner->name ?? 'Not Assigned' }}</p>
-                                <p class="text-sm text-blue-500">{{ $project->runner->email ?? '' }}</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Trainings -->
-                <!-- <div class="bg-white p-6 rounded-lg shadow">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-lg font-semibold">Related Trainings</h3>
-                        <a href="{{ route('projects.trainings.index', $project->id) }}" class="text-sm text-blue-600 hover:text-blue-800">View All</a>
-                    </div>
-                    
-                    <div class="space-y-3">
-                        @forelse($project->trainings->take(3) as $training)
-                        <div class="border-l-4 border-blue-500 pl-4 py-2">
-                            <p class="text-sm font-medium text-gray-900">{{ $training->title }}</p>
-                            <p class="text-xs text-gray-500">{{ $training->start_date->format('M d, Y') }}</p>
-                            <div class="mt-1">
-                                @php
-                                $trainingStatus = strtolower($training->status);
-                                $trainingStatusColors = [
-                                    'upcoming' => 'bg-blue-100 text-blue-800',
-                                    'ongoing' => 'bg-green-100 text-green-800',
-                                    'completed' => 'bg-gray-100 text-gray-800',
-                                    'cancelled' => 'bg-red-100 text-red-800',
-                                ];
-                                $trainingColorClass = $trainingStatusColors[$trainingStatus] ?? 'bg-gray-100 text-gray-800';
-                                @endphp
-                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $trainingColorClass }}">
-                                    {{ ucfirst($trainingStatus) }}
-                                </span>
-                            </div>
-                        </div>
-                        @empty
-                        <p class="text-sm text-gray-500">No trainings associated with this project.</p>
-                        @endforelse
-                    </div>
-                </div> -->
-            </div>
-        </div>
-
-        <!-- Reports Section -->
-        <div class="mt-8">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xl font-semibold">Project Reports</h3>
-                <div class="flex space-x-2">
-                    @hasrole(['admin', 'ngo'])
-                    <button onclick="openUploadModal({{ $project->id }}, '{{ $project->title }}')" class="text-blue-500 hover:text-blue-700 border border-blue-500 px-3 py-1 rounded text-sm">
-                        <i class="fas fa-file-upload mr-1"></i> Upload Reports
-                    </button>
-                    @endhasrole
-                    @hasrole(['admin', 'authority'])
-                    <a href="{{ route('projects.download-reports', $project->id) }}" class="text-green-500 hover:text-green-700 border border-green-500 px-3 py-1 rounded text-sm">
-                        <i class="fas fa-download mr-1"></i> Download All Reports
-                    </a>
-                    @endhasrole
-                </div>
-            </div>
-            
-            <div class="overflow-x-auto bg-white shadow rounded-lg">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Month</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Uploaded By</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">File</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        @forelse($project->reports as $report)
-                        <tr>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900">{{ $report->title }}</div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900">{{ $report->month }}</div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900">{{ $report->submitter->name ?? 'N/A' }}</div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900">{{ $report->file_name }}</div>
-                                <div class="text-xs text-gray-500">{{ number_format($report->file_size / 1024, 2) }} KB</div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                <div class="flex space-x-2">
-                                    <a href="{{ Storage::url($report->file_path) }}" target="_blank" class="text-blue-600 hover:text-blue-900" title="View Report">
-                                        <i class="fas fa-eye"></i>
-                                    </a>
-                                    <a href="{{ Storage::url($report->file_path) }}" download class="text-green-600 hover:text-green-900" title="Download Report">
-                                        <i class="fas fa-download"></i>
-                                    </a>
-                                    @hasrole(['admin', 'ngo'])
-                                    <form action="{{ route('reports.destroy', $report->id) }}" method="POST" onsubmit="return confirm('Are you sure?');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="text-red-600 hover:text-red-900" title="Delete Report">
-                                            <i class="fas fa-trash-alt"></i>
-                                        </button>
-                                    </form> 
-                                    @endhasrole
+                    <div class="px-6 py-5 space-y-4">
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-500 mb-2">Project Holder</h4>
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center">
+                                    <span class="text-indigo-600 font-medium">{{ substr($project->holder->name ?? 'N/A', 0, 2) }}</span>
                                 </div>
-                            </td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="5" class="px-6 py-4 text-center text-gray-500">No reports available for this project.</td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Testimonial Section -->
-        <div x-data="testimonialApp()" class="mt-8">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xl font-semibold">Project Testimonials</h3>
-                <div class="flex space-x-2">
-                @hasrole(['admin', 'ngo'])
-                    <button @click="openRequestModal()" class="text-purple-600 hover:text-purple-800 border border-purple-600 px-3 py-1 rounded text-sm transition-colors duration-200">
-                        <i class="fas fa-file-signature mr-1"></i> Request for Testimonial
-                    </button>
-                    @endhasrole
-                </div>
-            </div>
-            
-            <div class="overflow-x-auto bg-white shadow rounded-lg">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Requested By</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                            @hasrole(['admin', 'authority'])
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Application</th>
-                            @endhasrole
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Testimonial</th>
-                            @hasrole(['admin', 'authority'])
-                            <th class="px-6 py-3 text-left text-xs text-center font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                            @endhasrole
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200  text-sm">
-                        <template x-for="(testimonial, index) in testimonials" :key="index">
-                            <tr>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-900" x-text="testimonial.title"></div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <span x-bind:class="{
-                                        'bg-yellow-100 text-yellow-800': testimonial.status === 'pending',
-                                        'bg-green-100 text-green-800': testimonial.status === 'approved',
-                                        'bg-red-100 text-red-800': testimonial.status === 'rejected'
-                                    }" class="px-2 py-1 text-xs font-semibold rounded-full" x-text="testimonial.status.charAt(0).toUpperCase() + testimonial.status.slice(1)">
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-900" x-text="testimonial.requestedBy"></div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-900" x-text="testimonial.date"></div>
-                                </td>
-                                @hasrole(['admin', 'authority'])
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <template x-if="testimonial.status === 'approved'">
-                                        <div class="flex items-center">
-                                            <button @click="downloadTestimonial(index)" class="text-blue-600 text-sm hover:text-blue-900" title="Download">
-                                                    <i class="fas fa-download"></i> Download
-                                                </button>
-                                        </div>
-                                    </template>
-                                    <template x-if="testimonial.status !== 'approved'">
-                                        <div class="text-sm text-gray-500">Not available</div>
-                                    </template>
-                                </td>
-                                @endhasrole
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <template x-if="testimonial.status === 'approved'">
-                                        <div class="flex items-center">
-                                            <a href="#" class="text-blue-600  text-sm hover:text-blue-900 mr-2" title="View Testimonial">
-                                                <i class="fas fa-eye"></i> View
-                                            </a>
-                                            <span class="text-sm text-gray-500" x-text="testimonial.fileSize"></span>
-                                        </div>
-                                    </template>
-                                    <template x-if="testimonial.status !== 'approved'">
-                                        <div class="text-sm text-gray-500">Not available</div>
-                                    </template>
-                                </td>
-                                
-                                @hasrole(['admin', 'authority'])
-                                <td class="px-6 py-4 text-center whitespace-nowrap text-sm font-medium">
-                                    <template x-if="testimonial.status === 'pending'">
-                                        <div class="flex space-x-2">
-                                            @hasrole(['admin', 'authority'])
-                                                <button @click="openApproveModal(index)" class="text-green-600 hover:text-green-900" title="Approve">
-                                                    <i class="fas fa-check"></i> Approve
-                                                </button>
-                                                <button @click="rejectTestimonial(index)" class="text-red-600 hover:text-red-900" title="Reject">
-                                                    <i class="fas fa-times"></i> Reject
-                                                </button>
-                                            @endhasrole
-                                            @hasrole(['admin', 'ngo'])
-                                                <button @click="downloadTestimonial(index)" class="text-blue-600 hover:text-blue-900" title="Download">
-                                                    <i class="fas fa-download"></i> Download
-                                                </button>
-                                             @endhasrole
-                                        </div>
-                                    </template>
-                                    <template x-if="testimonial.status === 'rejected'">
-                                        <button @click="resubmitTestimonial(index)" class="text-purple-600 hover:text-purple-900">
-                                            <i class="fas fa-redo"></i> Resubmit
-                                        </button>
-                                        <!-- <p class="text-gray-400">Uncompleted</p> -->
-                                    </template>
-                                    <template x-if="testimonial.status === 'approved'">
-                                        <div class="text-gray-400">Completed</div>
-                                    </template>
-                                </td>
-                                @endhasrole
-                            </tr>
-                        </template>
-                        <template x-if="testimonials.length === 0">
-                            <tr>
-                                <td colspan="6" class="px-6 py-4 text-center text-gray-500">No testimonial requests available.</td>
-                            </tr>
-                        </template>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Request Testimonial Modal -->
-            <div x-show="showRequestModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-                <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-                    <div class="mt-3 text-center">
-                        <h3 class="text-lg leading-6 font-medium text-gray-900">Request Testimonial</h3>
-                        <div class="mt-2 px-7 py-3">
-                            <p class="text-sm text-gray-500 mb-4">
-                                Are you sure you want to request a testimonial for this project?
-                            </p>
-                            <div class="mb-4">
-                                <label for="testimonialTitle" class="block text-sm font-medium text-gray-700 text-left">Title</label>
-                                <input x-model="newTestimonial.title" type="text" id="testimonialTitle" 
-                                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" 
-                                    placeholder="Enter testimonial title">
+                                <div class="ml-3">
+                                    <p class="text-sm font-medium text-gray-900">{{ $project->holder->name ?? 'Not Assigned' }}</p>
+                                    <p class="text-sm text-indigo-600">{{ $project->holder->email ?? '' }}</p>
+                                </div>
                             </div>
-                            <div class="mb-4">
-                                <label for="files" class="block text-left text-sm font-medium text-gray-700">Application</label>
-                                <div
-                                    class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
-                                    <div class="space-y-1 text-center">
-                                        <i class="fas fa-file-upload mx-auto h-8 w-12 text-gray-400"></i>
-                                        <div class="flex text-sm text-gray-600">
-                                            <label for="files"
-                                                class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
-                                                <span>Upload file</span>
-                                                <input id="files" name="files[]" type="file" class="sr-only"
-                                                    multiple>
-                                            </label>
-                                            <p class="pl-1">or drag and drop</p>
-                                        </div>
-                                        <p class="text-xs text-gray-500">
-                                            PDF, DOC, DOCX up to 10MB each
-                                        </p>
-                                        <div id="fileList" class="mt-2 text-left"></div>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-500 mb-2">Project Runner</h4>
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 h-10 w-10 rounded-full bg-emerald-100 flex items-center justify-center">
+                                    <span class="text-emerald-600 font-medium">{{ substr($project->runner->name ?? 'N/A', 0, 2) }}</span>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-sm font-medium text-gray-900">{{ $project->runner->name ?? 'Not Assigned' }}</p>
+                                    <p class="text-sm text-emerald-600">{{ $project->runner->email ?? '' }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonials -->
+                <div class="bg-white overflow-hidden shadow rounded-lg">
+                    <div class="px-6 py-5 border-b border-gray-200 flex justify-between items-center">
+                        <h3 class="text-lg font-medium text-gray-900 flex items-center">
+                            <svg class="h-5 w-5 text-indigo-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>
+                            </svg>
+                            Testimonials
+                        </h3>
+                        @hasrole(['admin', 'ngo'])
+                        <button onclick="openRequestModal()" class="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700">
+                            <svg class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                            </svg>
+                            Request
+                        </button>
+                        @endhasrole
+                    </div>
+                    <div class="px-6 py-4">
+                        <div class="space-y-4">
+                            <!-- Sample Testimonial Items -->
+                            <div class="border-l-4 border-indigo-400 pl-4 py-2 bg-indigo-50 rounded-r">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-900">Community Impact Assessment</p>
+                                        <p class="text-xs text-gray-500">Requested on Jan 15, 2023</p>
                                     </div>
+                                    <span class="px-2 py-1 text-xs font-semibold rounded-full bg-emerald-100 text-emerald-800">Approved</span>
+                                </div>
+                                <div class="mt-2 flex justify-between items-center">
+                                    <a href="#" class="text-sm text-indigo-600 hover:text-indigo-900 flex items-center">
+                                        <svg class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                        </svg>
+                                        View
+                                    </a>
+                                    <span class="text-xs text-gray-500">2.4 MB</span>
+                                </div>
+                            </div>
+
+                            <div class="border-l-4 border-amber-400 pl-4 py-2 bg-amber-50 rounded-r">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-900">Project Completion Report</p>
+                                        <p class="text-xs text-gray-500">Requested on Dec 10, 2022</p>
+                                    </div>
+                                    <span class="px-2 py-1 text-xs font-semibold rounded-full bg-amber-100 text-amber-800">Pending</span>
+                                </div>
+                                <div class="mt-2 text-sm text-gray-500">
+                                    Waiting for approval from authority
+                                </div>
+                            </div>
+
+                            <div class="border-l-4 border-red-400 pl-4 py-2 bg-red-50 rounded-r">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-900">Initial Impact Report</p>
+                                        <p class="text-xs text-gray-500">Requested on Nov 5, 2022</p>
+                                    </div>
+                                    <span class="px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">Rejected</span>
+                                </div>
+                                <div class="mt-2 text-sm text-gray-500">
+                                    Additional documentation required
                                 </div>
                             </div>
                         </div>
-                        <div class="items-center px-4 py-3">
-                            <button @click="submitTestimonialRequest()" class="px-4 py-2 bg-purple-600 text-white text-base font-medium rounded-md shadow-sm hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-300">
-                                Submit Request
-                            </button>
-                            <button @click="showRequestModal = false" class="ml-3 px-4 py-2 bg-gray-200 text-gray-700 text-base font-medium rounded-md shadow-sm hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-300">
-                                Cancel
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Approve Testimonial Modal -->
-            <div x-show="showApproveModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-                <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-                    <div class="mt-3 text-center">
-                        <h3 class="text-lg leading-6 font-medium text-gray-900">Upload Testimonial</h3>
-                        <div class="mt-2 px-7 py-3">
-                            <p class="text-sm text-gray-500 mb-4">
-                                Please upload the testimonial document (PDF or Image) for this project.
-                            </p>
-                            <div class="mb-4">
-                                <input type="file" id="testimonialFile" @change="handleFileUpload" accept=".pdf,.jpg,.jpeg,.png" 
-                                    class="block w-full text-sm text-gray-500
-                                    file:mr-4 file:py-2 file:px-4
-                                    file:rounded-md file:border-0
-                                    file:text-sm file:font-semibold
-                                    file:bg-purple-50 file:text-purple-700
-                                    hover:file:bg-purple-100">
-                            </div>
-                        </div>
-                        <div class="items-center px-4 py-3">
-                            <button @click="approveWithFile()" class="px-4 py-2 bg-green-600 text-white text-base font-medium rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-300">
-                                Upload & Approve
-                            </button>
-                            <button @click="showApproveModal = false" class="ml-3 px-4 py-2 bg-gray-200 text-gray-700 text-base font-medium rounded-md shadow-sm hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-300">
-                                Cancel
-                            </button>
+                        <div class="mt-6 text-center">
+                            <a href="#" class="text-sm font-medium text-indigo-600 hover:text-indigo-900">
+                                View all testimonials →
+                            </a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
-        <script>
-            document.addEventListener('alpine:init', () => {
-                Alpine.data('testimonialApp', () => ({
-                    testimonials: [
-                        {
-                            id: 1,
-                            title: 'Community Development Project',
-                            status: 'pending',
-                            requestedBy: 'Green Earth NGO',
-                            date: '15 Jan 2023',
-                            fileSize: '',
-                            file: null
-                        },
-                        {
-                            id: 2,
-                            title: 'Education for All',
-                            status: 'approved',
-                            requestedBy: 'Hope Foundation',
-                            date: '10 Dec 2022',
-                            fileSize: '(2.4 MB)',
-                            file: null
-                        },
-                        {
-                            id: 3,
-                            title: 'Clean Water Initiative',
-                            status: 'rejected',
-                            requestedBy: 'Water for Life',
-                            date: '05 Nov 2022',
-                            fileSize: '',
-                            file: null
-                        }
-                    ],
-                    showRequestModal: false,
-                    showApproveModal: false,
-                    newTestimonial: {
-                        title: '',
-                        status: 'pending',
-                        requestedBy: 'Current User NGO',
-                        date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }),
-                        fileSize: '',
-                        file: null
-                    },
-                    selectedTestimonialIndex: null,
-                    testimonialFile: null,
-
-                    openRequestModal() {
-                        this.newTestimonial = {
-                            title: '',
-                            status: 'pending',
-                            requestedBy: 'Current User NGO',
-                            date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }),
-                            fileSize: '',
-                            file: null
-                        };
-                        this.showRequestModal = true;
-                    },
-
-                    openApproveModal(index) {
-                        this.selectedTestimonialIndex = index;
-                        this.testimonialFile = null;
-                        this.showApproveModal = true;
-                    },
-
-                    handleFileUpload(event) {
-                        this.testimonialFile = event.target.files[0];
-                    },
-
-                    submitTestimonialRequest() {
-                        if (!this.newTestimonial.title) {
-                            alert('Please enter a title for the testimonial request');
-                            return;
-                        }
-
-                        // In a real app, you would make an API call here
-                        this.testimonials.unshift({...this.newTestimonial});
-                        this.showRequestModal = false;
-                    },
-
-                    approveWithFile() {
-                        if (!this.testimonialFile) {
-                            alert('Please select a file to upload');
-                            return;
-                        }
-
-                        const validTypes = ['application/pdf', 'image/jpeg', 'image/png'];
-                        if (!validTypes.includes(this.testimonialFile.type)) {
-                            alert('Please upload a PDF or image file (JPEG/PNG)');
-                            return;
-                        }
-
-                        // Update the testimonial status and add file info
-                        this.testimonials[this.selectedTestimonialIndex].status = 'approved';
-                        this.testimonials[this.selectedTestimonialIndex].fileSize = `(${(this.testimonialFile.size / (1024 * 1024)).toFixed(1)} MB)`;
-                        this.testimonials[this.selectedTestimonialIndex].file = this.testimonialFile;
-
-                        this.showApproveModal = false;
-                        this.selectedTestimonialIndex = null;
-                        this.testimonialFile = null;
-                    },
-
-                    rejectTestimonial(index) {
-                        if (confirm('Are you sure you want to reject this testimonial request?')) {
-                            this.testimonials[index].status = 'rejected';
-                        }
-                    },
-
-                    resubmitTestimonial(index) {
-                        if (confirm('Resubmit this testimonial request?')) {
-                            this.testimonials[index].status = 'pending';
-                            this.testimonials[index].date = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
-                        }
-                    }
-                }));
-            });
-        </script>
     </div>
-    
+
     <!-- Upload Reports Modal -->
-    <div id="uploadReportModal" class="fixed inset-0 z-50 overflow-y-auto hidden" aria-labelledby="modal-title"
-        role="dialog" aria-modal="true">
+    <div id="uploadReportModal" class="fixed inset-0 z-50 overflow-y-auto hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
         <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
             <!-- Background overlay -->
-            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"
-                onclick="closeUploadModal()"></div>
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" onclick="closeUploadModal()"></div>
 
             <!-- Modal panel -->
-            <div
-                class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
                 <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                     <div class="sm:flex sm:items-start">
-                        <div
-                            class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 sm:mx-0 sm:h-10 sm:w-10">
-                            <i class="fas fa-file-upload text-blue-600"></i>
+                        <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-indigo-100 sm:mx-0 sm:h-10 sm:w-10">
+                            <svg class="h-6 w-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                            </svg>
                         </div>
                         <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
                             <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
@@ -566,39 +347,31 @@
                                     <input type="hidden" id="projectId" name="project_id" value="">
 
                                     <div class="mb-4">
-                                        <label for="title" class="block text-sm font-medium text-gray-700">Report
-                                            Title</label>
-                                        <input type="text" name="title" id="title"
-                                            class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                                        <label for="title" class="block text-sm font-medium text-gray-700">Report Title</label>
+                                        <input type="text" name="title" id="title" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
                                     </div>
 
                                     <div class="mb-4">
-                                        <label for="month" class="block text-sm font-medium text-gray-700">Report
-                                            Month</label>
-                                        <input type="month" name="month" id="month"
-                                            class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                                        <label for="month" class="block text-sm font-medium text-gray-700">Report Month</label>
+                                        <input type="month" name="month" id="month" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
                                     </div>
 
                                     <div class="mb-4">
-                                        <label for="description"
-                                            class="block text-sm font-medium text-gray-700">Description</label>
-                                        <textarea name="description" id="description" rows="3"
-                                            class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"></textarea>
+                                        <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+                                        <textarea name="description" id="description" rows="3" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"></textarea>
                                     </div>
 
                                     <div class="mb-4">
-                                        <label for="files" class="block text-sm font-medium text-gray-700">Report
-                                            Files</label>
-                                        <div
-                                            class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+                                        <label for="files" class="block text-sm font-medium text-gray-700">Report Files</label>
+                                        <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
                                             <div class="space-y-1 text-center">
-                                                <i class="fas fa-file-upload mx-auto h-12 w-12 text-gray-400"></i>
+                                                <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                                                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                                </svg>
                                                 <div class="flex text-sm text-gray-600">
-                                                    <label for="files"
-                                                        class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
+                                                    <label for="files" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
                                                         <span>Upload files</span>
-                                                        <input id="files" name="files[]" type="file" class="sr-only"
-                                                            multiple>
+                                                        <input id="files" name="files[]" type="file" class="sr-only" multiple>
                                                     </label>
                                                     <p class="pl-1">or drag and drop</p>
                                                 </div>
@@ -611,12 +384,80 @@
                                     </div>
 
                                     <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                                        <button type="submit" id="uploadButton"
-                                            class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
+                                        <button type="submit" id="uploadButton" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm">
                                             Upload
                                         </button>
-                                        <button type="button" onclick="closeUploadModal()"
-                                            class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                                        <button type="button" onclick="closeUploadModal()" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Request Testimonial Modal -->
+    <div id="requestTestimonialModal" class="fixed inset-0 z-50 overflow-y-auto hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <!-- Background overlay -->
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" onclick="closeRequestModal()"></div>
+
+            <!-- Modal panel -->
+            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-indigo-100 sm:mx-0 sm:h-10 sm:w-10">
+                            <svg class="h-6 w-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>
+                            </svg>
+                        </div>
+                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
+                                Request Testimonial
+                            </h3>
+                            <div class="mt-4">
+                                <form id="requestTestimonialForm">
+                                    <div class="mb-4">
+                                        <label for="testimonialTitle" class="block text-sm font-medium text-gray-700">Title</label>
+                                        <input type="text" id="testimonialTitle" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                                    </div>
+
+                                    <div class="mb-4">
+                                        <label for="testimonialDescription" class="block text-sm font-medium text-gray-700">Description</label>
+                                        <textarea id="testimonialDescription" rows="3" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"></textarea>
+                                    </div>
+
+                                    <div class="mb-4">
+                                        <label for="testimonialFiles" class="block text-sm font-medium text-gray-700">Supporting Documents</label>
+                                        <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+                                            <div class="space-y-1 text-center">
+                                                <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                                                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                                </svg>
+                                                <div class="flex text-sm text-gray-600">
+                                                    <label for="testimonialFiles" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+                                                        <span>Upload files</span>
+                                                        <input id="testimonialFiles" type="file" class="sr-only" multiple>
+                                                    </label>
+                                                    <p class="pl-1">or drag and drop</p>
+                                                </div>
+                                                <p class="text-xs text-gray-500">
+                                                    PDF, DOC, DOCX up to 10MB each
+                                                </p>
+                                                <div id="testimonialFileList" class="mt-2 text-left"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                                        <button type="button" onclick="submitTestimonialRequest()" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm">
+                                            Submit Request
+                                        </button>
+                                        <button type="button" onclick="closeRequestModal()" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
                                             Cancel
                                         </button>
                                     </div>
@@ -632,7 +473,7 @@
     <script>
     // File upload functionality
     document.addEventListener('DOMContentLoaded', function() {
-        // Initialize file input change event
+        // Initialize file input change event for reports
         const fileInput = document.getElementById('files');
         const fileList = document.getElementById('fileList');
         const uploadForm = document.getElementById('uploadReportForm');
@@ -644,7 +485,9 @@
                 const fileItem = document.createElement('div');
                 fileItem.className = 'text-sm py-1';
                 fileItem.innerHTML =
-                    `<i class="far fa-file mr-1"></i> ${file.name} (${formatFileSize(file.size)})`;
+                    `<svg class="inline h-4 w-4 mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg> ${file.name} (${formatFileSize(file.size)})`;
                 fileList.appendChild(fileItem);
             }
         });
@@ -679,6 +522,24 @@
             // Submit the form
             this.submit();
         });
+
+        // Initialize file input change event for testimonials
+        const testimonialFileInput = document.getElementById('testimonialFiles');
+        const testimonialFileList = document.getElementById('testimonialFileList');
+
+        testimonialFileInput.addEventListener('change', function() {
+            testimonialFileList.innerHTML = '';
+            for (let i = 0; i < this.files.length; i++) {
+                const file = this.files[i];
+                const fileItem = document.createElement('div');
+                fileItem.className = 'text-sm py-1';
+                fileItem.innerHTML =
+                    `<svg class="inline h-4 w-4 mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg> ${file.name} (${formatFileSize(file.size)})`;
+                testimonialFileList.appendChild(fileItem);
+            }
+        });
     });
 
     function formatFileSize(bytes) {
@@ -703,5 +564,32 @@
     function closeUploadModal() {
         document.getElementById('uploadReportModal').classList.add('hidden');
     }
+
+    function openRequestModal() {
+        // Reset form
+        document.getElementById('requestTestimonialForm').reset();
+        document.getElementById('testimonialFileList').innerHTML = '';
+
+        // Show modal
+        document.getElementById('requestTestimonialModal').classList.remove('hidden');
+    }
+
+    function closeRequestModal() {
+        document.getElementById('requestTestimonialModal').classList.add('hidden');
+    }
+
+    function submitTestimonialRequest() {
+        const title = document.getElementById('testimonialTitle').value;
+        const description = document.getElementById('testimonialDescription').value;
+        
+        if (!title) {
+            alert('Please enter a title for the testimonial request');
+            return;
+        }
+
+        // In a real app, you would make an API call here
+        alert('Testimonial request submitted successfully!');
+        closeRequestModal();
+    }
     </script>
-</x-app-layout> 
+</x-app-layout>
