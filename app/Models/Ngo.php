@@ -10,17 +10,19 @@ class Ngo extends Model
     use HasFactory;
 
     protected $fillable = [
+        'user_id',
+        'logo',
         'name',
-        'Description',
+        'description',
+        'focus_area',
         'registration_id',
-        'phone_number',
         'email',
+        'website',
         'location',
         'certificate_path',
-        'logo',
-        'website',
+        'established_year',
         'status',
-        'established_year'
+        'focus_activities',
     ];
 
     protected $casts = [

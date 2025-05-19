@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('projects', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
+            $table->string('name'); // changed from 'title' to 'name'
             $table->text('description');
             $table->string('location');
             $table->decimal('budget', 10, 2);
@@ -23,6 +23,7 @@ return new class extends Migration
             $table->date('start_date');
             $table->date('end_date');
             $table->string('status')->default('active');
+            $table->text('major_activities')->nullable();
             $table->timestamps();
         });
     }

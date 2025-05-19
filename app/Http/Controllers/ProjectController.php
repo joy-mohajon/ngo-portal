@@ -42,7 +42,7 @@ public function index(Request $request)
         ->map(function ($project) {
             return [
                 'id' => $project->id,
-                'name' => $project->title,
+                'name' => $project->name,
                 'organization' => $project->holder->name ?? 'Unknown',
                 'email' => $project->holder->email ?? '',
                 'start_date' => $project->start_date->format('Y-m-d'),
@@ -97,7 +97,7 @@ public function index(Request $request)
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'location' => 'nullable|string|max:255',
             'budget' => 'nullable|numeric|min:0',
@@ -138,7 +138,7 @@ public function index(Request $request)
     public function update(Request $request, Project $project)
     {
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'location' => 'nullable|string|max:255',
             'budget' => 'nullable|numeric|min:0',
@@ -198,7 +198,7 @@ public function index(Request $request)
     public function apiStore(Request $request)
     {
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'location' => 'nullable|string|max:255',
             'budget' => 'nullable|numeric|min:0',
@@ -225,7 +225,7 @@ public function index(Request $request)
     public function apiUpdate(Request $request, Project $project)
     {
         $validated = $request->validate([
-            'title' => 'sometimes|required|string|max:255',
+            'name' => 'sometimes|required|string|max:255',
             'description' => 'sometimes|nullable|string',
             'location' => 'sometimes|nullable|string|max:255',
             'budget' => 'sometimes|nullable|numeric|min:0',
@@ -271,7 +271,7 @@ public function index(Request $request)
             
         return response()->json([
             'success' => true,
-            'project' => $project->only(['id', 'title']),
+            'project' => $project->only(['id', 'name']),
             'data' => $trainings
         ]);
     }

@@ -13,7 +13,7 @@ class ProjectTrainingSeeder extends Seeder
         $projects = [
             // Project 1
             [
-                'title' => 'Digital Financial Inclusion',
+                'name' => 'Digital Financial Inclusion',
                 'description' => 'Promoting mobile banking services in rural communities',
                 'location' => 'Nationwide',
                 'budget' => 2500000,
@@ -37,7 +37,7 @@ class ProjectTrainingSeeder extends Seeder
             ],
             // Project 2
             [
-                'title' => 'Ultra-Poor Graduation Program',
+                'name' => 'Ultra-Poor Graduation Program',
                 'description' => 'Asset distribution and livelihood support for extreme poor households',
                 'location' => 'Rural Areas',
                 'budget' => 3800000,
@@ -61,7 +61,7 @@ class ProjectTrainingSeeder extends Seeder
             ],
             // Project 3
             [
-                'title' => 'Skills Development for Youth',
+                'name' => 'Skills Development for Youth',
                 'description' => 'Providing IT and vocational training to young adults',
                 'location' => 'Urban Areas',
                 'budget' => 3500000,
@@ -96,7 +96,7 @@ class ProjectTrainingSeeder extends Seeder
             ],
             // Project 4
             [
-                'title' => 'Ultra-Poor Graduation Initiative',
+                'name' => 'Ultra-Poor Graduation Initiative',
                 'description' => 'Comprehensive support for ultra-poor households to graduate from poverty',
                 'location' => 'Rural Areas',
                 'budget' => 5000000,
@@ -120,7 +120,7 @@ class ProjectTrainingSeeder extends Seeder
             ],
             // Project 5
             [
-                'title' => 'Floating Hospitals',
+                'name' => 'Floating Hospitals',
                 'description' => 'River-based medical services for hard-to-reach communities',
                 'location' => 'Coastal Areas',
                 'budget' => 4200000,
@@ -144,7 +144,7 @@ class ProjectTrainingSeeder extends Seeder
             ],
             // Project 6
             [
-                'title' => 'Climate Adaptation',
+                'name' => 'Climate Adaptation',
                 'description' => 'Supporting communities to adapt to climate change impacts',
                 'location' => 'Coastal Areas',
                 'budget' => 2800000,
@@ -168,7 +168,7 @@ class ProjectTrainingSeeder extends Seeder
             ],
             // Project 7
             [
-                'title' => 'Education Support',
+                'name' => 'Education Support',
                 'description' => 'Scholarships and educational support for underprivileged children',
                 'location' => 'Urban Slums',
                 'budget' => 1800000,
@@ -192,7 +192,7 @@ class ProjectTrainingSeeder extends Seeder
             ],
             // Project 8
             [
-                'title' => 'Women\'s Empowerment',
+                'name' => 'Women\'s Empowerment',
                 'description' => 'Vocational training and support for women',
                 'location' => 'Urban Areas',
                 'budget' => 2200000,
@@ -216,7 +216,7 @@ class ProjectTrainingSeeder extends Seeder
             ],
             // Project 9
             [
-                'title' => 'Education for Underprivileged Children',
+                'name' => 'Education for Underprivileged Children',
                 'description' => 'Operating primary schools in rural areas',
                 'location' => 'Rural Areas',
                 'budget' => 1900000,
@@ -240,7 +240,7 @@ class ProjectTrainingSeeder extends Seeder
             ],
             // Project 10
             [
-                'title' => 'Women\'s Empowerment',
+                'name' => 'Women\'s Empowerment',
                 'description' => 'Vocational training and support for rural women',
                 'location' => 'Rural Areas',
                 'budget' => 2100000,
@@ -284,7 +284,7 @@ class ProjectTrainingSeeder extends Seeder
             $runner = $ngos->where('id', '!=', $holder->id)->random();
 
             $project = Project::create([
-                'title' => $projectData['title'],
+                'name' => $projectData['name'],
                 'description' => $projectData['description'],
                 'location' => $projectData['location'],
                 'budget' => $projectData['budget'],

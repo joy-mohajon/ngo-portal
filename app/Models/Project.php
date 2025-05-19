@@ -12,7 +12,7 @@ class Project extends Model
     use HasFactory;
 
     protected $fillable = [
-        'title',
+        'name',
         'description',
         'location',
         'budget',
@@ -40,10 +40,10 @@ class Project extends Model
         return $this->belongsTo(Ngo::class, 'runner_id');
     }
 
-    public function trainings(): HasMany
-    {
-        return $this->hasMany(Training::class);
-    }
+    // public function trainings(): HasMany
+    // {
+    //     return $this->hasMany(Training::class);
+    // }
 
     public function reports(): HasMany
     {
