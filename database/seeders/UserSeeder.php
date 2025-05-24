@@ -50,7 +50,7 @@ class UserSeeder extends Seeder
             Authority::create([
                 'user_id' => $authorityUser->id,
                 'name' => 'Bangladesh NGO Affairs Bureau',
-                'phone_number' => '+880-2-9558343',
+                // 'phone_number' => '+880-2-9558343',
                 'email' => 'authority@example.com',
                 'address' => 'NGO Affairs Bureau, Agargaon, Dhaka-1207, Bangladesh',
             ]);
@@ -68,7 +68,7 @@ class UserSeeder extends Seeder
                 'user_id' => $ngoUser->id,
                 'name' => $ngoUser->name,
                 'registration_id' => "NGO-111111",
-                'phone_number' => '0987654321',
+                // 'phone_number' => '0987654321',
                 'email' => $ngoUser->email,
                 'location' => 'NGO Location',
             ]);
@@ -79,4 +79,4 @@ class UserSeeder extends Seeder
             throw $e;
         }
     }
-} 
+}

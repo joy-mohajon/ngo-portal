@@ -13,7 +13,8 @@ class Authority extends Model
         'name',
         'phone_number',
         'email',
-        'address'
+        'address',
+        'user_id',
     ];
 
     public function user()

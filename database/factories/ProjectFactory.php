@@ -73,8 +73,8 @@ class ProjectFactory extends Factory
             'pending'
         ];
         
-        // Bangladesh-specific project names
-        $projectNames = [
+        // Bangladesh-specific project titles
+        $projectTitles = [
             'Rural Education Enhancement Initiative',
             'Urban Health Access Program',
             'Climate Resilience in Coastal Areas',
@@ -131,11 +131,11 @@ class ProjectFactory extends Factory
             'This program helps communities respond to and recover from emergencies, providing immediate assistance and long-term support for rebuilding.'
         ];
         
-        $nameIndex = $this->faker->numberBetween(0, count($projectNames) - 1);
+        $titleIndex = $this->faker->numberBetween(0, count($projectTitles) - 1);
         
         return [
-            'name' => $projectNames[$nameIndex],
-            'description' => $projectDescriptions[$nameIndex],
+            'title' => $projectTitles[$titleIndex],
+            'description' => $projectDescriptions[$titleIndex],
             'location' => $this->faker->randomElement($locations),
             'budget' => $this->faker->randomFloat(2, 50000, 5000000),
             'focus_area' => $this->faker->randomElement($focusAreas),

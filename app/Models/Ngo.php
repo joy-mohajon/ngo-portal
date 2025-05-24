@@ -14,15 +14,15 @@ class Ngo extends Model
         'logo',
         'name',
         'description',
-        'focus_area',
         'registration_id',
         'email',
         'website',
         'location',
+        'focus_area',
+        'focus_activity',
         'certificate_path',
         'established_year',
         'status',
-        'focus_activities',
     ];
 
     protected $casts = [
@@ -34,10 +34,16 @@ class Ngo extends Model
         return $this->belongsTo(User::class);
     }
 
-     public function focusAreas()
+    public function focusAreas()
     {
         return $this->belongsToMany(FocusArea::class, 'ngo_has_focus_area');
     }
+
+    public function focalPersons()
+    {
+        return $this->belongsToMany(FocalPerson::class, 'ngo_has_focal_persons')
+                    ->withTimestamps();
+    }                                                                                                                                                                       
 
     /**
      * Get the status label for display

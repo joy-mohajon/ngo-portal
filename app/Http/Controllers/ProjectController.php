@@ -42,11 +42,14 @@ public function index(Request $request)
         ->map(function ($project) {
             return [
                 'id' => $project->id,
-                'name' => $project->name,
+                'name' => $project->title,
                 'organization' => $project->holder->name ?? 'Unknown',
+                'runner' => $project->runner->name ?? 'Unknown',
                 'email' => $project->holder->email ?? '',
-                'start_date' => $project->start_date->format('Y-m-d'),
+                'start_date' => $project->start_date->format('M Y'),
+                'end_date' => $project->end_date->format('M Y'),
                 'sector' => $project->focus_area,
+                'budget' => $project->budget,
                 'location' => $project->location,
                 'status' => $project->status,
             ];
@@ -97,7 +100,7 @@ public function index(Request $request)
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
+            'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'location' => 'nullable|string|max:255',
             'budget' => 'nullable|numeric|min:0',
@@ -117,11 +120,20 @@ public function index(Request $request)
     /**
      * Display the specified resource.
      */
-    public function show(Project $project)
-    {
-        $project->load(['holder', 'runner', 'trainings', 'reports']);
-        return view('projects.show', compact('project'));
-    }
+public function show(Project $project)
+{
+    $project->load([
+        'holder', 
+        'runner', 
+        'trainings', 
+        'reports',
+        'testimonials' => function($query) {
+            $query->with(['applicationFiles', 'testimonialFiles']);
+        }
+    ]);
+    
+    return view('projects.show', compact('project'));
+}
 
     /**
      * Show the form for editing the specified resource.
@@ -138,7 +150,7 @@ public function index(Request $request)
     public function update(Request $request, Project $project)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
+            'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'location' => 'nullable|string|max:255',
             'budget' => 'nullable|numeric|min:0',
@@ -198,7 +210,7 @@ public function index(Request $request)
     public function apiStore(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
+            'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'location' => 'nullable|string|max:255',
             'budget' => 'nullable|numeric|min:0',
@@ -225,7 +237,7 @@ public function index(Request $request)
     public function apiUpdate(Request $request, Project $project)
     {
         $validated = $request->validate([
-            'name' => 'sometimes|required|string|max:255',
+            'title' => 'sometimes|required|string|max:255',
             'description' => 'sometimes|nullable|string',
             'location' => 'sometimes|nullable|string|max:255',
             'budget' => 'sometimes|nullable|numeric|min:0',
@@ -271,7 +283,7 @@ public function index(Request $request)
             
         return response()->json([
             'success' => true,
-            'project' => $project->only(['id', 'name']),
+            'project' => $project->only(['id', 'title']),
             'data' => $trainings
         ]);
     }

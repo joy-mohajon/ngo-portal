@@ -112,7 +112,7 @@
                         <div class="p-6">
                             <div class="flex items-start justify-between">
                                 <div>
-                                    <h3 class="text-xl font-bold text-gray-800">{{ $project->name }}</h3>
+                                    <h3 class="text-xl font-bold text-gray-800">{{ $project->title }}</h3>
                                     <p class="mt-2 text-gray-600">{{ $project->description }}</p>
                                 </div>
 
@@ -167,7 +167,7 @@
                         <div class="p-6">
                         <div class="flex items-start justify-between">
                                 <div>
-                                    <h3 class="text-xl font-bold text-gray-800">{{ $project->name }}</h3>
+                                    <h3 class="text-xl font-bold text-gray-800">{{ $project->title }}</h3>
                                     <p class="mt-2 text-gray-600">{{ $project->description }}</p>
                                 </div>
 

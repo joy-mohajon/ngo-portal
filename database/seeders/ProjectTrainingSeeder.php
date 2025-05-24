@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\{Ngo, Project, Training, User};
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class ProjectTrainingSeeder extends Seeder
 {
@@ -13,7 +14,7 @@ class ProjectTrainingSeeder extends Seeder
         $projects = [
             // Project 1
             [
-                'name' => 'Digital Financial Inclusion',
+                'title' => 'Digital Financial Inclusion',
                 'description' => 'Promoting mobile banking services in rural communities',
                 'location' => 'Nationwide',
                 'budget' => 2500000,
@@ -37,14 +38,14 @@ class ProjectTrainingSeeder extends Seeder
             ],
             // Project 2
             [
-                'name' => 'Ultra-Poor Graduation Program',
+                'title' => 'Ultra-Poor Graduation Program',
                 'description' => 'Asset distribution and livelihood support for extreme poor households',
                 'location' => 'Rural Areas',
                 'budget' => 3800000,
                 'focus_area' => 'Poverty Alleviation',
                 'start_date' => Carbon::parse('2022-07-01'),
                 'end_date' => Carbon::parse('2024-06-30'),
-                'status' => 'active',
+                'status' => 'completed',
                 'trainings' => [
                     [
                         'title' => 'Small business management',
@@ -61,7 +62,7 @@ class ProjectTrainingSeeder extends Seeder
             ],
             // Project 3
             [
-                'name' => 'Skills Development for Youth',
+                'title' => 'Skills Development for Youth',
                 'description' => 'Providing IT and vocational training to young adults',
                 'location' => 'Urban Areas',
                 'budget' => 3500000,
@@ -96,14 +97,14 @@ class ProjectTrainingSeeder extends Seeder
             ],
             // Project 4
             [
-                'name' => 'Ultra-Poor Graduation Initiative',
+                'title' => 'Ultra-Poor Graduation Initiative',
                 'description' => 'Comprehensive support for ultra-poor households to graduate from poverty',
                 'location' => 'Rural Areas',
                 'budget' => 5000000,
                 'focus_area' => 'Poverty Alleviation',
                 'start_date' => Carbon::parse('2021-01-01'),
                 'end_date' => Carbon::parse('2025-12-31'),
-                'status' => 'active',
+                'status' => 'Suspended',
                 'trainings' => [
                     [
                         'title' => 'Livestock rearing techniques',
@@ -120,7 +121,7 @@ class ProjectTrainingSeeder extends Seeder
             ],
             // Project 5
             [
-                'name' => 'Floating Hospitals',
+                'title' => 'Floating Hospitals',
                 'description' => 'River-based medical services for hard-to-reach communities',
                 'location' => 'Coastal Areas',
                 'budget' => 4200000,
@@ -144,14 +145,14 @@ class ProjectTrainingSeeder extends Seeder
             ],
             // Project 6
             [
-                'name' => 'Climate Adaptation',
+                'title' => 'Climate Adaptation',
                 'description' => 'Supporting communities to adapt to climate change impacts',
                 'location' => 'Coastal Areas',
                 'budget' => 2800000,
                 'focus_area' => 'Climate Change',
                 'start_date' => Carbon::parse('2022-09-01'),
                 'end_date' => Carbon::parse('2024-08-31'),
-                'status' => 'active',
+                'status' => 'completed',
                 'trainings' => [
                     [
                         'title' => 'Disaster preparedness drills',
@@ -168,7 +169,7 @@ class ProjectTrainingSeeder extends Seeder
             ],
             // Project 7
             [
-                'name' => 'Education Support',
+                'title' => 'Education Support',
                 'description' => 'Scholarships and educational support for underprivileged children',
                 'location' => 'Urban Slums',
                 'budget' => 1800000,
@@ -192,7 +193,7 @@ class ProjectTrainingSeeder extends Seeder
             ],
             // Project 8
             [
-                'name' => 'Women\'s Empowerment',
+                'title' => 'Women\'s Empowerment',
                 'description' => 'Vocational training and support for women',
                 'location' => 'Urban Areas',
                 'budget' => 2200000,
@@ -216,7 +217,7 @@ class ProjectTrainingSeeder extends Seeder
             ],
             // Project 9
             [
-                'name' => 'Education for Underprivileged Children',
+                'title' => 'Education for Underprivileged Children',
                 'description' => 'Operating primary schools in rural areas',
                 'location' => 'Rural Areas',
                 'budget' => 1900000,
@@ -240,7 +241,7 @@ class ProjectTrainingSeeder extends Seeder
             ],
             // Project 10
             [
-                'name' => 'Women\'s Empowerment',
+                'title' => 'Women\'s Empowerment',
                 'description' => 'Vocational training and support for rural women',
                 'location' => 'Rural Areas',
                 'budget' => 2100000,
@@ -284,11 +285,12 @@ class ProjectTrainingSeeder extends Seeder
             $runner = $ngos->where('id', '!=', $holder->id)->random();
 
             $project = Project::create([
-                'name' => $projectData['name'],
+                'title' => $projectData['title'],
                 'description' => $projectData['description'],
                 'location' => $projectData['location'],
                 'budget' => $projectData['budget'],
                 'focus_area' => $projectData['focus_area'],
+                'major_activity' => $projectData['focus_area'], // or use a separate field if available
                 'holder_id' => $holder->id,
                 'runner_id' => $runner->id,
                 'start_date' => $projectData['start_date'],

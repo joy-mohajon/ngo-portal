@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('focus_areas', function (Blueprint $table) {
+        Schema::create('focal_persons', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('slug');
-            $table->text('description')->nullable();
+            $table->string('mobile');
+            $table->string('email')->unique();
+            $table->string('designation');
             $table->timestamps();
         });
     }
@@ -24,8 +25,7 @@ return new class extends Migration
      * Reverse the migrations.
      */
     public function down(): void
-    
     {
-        Schema::dropIfExists('focus_areas');
+        Schema::dropIfExists('focal_persons');
     }
 };

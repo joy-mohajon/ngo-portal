@@ -13,17 +13,17 @@ return new class extends Migration
     {
         Schema::create('projects', function (Blueprint $table) {
             $table->id();
-            $table->string('name'); // changed from 'title' to 'name'
+            $table->string('title');
             $table->text('description');
             $table->string('location');
             $table->decimal('budget', 10, 2);
             $table->string('focus_area');
+            $table->string('major_activity');
             $table->foreignId('holder_id')->constrained('ngos')->onDelete('cascade');
             $table->foreignId('runner_id')->constrained('ngos')->onDelete('cascade');
             $table->date('start_date');
             $table->date('end_date');
             $table->string('status')->default('active');
-            $table->text('major_activities')->nullable();
             $table->timestamps();
         });
     }

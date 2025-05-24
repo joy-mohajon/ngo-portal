@@ -86,7 +86,7 @@
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title
                         </th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Start
                             date</th>
@@ -110,7 +110,7 @@
                                         src="{{ $project->image_url ?? 'https://via.placeholder.com/40' }}" alt="">
                                 </div>
                                 <div class="ml-4">
-                                    <div class="text-sm font-medium text-gray-900">{{ $project->name }}</div>
+                                    <div class="text-sm font-medium text-gray-900">{{ $project->title }}</div>
                                     <div class="text-sm text-gray-500">{{ $project->holder->email ?? 'N/A' }}</div>
                                 </div>
                             </div>
@@ -147,7 +147,7 @@
                                     <i class="fas fa-chalkboard-teacher"></i>
                                 </a>
                                 @hasrole(['admin', 'ngo'])
-                                <button onclick="openUploadModal('{{ $project->id }}', '{{ $project->name }}')"
+                                <button onclick="openUploadModal('{{ $project->id }}', '{{ $project->title }}')"
                                     class="text-blue-500 hover:text-blue-700" title="Upload Reports">
                                     <i class="fas fa-file-upload"></i>
                                 </button>
@@ -221,7 +221,7 @@
                         </div>
                         <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
                             <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
-                                Upload Reports for <span id="projectName"></span>
+                                Upload Reports for <span id="projectTitle"></span>
                             </h3>
                             <div class="mt-4">
                                 <form id="uploadReportForm" method="POST" enctype="multipart/form-data">
@@ -229,9 +229,9 @@
                                     <input type="hidden" id="projectId" name="project_id" value="">
 
                                     <div class="mb-4">
-                                        <label for="name" class="block text-sm font-medium text-gray-700">Report
-                                            Name</label>
-                                        <input type="text" name="name" id="name"
+                                        <label for="title" class="block text-sm font-medium text-gray-700">Report
+                                            Title</label>
+                                        <input type="text" name="title" id="title"
                                             class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
                                     </div>
 
@@ -317,11 +317,11 @@
             e.preventDefault();
 
             // Validation
-            const name = document.getElementById('name').value;
+            const title = document.getElementById('title').value;
             const month = document.getElementById('month').value;
 
-            if (!name) {
-                alert('Please enter a report name');
+            if (!title) {
+                alert('Please enter a report title');
                 return false;
             }
 
@@ -350,10 +350,10 @@
         else return (bytes / 1048576).toFixed(1) + ' MB';
     }
 
-    function openUploadModal(projectId, projectName) {
+    function openUploadModal(projectId, projectTitle) {
         // Set project info
         document.getElementById('projectId').value = projectId;
-        document.getElementById('projectName').textContent = projectName;
+        document.getElementById('projectTitle').textContent = projectTitle;
 
         // Reset form
         document.getElementById('uploadReportForm').reset();

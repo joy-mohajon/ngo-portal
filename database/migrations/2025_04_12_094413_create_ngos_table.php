@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\FocalPerson;
 use App\Models\FocusArea;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -22,15 +23,14 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('website')->nullable();
             $table->string('location');
-            $table->text('focus_area')->nullable(); 
-             $table->text('focus_activities')->nullable(); 
+            $table->string('focus_area')->nullable();
+            $table->text('focus_activity')->nullable(); 
             $table->string('certificate_path')->nullable();
             $table->string('established_year')->nullable();
             $table->enum('status', ['pending', 'approved', 'rejected', 'suspended'])->default('pending');
             $table->timestamps();
         });
     }
-
 
     /**
      * Reverse the migrations.
