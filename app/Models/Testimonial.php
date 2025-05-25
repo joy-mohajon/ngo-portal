@@ -10,8 +10,10 @@ class Testimonial extends Model
         'project_id',
         'title',
         'description',
-        'file_path',
-        'submitted_by',
+        'testimonial_file',
+        'application_file',
+        'requested_by',
+        'date',
         'status',
     ];
 
@@ -20,8 +22,8 @@ class Testimonial extends Model
         return $this->belongsTo(Project::class);
     }
 
-    public function submitter()
+    public function requester()
     {
-        return $this->belongsTo(Ngo::class, 'submitted_by');
+        return $this->belongsTo(Ngo::class, 'requested_by');
     }
 }

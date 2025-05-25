@@ -120,20 +120,18 @@ public function index(Request $request)
     /**
      * Display the specified resource.
      */
-public function show(Project $project)
-{
-    $project->load([
-        'holder', 
-        'runner', 
-        'trainings', 
-        'reports',
-        'testimonials' => function($query) {
-            $query->with(['applicationFiles', 'testimonialFiles']);
-        }
-    ]);
-    
-    return view('projects.show', compact('project'));
-}
+    public function show(Project $project)
+    {
+        $project->load([
+            'holder', 
+            'runner', 
+            'trainings', 
+            'reports',
+            'testimonials'
+        ]);
+        
+        return view('projects.show', compact('project'));
+    }
 
     /**
      * Show the form for editing the specified resource.

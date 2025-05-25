@@ -17,8 +17,10 @@ return new class extends Migration
 
             $table->string('title');
             $table->text('description');
-            $table->string('file_path');
-            $table->foreignId('submitted_by')->constrained('ngos')->onDelete('cascade');
+            $table->string('testimonial_file')->nullable();
+            $table->string('application_file')->nullable();
+            $table->foreignId('requested_by')->constrained('ngos')->onDelete('cascade');
+            $table->date('date')->nullable();
             $table->string('status')->default('submitted');
             $table->timestamps();
 

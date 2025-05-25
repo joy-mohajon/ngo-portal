@@ -19,11 +19,12 @@ class DatabaseSeeder extends Seeder
                 UserSeeder::class,
                 FocusAreaSeeder::class,
                 NgoSeeder::class,
-                ProjectSeeder::class,
-                TrainingSeeder::class,
+                // ProjectSeeder::class,
+                // TrainingSeeder::class,
                 ProjectTrainingSeeder::class,
                 TestimonialSeeder::class,
                 ReportSeeder::class,
+                StudentSeeder::class,
             ]);
             
             Log::info('Database seeding completed successfully');

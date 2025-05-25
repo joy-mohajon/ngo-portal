@@ -6,6 +6,7 @@ use App\Http\Controllers\TrainingController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProjectTrainingController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\StudentController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -44,6 +45,8 @@ Route::middleware('auth')->group(function () {
         
     // Reports
     Route::resource('reports', ReportController::class)->except(['edit', 'update']);
+
+    Route::resource('students', StudentController::class);
 
 });
 

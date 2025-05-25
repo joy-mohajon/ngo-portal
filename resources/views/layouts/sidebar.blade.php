@@ -13,12 +13,9 @@
             <ul class="space-y-2">
                 <!-- Dashboard -->
                 <li>
-                    <a 
-                        href="{{ route('dashboard') }}"
-                        @click="activeItem = 'dashboard'"
+                    <a href="{{ route('dashboard') }}" @click="activeItem = 'dashboard'"
                         :class="activeItem === 'dashboard' ? 'bg-gray-700 text-white' : ''"
-                        class="flex items-center p-2 text-[15px] hover:bg-gray-700 rounded"
-                    >
+                        class="flex items-center p-2 text-[15px] hover:bg-gray-700 rounded">
                         <i class="fas fa-home mr-3"></i>
                         <span>Dashboard</span>
                     </a>
@@ -27,12 +24,9 @@
                 <!-- NGO Management - For authority and admin roles only -->
                 @hasrole(['admin', 'authority'])
                 <li>
-                    <a 
-                        href="{{ route('ngos.index') }}"
-                        @click="activeItem = 'ngos.index'"
+                    <a href="{{ route('ngos.index') }}" @click="activeItem = 'ngos.index'"
                         :class="activeItem === 'ngos.index' ? 'bg-gray-700 text-white' : ''"
-                        class="p-2 text-[15px] hover:bg-gray-700 rounded flex items-center gap-3"
-                    >
+                        class="p-2 text-[15px] hover:bg-gray-700 rounded flex items-center gap-3">
                         <i class="fas fa-hands-helping"></i>
                         <span>NGOs</span>
                     </a>
@@ -41,12 +35,9 @@
 
                 <!-- Projects -->
                 <li>
-                    <a 
-                        href="{{ route('projects.index') }}"
-                        @click="activeItem = 'projects.index'"
+                    <a href="{{ route('projects.index') }}" @click="activeItem = 'projects.index'"
                         :class="activeItem === 'projects.index' ? 'bg-gray-700 text-white' : ''"
-                        class="flex text-[15px] items-center p-2  hover:bg-gray-700 rounded"
-                    >
+                        class="flex text-[15px] items-center p-2  hover:bg-gray-700 rounded">
                         <i class="fas fa-chalkboard-teacher mr-3"></i>
                         <span>Projects</span>
                     </a>
@@ -78,19 +69,19 @@
                         
                     </ul>
                 </li> -->
-     
+
 
                 <!-- Projects Overview - For authority and admin roles only -->
-                <!-- @hasrole(['admin', 'authority'])
+                <!-- @hasrole(['admin', 'authority']) -->
                 <li>
-                    <a href="#" class="flex items-center p-2 hover:bg-gray-700 rounded">
-                        <i class="fas fa-project-diagram mr-3"></i>
-                        <span>Projects Overview</span>
+                    <a href="{{ route('students.index') }}" class="flex items-center p-2 hover:bg-gray-700 rounded">
+                        <i class="fas fa-user-graduate mr-3"></i>
+                        <span>Students</span>
                     </a>
                 </li>
-                @endhasrole -->
+                <!-- @endhasrole -->
 
-               
+
                 <!-- <script>
                 function goToProjects() {
                     // console.log('Navigating to projects page directly');
@@ -109,22 +100,23 @@
                         class="inline-flex items-center gap-4 text-base leading-4 font-medium rounded-md text-white transition ease-in-out duration-150">
                         <!-- Profile Image or Default Icon -->
                         @if(Auth::user()->profile_photo_path)
-                            <img class="w-8 h-8 rounded-full object-cover"
-                                src="{{ asset('storage/' . Auth::user()->profile_photo_path) }}"
-                                alt="{{ Auth::user()->name }}" />
+                        <img class="w-8 h-8 rounded-full object-cover"
+                            src="{{ asset('storage/' . Auth::user()->profile_photo_path) }}"
+                            alt="{{ Auth::user()->name }}" />
                         @else
-                            <div class="w-8 h-8 rounded-full bg-gray-500 flex items-center justify-center">
-                                <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8V21h19.2v-1.8c0-3.2-6.4-4.8-9.6-4.8z"/>
-                                </svg>
-                            </div>
+                        <div class="w-8 h-8 rounded-full bg-gray-500 flex items-center justify-center">
+                            <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8V21h19.2v-1.8c0-3.2-6.4-4.8-9.6-4.8z" />
+                            </svg>
+                        </div>
                         @endif
-                        
+
                         <div class="flex flex-col items-start gap-1 ttext-[15px]">
                             <span>{{ Auth::user()->name }}</span>
                             @php $role = Auth::user()->getRoleNames()->first(); @endphp
                             @if($role)
-                                <span class="text-xs text-gray-300">{{ ucfirst($role) }}</span>
+                            <span class="text-xs text-gray-300">{{ ucfirst($role) }}</span>
                             @endif
                         </div>
                     </button>
@@ -138,7 +130,7 @@
                     <!-- Authentication -->
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
-                        
+
                         <x-dropdown-link :href="route('logout')" onclick="event.preventDefault();
                                                     this.closest('form').submit();">
                             {{ __('Log Out') }}

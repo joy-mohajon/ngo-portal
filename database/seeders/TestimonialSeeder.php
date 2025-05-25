@@ -19,8 +19,10 @@ class TestimonialSeeder extends Seeder
                 'project_id' => $project->id,
                 'title' => 'Excellent Support',
                 'description' => 'This project made a real difference in our community. The support and training provided were invaluable. Highly recommended!',
-                'file_path' => 'testimonials/support.pdf',
-                'submitted_by' => $ngo->id,
+                'testimonial_file' => 'testimonials/support.pdf',
+                'application_file' => 'testimonials/application_support.pdf',
+                'requested_by' => $ngo->id,
+                'date' => now()->subDays(rand(1, 365))->format('Y-m-d'),
                 'status' => 'approved',
             ]);
             $ngo2 = $ngos->random();
@@ -28,8 +30,10 @@ class TestimonialSeeder extends Seeder
                 'project_id' => $project->id,
                 'title' => 'Youth Empowerment',
                 'description' => 'I am grateful for the opportunities this project created for local youth. The team was professional and caring.',
-                'file_path' => 'testimonials/youth.pdf',
-                'submitted_by' => $ngo2->id,
+                'testimonial_file' => null,
+                'application_file' => 'testimonials/application_youth.pdf',
+                'requested_by' => $ngo2->id,
+                'date' => now()->subDays(rand(1, 365))->format('Y-m-d'),
                 'status' => 'pending',
             ]);
         }
