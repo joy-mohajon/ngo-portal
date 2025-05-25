@@ -22,7 +22,7 @@
                 </li>
 
                 <!-- NGO Management - For authority and admin roles only -->
-                @hasrole(['admin', 'authority'])
+                <!-- @hasrole(['admin', 'authority'])
                 <li>
                     <a href="{{ route('ngos.index') }}" @click="activeItem = 'ngos.index'"
                         :class="activeItem === 'ngos.index' ? 'bg-gray-700 text-white' : ''"
@@ -30,6 +30,40 @@
                         <i class="fas fa-hands-helping"></i>
                         <span>NGOs</span>
                     </a>
+                </li>
+                @endhasrole -->
+
+
+                @hasrole(['admin', 'authority'])
+                <li x-data="{ open: false }" class="opcion-con-desplegable">
+                    <div @click="open = !open" @click="activeItem = 'ngos.index'"
+                        :class="activeItem === 'ngos.index' ? 'bg-gray-700 text-white' : ''"
+                        class="flex items-center justify-between p-2 hover:bg-gray-700 rounded cursor-pointer">
+                        <div class="flex items-center">
+                            <i class="fas fa-hands-helping mr-3"></i>
+                            <span>NGOs</span>
+                        </div>
+                        <i class="fas fa-chevron-down text-xs transition-transform duration-300"
+                            :class="{ 'rotate-180': open }"></i>
+                    </div>
+                    <ul x-show="open" x-transition class="desplegable ml-8 mt-2 space-y-1">
+                        <li>
+                            <a href="{{ route('ngos.index') }}" @click="activeItem = 'ngos.index'"
+                                :class="activeItem === 'ngos.index' ? 'bg-gray-700 text-white' : ''"
+                                class="p-2 hover:bg-gray-700 rounded flex items-center gap-3">
+                                <i class="fa fa-angle-right" aria-hidden="true"></i>
+                                <span>All NGOs</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="p-2 hover:bg-gray-700 rounded flex items-center gap-3">
+                                <i class="fa fa-angle-right" aria-hidden="true"></i>
+                                <span>Pending NGOs</span>
+                                <span class="ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full">5</span>
+                            </a>
+                        </li>
+
+                    </ul>
                 </li>
                 @endhasrole
 
@@ -42,34 +76,6 @@
                         <span>Projects</span>
                     </a>
                 </li>
-                <!-- <li x-data="{ open: false }" class="opcion-con-desplegable">
-                    <div @click="open = !open"
-                        class="flex items-center justify-between p-2 hover:bg-gray-700 rounded cursor-pointer">
-                        <div class="flex items-center">
-                            <i class="fas fa-hands-helping mr-3"></i>
-                            <span>NGOs</span>
-                        </div>
-                        <i class="fas fa-chevron-down text-xs transition-transform duration-300"
-                            :class="{ 'rotate-180': open }"></i>
-                    </div>
-                    <ul x-show="open" x-transition class="desplegable ml-8">
-                        <li>
-                            <a href="#" class="p-2 hover:bg-gray-700 rounded flex items-center gap-3">
-                                <i class="fa fa-angle-right" aria-hidden="true"></i>
-                                <span>All NGOs</span>
-                            </a>
-                        </li>    
-                        <li>
-                            <a href="#" class="p-2 hover:bg-gray-700 rounded flex items-center gap-3">
-                                <i class="fa fa-angle-right" aria-hidden="true"></i>
-                                <span>Pending NGOs</span>
-                                <span class="ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full">5</span>
-                            </a>
-                        </li>
-                        
-                    </ul>
-                </li> -->
-
 
                 <!-- Projects Overview - For authority and admin roles only -->
                 <!-- @hasrole(['admin', 'authority']) -->
