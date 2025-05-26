@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\FocusAreaController;
 use App\Http\Controllers\NgoController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TrainingController;
@@ -47,6 +48,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('reports', ReportController::class)->except(['edit', 'update']);
 
     Route::resource('students', StudentController::class);
+
+    Route::resource('focus-areas', FocusAreaController::class);
 
 });
 

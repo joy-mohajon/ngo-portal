@@ -3,11 +3,6 @@
         <div class="bg-white shadow-xl rounded-lg p-8 border border-gray-200 premium-form">
             <h2 class="text-3xl font-bold text-center text-indigo-700 mb-6">Create New NGO</h2>
             <form class="space-y-6">
-                <div class="flex flex-col items-center mb-4">
-                    <label for="logo" class="block text-sm font-medium text-gray-700 mb-2">NGO Logo</label>
-                    <input type="file" id="logo" name="logo"
-                        class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" />
-                </div>
                 <div>
                     <label for="name" class="block text-sm font-medium text-gray-700">NGO Name</label>
                     <input type="text" id="name" name="name"
@@ -26,20 +21,14 @@
                         class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                         placeholder="Contact email" value="{{ old('email', $userEmail ?? '') }}" />
                 </div>
-                <div>
-                    <label for="website" class="block text-sm font-medium text-gray-700">Website</label>
-                    <input type="url" id="website" name="website"
-                        class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                        placeholder="https://example.org" />
-                </div>
-                <div>
-                    <label for="location" class="block text-sm font-medium text-gray-700">Location</label>
-                    <input type="text" id="location" name="location"
-                        class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                        placeholder="City, Country" />
-                </div>
                 <div class="border-radius-lg">
-                    <label for="focus_areas" class="block text-sm font-medium text-gray-700 mb-2">Focus Areas</label>
+                    <div class="flex items-center justify-between mb-2">
+                        <label for="focus_areas" class="block text-sm font-medium text-gray-700 mb-2">Focus
+                            Areas</label>
+                        <a href="{{ route('focus-areas.create') }}"
+                            class="px-4 py-2 text-white bg-indigo-600 rounded-lg shadow transition text-sm font-semibold">+
+                            Add Focus Area</a>
+                    </div>
                     <select id="focus_areas" name="focus_areas[]" multiple data-hs-select='{
                           "hasSearch": true,
                           "searchPlaceholder": "Search focus areas...",
@@ -58,6 +47,24 @@
                         @endforeach
                     </select>
                 </div>
+                <div class="flex flex-col items-start mb-4">
+                    <label for="logo" class="block text-sm font-medium text-gray-700 mb-2">NGO Logo</label>
+                    <input type="file" id="logo" name="logo"
+                        class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" />
+                </div>
+                <div>
+                    <label for="website" class="block text-sm font-medium text-gray-700">Website</label>
+                    <input type="url" id="website" name="website"
+                        class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                        placeholder="https://example.org" />
+                </div>
+                <div>
+                    <label for="location" class="block text-sm font-medium text-gray-700">Location</label>
+                    <input type="text" id="location" name="location"
+                        class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                        placeholder="City, Country" />
+                </div>
+
                 <!-- <div>
                     <label for="focus_area" class="block text-sm font-medium text-gray-700">Focus Area</label>
                     <input type="text" id="focus_area" name="focus_area"
@@ -133,8 +140,9 @@
     <script>
     document.addEventListener('DOMContentLoaded', function() {
         const element = document.getElementById('focus_areas');
+        let choicesInstance = null;
         if (element) {
-            new Choices(element, {
+            choicesInstance = new Choices(element, {
                 removeItemButton: true,
                 placeholder: true,
                 placeholderValue: 'Select focus areas...',
