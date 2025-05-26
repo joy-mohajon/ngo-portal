@@ -1,3 +1,28 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Custom pagination styling to match the design */
+.pagination {
+    @apply flex items-center justify-between;
+}
+
+.pagination .page-item {
+    @apply inline-flex;
+}
+
+.pagination .page-link {
+    @apply px-3 py-1 rounded-md text-sm font-medium;
+}
+
+.pagination .page-item.active .page-link {
+    @apply bg-indigo-600 text-white;
+}
+
+.pagination .page-item:not(.active) .page-link {
+    @apply text-gray-700 hover:bg-gray-100;
+}
+
+.pagination .page-item.disabled .page-link {
+    @apply text-gray-400 cursor-not-allowed;
+}

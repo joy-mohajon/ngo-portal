@@ -26,12 +26,23 @@ Route::middleware('auth')->group(function () {
     // Trainings resource
     // Route::resource('projects.trainings', TrainingController::class);
     
-    // Projects resource
-    Route::resource('ngos', NgoController::class);
+    // ngo resource
+    Route::prefix('ngos')->group(function () {
+        // Resourceful routes
+        Route::get('/', [NgoController::class, 'index'])->name('ngos.index');
+        Route::get('/create', [NgoController::class, 'create'])->name('ngos.create');
+        Route::post('/store', [NgoController::class, 'store'])->name('ngos.store');
+        Route::post('/show', [NgoController::class, 'show'])->name('ngos.show');
+        // ... other resource routes as needed
+        
+        // Approval routes
+        Route::get('/pending', [NgoController::class, 'pending'])->name('ngos.pending');
+        Route::post('/{ngo}/approve', [NgoController::class, 'approve'])->name('ngos.approve');
+        Route::post('/{ngo}/reject', [NgoController::class, 'reject'])->name('ngos.reject');
+    });
 
     // Projects resource
     Route::resource('projects', ProjectController::class);
-    
 
     // Complete nested resource route with all actions
     Route::resource('projects.trainings', ProjectTrainingController::class)

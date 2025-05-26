@@ -2,12 +2,16 @@
     <div class="container mx-auto max-w-2xl py-10">
         <div class="bg-white shadow-xl rounded-lg p-8 border border-gray-200 premium-form">
             <h2 class="text-3xl font-bold text-center text-indigo-700 mb-6">Create New NGO</h2>
-            <form class="space-y-6">
+            <form method="POST" action="{{ route('ngos.store') }}" enctype="multipart/form-data" class="space-y-6">
+                @csrf
                 <div>
                     <label for="name" class="block text-sm font-medium text-gray-700">NGO Name</label>
                     <input type="text" id="name" name="name"
                         class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                        placeholder="Enter NGO name" value="{{ old('name', $userName ?? '') }}" />
+                        placeholder="Enter NGO name" value="{{ old('name', $userName ?? '') }}" required />
+                    @error('name')
+                    <div class="text-red-600 text-sm mt-1">{{ $message }}</div>
+                    @enderror
                 </div>
                 <!-- <div>
                     <label for="registration_id" class="block text-sm font-medium text-gray-700">Registration ID</label>
@@ -19,7 +23,10 @@
                     <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
                     <input type="email" id="email" name="email"
                         class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                        placeholder="Contact email" value="{{ old('email', $userEmail ?? '') }}" />
+                        placeholder="Contact email" value="{{ old('email', $userEmail ?? '') }}" required />
+                    @error('email')
+                    <div class="text-red-600 text-sm mt-1">{{ $message }}</div>
+                    @enderror
                 </div>
                 <div class="border-radius-lg">
                     <div class="flex items-center justify-between mb-2">
@@ -46,23 +53,47 @@
                         <option value="{{ $focusArea->id }}">{{ $focusArea->name }}</option>
                         @endforeach
                     </select>
+                    @error('focus_areas')
+                    <div class="text-red-600 text-sm mt-1">{{ $message }}</div>
+                    @enderror
                 </div>
-                <div class="flex flex-col items-start mb-4">
-                    <label for="logo" class="block text-sm font-medium text-gray-700 mb-2">NGO Logo</label>
-                    <input type="file" id="logo" name="logo"
-                        class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" />
+                <div class="flex flex-row items-center justify-between mb-4 gap-4">
+                    <div class="w-1/2 flex flex-col items-start">
+                        <label for="short_name" class="block text-sm font-medium text-gray-700">Short Name</label>
+                        <input type="text" id="short_name" name="short_name"
+                            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                            placeholder="Enter short name" required value="{{ old('short_name') }}" />
+                        @error('short_name')
+                        <div class="text-red-600 text-sm mt-1">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="w-1/2 flex flex-col items-start">
+                        <label for="logo" class="block text-sm font-medium text-gray-700 mb-2">NGO Logo</label>
+                        <input type="file" id="logo" name="logo"
+                            class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" />
+                        @error('logo')
+                        <div class="text-red-600 text-sm mt-1">{{ $message }}</div>
+                        @enderror
+                    </div>
                 </div>
+
                 <div>
                     <label for="website" class="block text-sm font-medium text-gray-700">Website</label>
                     <input type="url" id="website" name="website"
                         class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                        placeholder="https://example.org" />
+                        placeholder="https://example.org" value="{{ old('website') }}" />
+                    @error('website')
+                    <div class="text-red-600 text-sm mt-1">{{ $message }}</div>
+                    @enderror
                 </div>
                 <div>
                     <label for="location" class="block text-sm font-medium text-gray-700">Location</label>
                     <input type="text" id="location" name="location"
                         class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                        placeholder="City, Country" />
+                        placeholder="City, Country" value="{{ old('location') }}" required />
+                    @error('location')
+                    <div class="text-red-600 text-sm mt-1">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <!-- <div>
@@ -71,24 +102,47 @@
                         class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                         placeholder="e.g. Education, Health" />
                 </div> -->
-                <div>
-                    <label for="focus_activity" class="block text-sm font-medium text-gray-700">Focus Activity</label>
-                    <textarea id="focus_activity" name="focus_activity" rows="2"
-                        class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                        placeholder="Describe main activities"></textarea>
+                <!-- Focus Activity Dynamic Input -->
+                <div id="focus-activities-section" class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Focus Activities</label>
+                    <div id="focus-activities-list">
+                        <div class="flex items-center mb-2 activity-field">
+                            <input type="text" name="focus_activities[]"
+                                class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                placeholder="Enter activity" />
+                            <button type="button"
+                                class="ml-2 px-2 py-1 rounded-full bg-indigo-600 text-white flex items-center justify-center add-activity-btn"
+                                title="Add Activities">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 4v16m8-8H4" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    @error('focus_activities')
+                    <div class="text-red-600 text-sm mt-1">{{ $message }}</div>
+                    @enderror
                 </div>
                 <div>
                     <label for="certificate_path" class="block text-sm font-medium text-gray-700">Registration
                         Certificate</label>
                     <input type="file" id="certificate_path" name="certificate_path"
                         class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" />
+                    @error('certificate_path')
+                    <div class="text-red-600 text-sm mt-1">{{ $message }}</div>
+                    @enderror
                 </div>
                 <div>
                     <label for="established_year" class="block text-sm font-medium text-gray-700">Established
                         Year</label>
                     <input type="text" id="established_year" name="established_year"
                         class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                        placeholder="YYYY" />
+                        placeholder="YYYY" value="{{ old('established_year') }}" required />
+                    @error('established_year')
+                    <div class="text-red-600 text-sm mt-1">{{ $message }}</div>
+                    @enderror
                 </div>
                 <!-- <div>
                     <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
@@ -104,10 +158,13 @@
                     <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
                     <textarea id="description" name="description" rows="3"
                         class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                        placeholder="Brief description of the NGO"></textarea>
+                        placeholder="Brief description of the NGO">{{ old('description') }}</textarea>
+                    @error('description')
+                    <div class="text-red-600 text-sm mt-1">{{ $message }}</div>
+                    @enderror
                 </div>
                 <div class="pt-4">
-                    <button type="button"
+                    <button type="submit"
                         class="w-full py-3 px-6 rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold text-lg shadow-lg hover:from-indigo-700 hover:to-purple-700 transition">Create
                         NGO</button>
                 </div>
@@ -150,6 +207,25 @@
                 shouldSort: false,
             });
         }
+        // Dynamic Focus Activities
+        const activitiesList = document.getElementById('focus-activities-list');
+        activitiesList.addEventListener('click', function(e) {
+            if (e.target.closest('.add-activity-btn')) {
+                e.preventDefault();
+                const newField = document.createElement('div');
+                newField.className = 'flex items-center mb-2 activity-field';
+                newField.innerHTML = `
+                    <input type="text" name="focus_activities[]" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="Enter activity" />
+                    <button type="button" class="ml-2 px-2 py-1 rounded-full bg-red-500 text-white flex items-center justify-center remove-activity-btn" title="Remove Activity">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+                `;
+                activitiesList.appendChild(newField);
+            } else if (e.target.closest('.remove-activity-btn')) {
+                e.preventDefault();
+                e.target.closest('.activity-field').remove();
+            }
+        });
     });
     </script>
 </x-app-layout>

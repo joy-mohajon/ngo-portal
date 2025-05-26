@@ -56,7 +56,8 @@
                             </a>
                         </li>
                         <li>
-                            <a href="#" class="p-2 hover:bg-gray-700 rounded flex items-center gap-3">
+                            <a href="{{ route('ngos.pending') }}"
+                                class="p-2 hover:bg-gray-700 rounded flex items-center gap-3">
                                 <i class="fa fa-angle-right" aria-hidden="true"></i>
                                 <span>Pending NGOs</span>
                                 <span class="ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full">5</span>
@@ -94,13 +95,16 @@
                     </a>
                 </li>
                 @endhasrole
+
                 @hasrole(['admin', 'ngo'])
+                @if(auth()->user()->hasRole('ngo') && auth()->user()->ngo->status !== 'approved')
                 <li>
                     <a href="{{ route('ngos.create') }}" class="flex items-center p-2 hover:bg-gray-700 rounded">
                         <i class="fas fa-user-check mr-3"></i>
                         <span>Get Approval</span>
                     </a>
                 </li>
+                @endif
                 @endhasrole
 
                 <!-- <script>

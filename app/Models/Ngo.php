@@ -13,13 +13,14 @@ class Ngo extends Model
         'user_id',
         'logo',
         'name',
+        'short_name',
         'description',
         'registration_id',
         'email',
         'website',
         'location',
         'focus_area',
-        'focus_activity',
+        'focus_activities',
         'certificate_path',
         'established_year',
         'status',
@@ -27,6 +28,7 @@ class Ngo extends Model
 
     protected $casts = [
         'status' => 'string',
+        'focus_activities' => 'array',
     ];
 
     public function user()
