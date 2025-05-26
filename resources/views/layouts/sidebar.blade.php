@@ -86,7 +86,22 @@
                     </a>
                 </li>
                 <!-- @endhasrole -->
-
+                @hasrole(['admin', 'ngo'])
+                <li>
+                    <a href="{{ route('students.index') }}" class="flex items-center p-2 hover:bg-gray-700 rounded">
+                        <i class="fas fa-user-graduate mr-3"></i>
+                        <span>Students</span>
+                    </a>
+                </li>
+                @endhasrole
+                @hasrole(['admin', 'ngo'])
+                <li>
+                    <a href="{{ route('ngos.create') }}" class="flex items-center p-2 hover:bg-gray-700 rounded">
+                        <i class="fas fa-user-check mr-3"></i>
+                        <span>Get Approval</span>
+                    </a>
+                </li>
+                @endhasrole
 
                 <!-- <script>
                 function goToProjects() {

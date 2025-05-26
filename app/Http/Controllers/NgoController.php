@@ -42,7 +42,12 @@ class NgoController extends Controller
      */
     public function create()
     {
-        //
+        // Pass the logged-in user's name and email to the view
+        $user = request()->user();
+        return view('ngos.create', [
+            'userName' => $user ? $user->name : '',
+            'userEmail' => $user ? $user->email : '',
+        ]);
     }
 
     /**
@@ -50,7 +55,20 @@ class NgoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // For static UI demo, skip validation and storage logic
+        // If you want to enable actual storage, uncomment and adjust below:
+        /*
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'registration_id' => 'required|string|max:255|unique:ngos',
+            'email' => 'required|email|unique:ngos',
+            'location' => 'required|string|max:255',
+            'status' => 'required|in:pending,approved,rejected,suspended',
+            // Add other fields and file validation as needed
+        ]);
+        // Handle file uploads and create NGO...
+        */
+        return redirect()->route('ngos.index')->with('success', 'NGO created (demo mode, not saved).');
     }
 
     /**
