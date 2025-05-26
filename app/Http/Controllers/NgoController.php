@@ -44,9 +44,11 @@ class NgoController extends Controller
     {
         // Pass the logged-in user's name and email to the view
         $user = request()->user();
+        $focusAreas = \App\Models\FocusArea::orderBy('name')->get();
         return view('ngos.create', [
             'userName' => $user ? $user->name : '',
             'userEmail' => $user ? $user->email : '',
+            'focusAreas' => $focusAreas,
         ]);
     }
 

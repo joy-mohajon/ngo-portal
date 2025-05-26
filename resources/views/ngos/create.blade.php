@@ -38,12 +38,32 @@
                         class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                         placeholder="City, Country" />
                 </div>
-                <div>
+                <div class="border-radius-lg">
+                    <label for="focus_areas" class="block text-sm font-medium text-gray-700 mb-2">Focus Areas</label>
+                    <select id="focus_areas" name="focus_areas[]" multiple data-hs-select='{
+                          "hasSearch": true,
+                          "searchPlaceholder": "Search focus areas...",
+                          "placeholder": "Select focus areas...",
+                          "mode": "tags",
+                          "wrapperClasses": "relative ps-0.5 pe-9 min-h-11.5 flex items-center flex-wrap w-full border border-indigo-200 rounded-xl text-start text-sm focus:border-indigo-500 focus:ring-indigo-500",
+                          "tagsItemTemplate": "<div class=\"flex flex-nowrap items-center text-nowrap relative z-10 bg-white border border-indigo-200 rounded-full p-1 m-1\"><div class=\"whitespace-nowrap text-indigo-800 font-semibold\" data-title></div><div class=\"inline-flex shrink-0 justify-center items-center size-5 ms-2 rounded-full text-indigo-800 bg-indigo-200 hover:bg-indigo-300 focus:outline-hidden focus:ring-2 focus:ring-indigo-400 text-sm cursor-pointer\" data-remove><svg class=\"shrink-0 size-3\" xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M18 6 6 18\"/><path d=\"m6 6 12 12\"/></svg></div></div>",
+                          "tagsInputClasses": "py-3 px-2 rounded-lg order-1 border-transparent focus:ring-0 text-sm outline-hidden",
+                          "dropdownClasses": "mt-2 z-50 w-full max-h-72 pb-1 px-1 space-y-0.5 bg-white border border-indigo-200 rounded-lg overflow-hidden overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-indigo-100 [&::-webkit-scrollbar-thumb]:bg-indigo-300",
+                          "optionClasses": "py-2 px-4 w-full text-sm text-indigo-800 cursor-pointer hover:bg-indigo-100 rounded-lg focus:outline-hidden focus:bg-indigo-100",
+                          "optionTemplate": "<div class=\"flex items-center\"><div><div class=\"text-sm font-semibold text-indigo-800\" data-title></div></div><div class=\"ms-auto\"><span class=\"hidden hs-selected:block\"><svg class=\"shrink-0 size-4 text-indigo-600\" xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" fill=\"currentColor\" viewBox=\"0 0 16 16\"><path d=\"M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z"/></svg></span></div></div>",
+                          "extraMarkup": "<div class=\"absolute top-1/2 end-3 -translate-y-1/2\"><svg class=\"shrink-0 size-3.5 text-indigo-500\" xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"m7 15 5 5 5-5\"/><path d=\"m7 9 5-5 5 5\"/></svg></div>"
+                        }' class="">
+                        @foreach($focusAreas as $focusArea)
+                        <option value="{{ $focusArea->id }}">{{ $focusArea->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <!-- <div>
                     <label for="focus_area" class="block text-sm font-medium text-gray-700">Focus Area</label>
                     <input type="text" id="focus_area" name="focus_area"
                         class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                         placeholder="e.g. Education, Health" />
-                </div>
+                </div> -->
                 <div>
                     <label for="focus_activity" class="block text-sm font-medium text-gray-700">Focus Activity</label>
                     <textarea id="focus_activity" name="focus_activity" rows="2"
@@ -94,5 +114,34 @@
         box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
         border: 1px solid #e0e7ff;
     }
+
+    .premium-multiselect {
+        background: linear-gradient(135deg, #e0e7ff 0%, #f8fafc 100%);
+        border: 1.5px solid #a5b4fc;
+        min-height: 3.2rem;
+        box-shadow: 0 2px 8px 0 rgba(99, 102, 241, 0.08);
+        transition: border 0.2s, box-shadow 0.2s;
+    }
+
+    .premium-multiselect:focus {
+        border-color: #6366f1;
+        box-shadow: 0 0 0 2px #6366f1;
+    }
     </style>
+
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const element = document.getElementById('focus_areas');
+        if (element) {
+            new Choices(element, {
+                removeItemButton: true,
+                placeholder: true,
+                placeholderValue: 'Select focus areas...',
+                searchPlaceholderValue: 'Search focus areas...',
+                shouldSort: false,
+            });
+        }
+    });
+    </script>
 </x-app-layout>
