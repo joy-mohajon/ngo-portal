@@ -28,24 +28,15 @@ Route::middleware('auth')->group(function () {
     // Route::resource('projects.trainings', TrainingController::class);
     
     // ngo resource
-    Route::prefix('ngos')->group(function () {
-        // Resourceful routes
-        Route::get('/', [NgoController::class, 'index'])->name('ngos.index');
-        Route::get('/create', [NgoController::class, 'create'])->name('ngos.create');
-        Route::post('/', [NgoController::class, 'store'])->name('ngos.store'); // Changed to POST /
-        Route::get('/{ngo}', [NgoController::class, 'show'])->name('ngos.show'); // Added {ngo} param
-        Route::get('/{ngo}/edit', [NgoController::class, 'edit'])->name('ngos.edit'); // Typically included
-        Route::put('/{ngo}', [NgoController::class, 'update'])->name('ngos.update'); // Typically included
-        Route::delete('/{ngo}', [NgoController::class, 'destroy'])->name('ngos.destroy'); // Typically included
-            
-        // Approval routes
-        Route::get('/pending', [NgoController::class, 'pending'])->name('ngos.pending');
-        Route::post('/{ngo}/approve', [NgoController::class, 'approve'])->name('ngos.approve');
-        Route::post('/{ngo}/reject', [NgoController::class, 'reject'])->name('ngos.reject');
-    });
+    // Approval routes
+    Route::get('/pending', [NgoController::class, 'pending'])->name('ngos.pending');
+    Route::post('/{ngo}/approve', [NgoController::class, 'approve'])->name('ngos.approve');
+    Route::post('/{ngo}/reject', [NgoController::class, 'reject'])->name('ngos.reject');
+
+    Route::resource('ngos', NgoController::class);
+
 
     // Project resource
-    // Allow only ngo and admin to access holder/runner project views
 //    Route::middleware(['auth', 'role:ngo|admin'])->group(function () {
     Route::get('projects/holder', [App\Http\Controllers\ProjectController::class, 'holderProjects'])->name('projects.holder');
     Route::get('projects/runner', [App\Http\Controllers\ProjectController::class, 'runnerProjects'])->name('projects.runner');

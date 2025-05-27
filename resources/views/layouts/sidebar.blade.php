@@ -57,7 +57,7 @@
                         </li>
                         <li>
                             <a href="{{ route('ngos.pending') }}" @click="activeItem = 'ngos.pending'"
-                                :class="activeItem === 'ngos.index' ? 'bg-gray-700 text-white' : ''"
+                                :class="activeItem === 'ngos.pending' ? 'bg-gray-700 text-white' : ''"
                                 class="p-2 hover:bg-gray-700 rounded flex items-center gap-3">
                                 <i class="fa fa-angle-right" aria-hidden="true"></i>
                                 <span>Pending NGOs</span>
