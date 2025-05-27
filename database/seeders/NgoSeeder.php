@@ -27,6 +27,7 @@ class NgoSeeder extends Seeder
                 'email' => 'contact@asa.org.bd',
                 'website' => 'asa.org.bd',
                 'focus_areas' => ['Financial Inclusion'],
+                'focus_activities' => ['Microloans', 'Savings Groups', 'Financial Literacy Training'],
                 'status' => 'approved',
                 'logo' => 'logos/asa.png',
                 'description' => 'ASA is a microfinance institution and NGO in Bangladesh that provides financial services to low-income populations, particularly women, to promote self-employment and poverty alleviation. Founded in 1978, it has become one of the largest MFIs in the world.',
@@ -39,6 +40,7 @@ class NgoSeeder extends Seeder
                 'email' => 'info@brac.net',
                 'website' => 'brac.net',
                 'focus_areas' => ['Education', 'Healthcare', 'Financial Inclusion'],
+                'focus_activities' => ['Primary Schools', 'Health Clinics', 'Women Empowerment Workshops'],
                 'status' => 'approved',
                 'logo' => 'logos/brac.png',
                 'description' => 'BRAC is the largest non-governmental development organization in the world, established in 1972. It works across multiple sectors including education, healthcare, microfinance, and social enterprise development to empower people and communities in poverty.',
@@ -51,6 +53,7 @@ class NgoSeeder extends Seeder
                 'email' => 'info@friendship.ngo',
                 'website' => 'friendship.ngo',
                 'focus_areas' => ['Healthcare', 'Disaster Relief'],
+                'focus_activities' => ['Floating Hospitals', 'Emergency Response', 'Community Health Workers'],
                 'status' => 'approved',
                 'logo' => 'logos/friendship.png',
                 'description' => 'Friendship NGO focuses on providing healthcare services to remote and hard-to-reach communities in Bangladesh, particularly in riverine and coastal areas. Founded in 2002, it operates floating hospitals and community clinics to serve marginalized populations.',
@@ -63,6 +66,7 @@ class NgoSeeder extends Seeder
                 'email' => 'info@shelter.org.bd',
                 'website' => 'shelter.org.bd',
                 'focus_areas' => ['Education', 'Community Development'],
+                'focus_activities' => ['School Construction', 'Scholarships', 'Community Centers'],
                 'status' => 'approved',
                 'logo' => 'logos/shelter.png',
                 'description' => 'Shelter is an NGO dedicated to improving access to quality education for underprivileged children in Bangladesh. Since 1983, it has established schools, provided scholarships, and developed innovative education programs for disadvantaged communities.',
@@ -75,6 +79,7 @@ class NgoSeeder extends Seeder
                 'email' => 'info@skus-bd.org',
                 'website' => 'skus-bd.org',
                 'focus_areas' => ['Community Development', 'Agriculture'],
+                'focus_activities' => ['Farmer Training', 'Women Empowerment', 'Disaster Preparedness'],
                 'status' => 'approved',
                 'logo' => 'logos/skus.png',
                 'description' => 'SKUS (Sushilan Kallyan Sangstha) is a community development organization working since 1985 to empower rural communities in Bangladesh through programs in agriculture, women\'s empowerment, disaster preparedness, and sustainable livelihoods.',
@@ -101,6 +106,7 @@ class NgoSeeder extends Seeder
                 'logo' => $ngoData['logo'],
                 'status' => $ngoData['status'],
                 'established_year' => substr($ngoData['registration_id'], -4),
+                'focus_activities' => $ngoData['focus_activities'],
             ]);
 
             // Attach focus areas

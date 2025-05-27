@@ -107,25 +107,34 @@ class NgoController extends Controller
      */
     public function show(Ngo $ngo)
     {
-        $projectsRunner = Project::where('runner_id', $ngo->id)
-            ->with([
-                'holder:id,name,logo',
-                'trainings' => fn($q) => $q->latest()->limit(5),
-                'reports' => fn($q) => $q->latest()->limit(3)
-            ])
-            ->latest()->get();
-            // ->paginate(10);
+        $allProjects = \App\Models\Project::where(function($q) use ($ngo) {
+            $q->where('holder_id', $ngo->id)
+              ->orWhere('runner_id', $ngo->id);
+        })
+        ->with([
+            'holder:id,name,logo',
+            'runner:id,name,logo',
+            'trainings' => fn($q) => $q->latest()->limit(5),
+            'reports' => fn($q) => $q->latest()->limit(3)
+        ])
+        ->latest()->get();
 
-        $projectsHolder = Project::where('holder_id', $ngo->id)
-            ->with([
-                'runner:id,name,logo',
-                'trainings' => fn($q) => $q->latest()->limit(5),
-                'reports' => fn($q) => $q->latest()->limit(3)
-            ])
-            ->latest()->get();
-            // ->paginate(10);
+        // Run & Funded By (both)
+        $projectsBoth = $allProjects->filter(function($project) use ($ngo) {
+            return $project->holder_id == $ngo->id && $project->runner_id == $ngo->id;
+        });
 
-        return view('ngos.show', compact('ngo', 'projectsRunner', 'projectsHolder'));
+        // Run By (runner only, not both)
+        $projectsRunner = $allProjects->filter(function($project) use ($ngo) {
+            return $project->runner_id == $ngo->id && $project->holder_id != $ngo->id;
+        });
+
+        // Funded By (holder only, not both)
+        $projectsHolder = $allProjects->filter(function($project) use ($ngo) {
+            return $project->holder_id == $ngo->id && $project->runner_id != $ngo->id;
+        });
+
+        return view('ngos.show', compact('ngo', 'projectsRunner', 'projectsHolder', 'projectsBoth'));
     }
 
     /**

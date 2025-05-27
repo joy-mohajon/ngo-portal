@@ -88,7 +88,7 @@
                         <h2 class="text-2xl font-bold mb-4">Section {{ $letter }}</h2>
                         <div class="flex flex-1 flex-wrap justify-start items-center gap-6">
                             @foreach($ngos as $ngo)
-                            @include('ngos.partials.card', ['ngo' => $ngo])
+                            @include('ngos.partials.n_card', ['ngo' => $ngo])
                             @endforeach
                         </div>
                     </div>
@@ -102,7 +102,7 @@
                     <h2 class="text-2xl font-bold mb-6">{{ $focusArea->name }}</h2>
                     <div class="flex flex-1 flex-wrap justify-start items-center gap-6">
                         @foreach($focusArea->ngos as $ngo)
-                        @include('ngos.partials.card', ['ngo' => $ngo])
+                        @include('ngos.partials.n_card', ['ngo' => $ngo])
                         @endforeach
                     </div>
                 </div>

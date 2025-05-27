@@ -1,5 +1,9 @@
 <x-app-layout>
     <div class="bg-white rounded-lg shadow overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+            <h2 class="text-2xl font-semibold text-gray-800">Pending NGOs</h2>
+
+        </div>
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
