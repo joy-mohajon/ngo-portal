@@ -8,6 +8,7 @@ use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProjectTrainingController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\TestimonialController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -61,6 +62,11 @@ Route::middleware('auth')->group(function () {
     Route::resource('students', StudentController::class);
 
     Route::resource('focus-areas', FocusAreaController::class);
+
+    Route::post('projects/{project}/testimonials', [TestimonialController::class, 'store'])->name('projects.testimonials.store');
+    Route::post('testimonials/{testimonial}/approve', [TestimonialController::class, 'approve'])->name('testimonials.approve');
+    Route::post('testimonials/{testimonial}/reject', [TestimonialController::class, 'reject'])->name('testimonials.reject');
+    Route::get('testimonials/{testimonial}/download-application', [TestimonialController::class, 'downloadApplication'])->name('testimonials.download-application');
 
 });
 

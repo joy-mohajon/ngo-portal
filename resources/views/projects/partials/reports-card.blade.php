@@ -158,6 +158,7 @@
                                         Title</label>
                                     <input type="text" name="title" id="title"
                                         class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                                    <span id="uploadReportTitleError" class="text-xs text-red-600"></span>
                                 </div>
 
                                 <div class="mb-4">
@@ -165,6 +166,7 @@
                                         Month</label>
                                     <input type="month" placeholder="1999-06" name="month" id="month"
                                         class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                                    <span id="uploadReportMonthError" class="text-xs text-red-600"></span>
                                 </div>
 
                                 <div class="mb-4">
@@ -195,6 +197,7 @@
                                                 </label>
                                                 <p class="pl-1">or drag and drop</p>
                                             </div>
+                                            <span id="uploadReportFilesError" class="text-xs text-red-600"></span>
                                             <p class="text-xs text-gray-500">
                                                 PDF, DOC, DOCX, XLS, XLSX up to 10MB each
                                             </p>
@@ -285,11 +288,63 @@ function openUploadModal(projectId, projectTitle) {
     document.getElementById('fileList').innerHTML = '';
     document.getElementById('uploadReportForm').action = `/projects/${projectId}/upload-reports`;
     document.getElementById('uploadReportModal').classList.remove('hidden');
+    // Clear previous errors
+    clearUploadReportErrors();
 }
 
 function closeUploadModal() {
     document.getElementById('uploadReportModal').classList.add('hidden');
 }
+
+function clearUploadReportErrors() {
+    document.getElementById('uploadReportTitleError').textContent = '';
+    document.getElementById('uploadReportMonthError').textContent = '';
+    document.getElementById('uploadReportFilesError').textContent = '';
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const uploadForm = document.getElementById('uploadReportForm');
+    if (uploadForm) {
+        uploadForm.addEventListener('submit', function(e) {
+            clearUploadReportErrors();
+            let valid = true;
+            const title = document.getElementById('title').value.trim();
+            const month = document.getElementById('month').value.trim();
+            const files = document.getElementById('files').files;
+            if (!title) {
+                document.getElementById('uploadReportTitleError').textContent = 'Title is required.';
+                valid = false;
+            }
+            if (!month) {
+                document.getElementById('uploadReportMonthError').textContent = 'Month is required.';
+                valid = false;
+            }
+            if (!files || files.length === 0) {
+                document.getElementById('uploadReportFilesError').textContent =
+                    'At least one file is required.';
+                valid = false;
+            }
+            if (!valid) {
+                e.preventDefault();
+            }
+        });
+    }
+
+    const fileInput = document.getElementById('files');
+    const fileList = document.getElementById('fileList');
+    if (fileInput && fileList) {
+        fileInput.addEventListener('change', function() {
+            fileList.innerHTML = '';
+            for (let i = 0; i < this.files.length; i++) {
+                const file = this.files[i];
+                const fileItem = document.createElement('div');
+                fileItem.className = 'text-sm py-1';
+                fileItem.textContent = file.name;
+                fileList.appendChild(fileItem);
+            }
+        });
+    }
+});
 
 function openDownloadModal() {
     document.getElementById('downloadReportModal').classList.remove('hidden');
