@@ -135,10 +135,10 @@
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
                         @if($testimonial->application_file)
-                        <a href="{{ asset('storage/' . $testimonial->application_file) }}"
-                            class="text-blue-600 text-sm hover:text-blue-900 transition-colors" title="Download"
-                            download>
-                            <i class="fas fa-download mr-1"></i> Download
+                        <a href="{{ route('testimonials.download-application', $testimonial->id) }}"
+                            class="text-blue-600 text-sm hover:text-blue-900 transition-colors"
+                            title="Download Application" download>
+                            <i class="fas fa-download mr-1"></i> Download Application
                         </a>
                         @else
                         <div class="text-sm text-gray-500 italic">Not available</div>
@@ -148,11 +148,12 @@
                         <div class="flex space-x-3 justify-center">
                             @if($testimonial->status === 'pending')
                             @hasrole(['admin', 'authority'])
-                            <button onclick="openApprovalModal()"
+                            <button onclick="openApproveModal({{ $testimonial->id }})"
                                 class="text-green-600 hover:text-green-900 transition-colors" title="Approve">
                                 <i class="fas fa-check mr-1"></i> Approve
                             </button>
-                            <button class="text-red-600 hover:text-red-900 transition-colors" title="Reject">
+                            <button onclick="submitRejectForm({{ $testimonial->id }})"
+                                class="text-red-600 hover:text-red-900 transition-colors" title="Reject">
                                 <i class="fas fa-times mr-1"></i> Reject
                             </button>
                             @endhasrole
@@ -160,20 +161,18 @@
                             <div class="text-sm text-gray-500 italic">Not available</div>
                             @endhasrole
                             @elseif($testimonial->status === 'rejected')
-                            @hasrole(['admin', 'authority'])
-                            <button class="text-purple-600 hover:text-purple-900 transition-colors">
-                                <i class="fas fa-redo mr-1"></i> Resubmit
-                            </button>
-                            @endhasrole
-                            @hasrole(['admin', 'ngo'])
-                            <div class="text-sm text-gray-500 italic">Not available</div>
-                            @endhasrole
+                            <div class="text-purple-600 italic">Not available</div>
                             @else
                             <div class="text-gray-400 italic">
-                                <button class="text-blue-600 text-sm hover:text-blue-900 transition-colors"
-                                    title="Download">
-                                    <i class="fas fa-download mr-1"></i> Download
-                                </button>
+                                @if($testimonial->testimonial_file)
+                                <a href="{{ route('testimonials.download-testimonial', $testimonial->id) }}"
+                                    class="text-blue-600 text-sm hover:text-blue-900 transition-colors"
+                                    title="Download Testimonial" download>
+                                    <i class="fas fa-download mr-1"></i> Download Testimonial
+                                </a>
+                                @else
+                                <span class="text-green-600">Approved</span>
+                                @endif
                             </div>
                             @endif
                         </div>
@@ -187,41 +186,6 @@
                 @endforelse
             </tbody>
         </table>
-    </div>
-
-
-    <!-- Approve Testimonial Modal -->
-    <div id="showApproveModal"
-        class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 hidden">
-        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-            <div class="mt-3 text-center">
-                <h3 class="text-lg leading-6 font-medium text-gray-900">Upload Testimonial</h3>
-                <div class="mt-2 px-7 py-3">
-                    <p class="text-sm text-gray-500 mb-4">
-                        Please upload the testimonial document (PDF or Image) for this project.
-                    </p>
-                    <div class="mb-4">
-                        <input type="file" id="testimonialFile" @change="handleFileUpload" accept=".pdf,.jpg,.jpeg,.png"
-                            class="block w-full text-sm text-gray-500
-                                    file:mr-4 file:py-2 file:px-4
-                                    file:rounded-md file:border-0
-                                    file:text-sm file:font-semibold
-                                    file:bg-purple-50 file:text-purple-700
-                                    hover:file:bg-purple-100">
-                    </div>
-                </div>
-                <div class="items-center px-4 py-3">
-                    <button onclick="closeApprovalModal()"
-                        class="px-4 py-2 bg-green-600 text-white text-base font-medium rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-300">
-                        Upload & Approve
-                    </button>
-                    <button onclick="closeApprovalModal()"
-                        class="ml-3 px-4 py-2 bg-gray-200 text-gray-700 text-base font-medium rounded-md shadow-sm hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-300">
-                        Cancel
-                    </button>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 
@@ -252,24 +216,26 @@
                             Request Testimonial
                         </h3>
                         <div class="mt-4">
-                            <form id="requestTestimonialForm">
+                            <form id="requestTestimonialForm" method="POST" enctype="multipart/form-data"
+                                action="{{ route('projects.testimonials.store', $project->id) }}">
+                                @csrf
                                 <div class="mb-4">
                                     <label for="testimonialTitle"
                                         class="block text-sm font-medium text-gray-700">Title</label>
-                                    <input type="text" id="testimonialTitle"
+                                    <input type="text" name="title" id="testimonialTitle"
                                         class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
                                 </div>
 
                                 <div class="mb-4">
                                     <label for="testimonialDescription"
                                         class="block text-sm font-medium text-gray-700">Description</label>
-                                    <textarea id="testimonialDescription" rows="3"
+                                    <textarea name="description" id="testimonialDescription" rows="3"
                                         class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"></textarea>
                                 </div>
 
                                 <div class="mb-4">
                                     <label for="testimonialFiles"
-                                        class="block text-sm font-medium text-gray-700">Supporting Documents</label>
+                                        class="block text-sm font-medium text-gray-700">Supporting Document</label>
                                     <div
                                         class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
                                         <div class="space-y-1 text-center">
@@ -283,20 +249,19 @@
                                                 <label for="testimonialFiles"
                                                     class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
                                                     <span>Upload files</span>
-                                                    <input id="testimonialFiles" type="file" class="sr-only" multiple>
+                                                    <input id="testimonialFiles" name="application_file" type="file"
+                                                        class="sr-only" accept=".pdf,.doc,.docx" required>
                                                 </label>
                                                 <p class="pl-1">or drag and drop</p>
                                             </div>
-                                            <p class="text-xs text-gray-500">
-                                                PDF, DOC, DOCX up to 10MB each
-                                            </p>
+                                            <p class="text-xs text-gray-500">PDF, DOC, DOCX up to 10MB each</p>
                                             <div id="testimonialFileList" class="mt-2 text-left"></div>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                                    <button type="button" onclick="submitTestimonialRequest()"
+                                    <button type="submit"
                                         class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm">
                                         Submit Request
                                     </button>
@@ -314,14 +279,50 @@
     </div>
 </div>
 
+
+<!-- Approve Testimonial Modal -->
+<div id="approveTestimonialModal"
+    class="fixed inset-0 -top-6 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 hidden">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="text-center">
+            <h3 class="text-lg leading-6 font-medium text-gray-900">Approve Testimonial</h3>
+            <form id="approveTestimonialForm" method="POST" enctype="multipart/form-data">
+                @csrf
+                <input type="hidden" name="testimonial_id" id="approveTestimonialId">
+                <div class="mt-2 px-7 py-3">
+                    <p class="text-sm text-gray-500 mb-4">
+                        Please upload the testimonial document (PDF or Image) for this project.
+                    </p>
+                    <div class="mb-4">
+                        <label for="testimonialFile" class="block text-sm font-medium text-gray-700 mb-1">Testimonial
+                            File (PDF/Image)</label>
+                        <input type="file" name="testimonial_file" id="testimonialFile" class="block w-full text-sm text-gray-500
+                                    file:mr-4 file:py-2 file:px-4
+                                    file:rounded-md file:border-0
+                                    file:text-sm file:font-semibold
+                                    file:bg-purple-50 file:text-purple-700
+                                    hover:file:bg-purple-100" accept=".pdf,.jpg,.jpeg,.png" required>
+                    </div>
+                </div>
+                <div class="items-center px-4 py-3">
+                    <button type="submit"
+                        class="px-4 py-2 bg-green-600 text-white text-base font-medium rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-300">
+                        Upload & Approve
+                    </button>
+                    <button type="button" onclick="closeApprovalModal()"
+                        class="ml-3 px-4 py-2 bg-gray-200 text-gray-700 text-base font-medium rounded-md shadow-sm hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-300">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script>
 // Request Testimonial
 function openRequestModal() {
-    // Reset form
     document.getElementById('requestTestimonialForm').reset();
-    document.getElementById('testimonialFileList').innerHTML = '';
-
-    // Show modal
     document.getElementById('requestTestimonialModal').classList.remove('hidden');
 }
 
@@ -330,16 +331,48 @@ function closeRequestModal() {
 }
 
 // Approval modal  
-function openApprovalModal() {
-
-    document.getElementById('requestTestimonialForm').reset();
-    document.getElementById('testimonialFileList').innerHTML = '';
-
-    // Show modal
-    document.getElementById('showApproveModal').classList.remove('hidden');
+function openApproveModal(testimonialId) {
+    document.getElementById('approveTestimonialForm').reset();
+    document.getElementById('approveTestimonialId').value = testimonialId;
+    document.getElementById('approveTestimonialForm').action = `/testimonials/${testimonialId}/approve`;
+    document.getElementById('approveTestimonialModal').classList.remove('hidden');
 }
 
 function closeApprovalModal() {
-    document.getElementById('showApproveModal').classList.add('hidden');
+    document.getElementById('approveTestimonialModal').classList.add('hidden');
 }
+
+function submitRejectForm(testimonialId) {
+    if (confirm('Are you sure you want to reject this testimonial?')) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = `/testimonials/${testimonialId}/reject`;
+        // Add CSRF token as hidden input
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        const csrfInput = document.createElement('input');
+        csrfInput.type = 'hidden';
+        csrfInput.name = '_token';
+        csrfInput.value = csrfToken;
+        form.appendChild(csrfInput);
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const testimonialFileInput = document.getElementById('testimonialFiles');
+    const testimonialFileList = document.getElementById('testimonialFileList');
+    if (testimonialFileInput && testimonialFileList) {
+        testimonialFileInput.addEventListener('change', function() {
+            testimonialFileList.innerHTML = '';
+            for (let i = 0; i < this.files.length; i++) {
+                const file = this.files[i];
+                const fileItem = document.createElement('div');
+                fileItem.className = 'text-sm py-1';
+                fileItem.textContent = file.name;
+                testimonialFileList.appendChild(fileItem);
+            }
+        });
+    }
+});
 </script>

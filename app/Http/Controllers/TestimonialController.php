@@ -61,4 +61,13 @@ class TestimonialController extends Controller
         $filePath = storage_path('app/public/' . $testimonial->application_file);
         return response()->download($filePath);
     }
+
+    public function downloadTestimonial(Testimonial $testimonial)
+    {
+        if (!$testimonial->testimonial_file || !Storage::disk('public')->exists($testimonial->testimonial_file)) {
+            return back()->with('error', 'Testimonial file not found.');
+        }
+        $filePath = storage_path('app/public/' . $testimonial->testimonial_file);
+        return response()->download($filePath);
+    }
 } 
