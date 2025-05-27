@@ -107,78 +107,46 @@
                 </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200 text-sm">
-                <!-- Approved Testimonial -->
+                @forelse($project->testimonials as $testimonial)
                 <tr class="hover:bg-gray-50 transition-colors">
                     <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm font-medium text-gray-900">Impact Assessment Report 2023</div>
+                        <div class="text-sm font-medium text-gray-900">{{ $testimonial->title }}</div>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
-                            Approved
+                        @php
+                        $statusColors = [
+                        'approved' => 'bg-green-100 text-green-800',
+                        'pending' => 'bg-yellow-100 text-yellow-800',
+                        'rejected' => 'bg-red-100 text-red-800',
+                        ];
+                        $color = $statusColors[$testimonial->status] ?? 'bg-gray-100 text-gray-800';
+                        @endphp
+                        <span class="px-2 py-1 text-xs font-semibold rounded-full {{ $color }}">
+                            {{ ucfirst($testimonial->status) }}
                         </span>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-900">BRAC</div>
+                        <div class="text-sm text-gray-900">{{ $testimonial->requester->name ?? 'N/A' }}</div>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-900">15 March 2023</div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="flex items-center">
-                            <button class="text-blue-600 text-sm hover:text-blue-900 transition-colors"
-                                title="Download">
-                                <i class="fas fa-download mr-1"></i> Download
-                            </button>
+                        <div class="text-sm text-gray-900">
+                            {{ $testimonial->date ? \Carbon\Carbon::parse($testimonial->date)->format('d F Y') : '-' }}
                         </div>
                     </td>
-                    <!-- <td class="px-6 py-4 whitespace-nowrap">
-            <div class="flex items-center">
-                <a href="#" class="text-blue-600 text-sm hover:text-blue-900 mr-2 transition-colors" title="View Testimonial">
-                    <i class="fas fa-eye mr-1"></i> View
-                </a>
-                <span class="text-sm text-gray-500">2.4 MB</span>
-            </div>
-        </td> -->
-                    <td class="px-6 py-4 text-center whitespace-nowrap text-sm font-medium">
-                        <div class="text-gray-400 italic">
-                            <button class="text-blue-600 text-sm hover:text-blue-900 transition-colors"
-                                title="Download">
-                                <i class="fas fa-download mr-1"></i> Download
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-
-                <!-- Pending Testimonial -->
-                <tr class="hover:bg-gray-50 transition-colors">
                     <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm font-medium text-gray-900">Irrigation System Evaluation</div>
+                        @if($testimonial->application_file)
+                        <a href="{{ asset('storage/' . $testimonial->application_file) }}"
+                            class="text-blue-600 text-sm hover:text-blue-900 transition-colors" title="Download"
+                            download>
+                            <i class="fas fa-download mr-1"></i> Download
+                        </a>
+                        @else
+                        <div class="text-sm text-gray-500 italic">Not available</div>
+                        @endif
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                            Pending
-                        </span>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-900">ASA</div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-900">28 April 2023</div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-500 italic">
-                            <button class="text-blue-600 text-sm hover:text-blue-900 transition-colors"
-                                title="Download">
-                                <i class="fas fa-download mr-1"></i> Download
-                            </button>
-                        </div>
-                    </td>
-                    <!-- <td class="px-6 py-4 whitespace-nowrap">
-            <div class="text-sm text-gray-500 italic">Not available</div>
-        </td> -->
-
                     <td class="px-6 py-4 text-center whitespace-nowrap text-sm font-medium">
                         <div class="flex space-x-3 justify-center">
+                            @if($testimonial->status === 'pending')
                             @hasrole(['admin', 'authority'])
                             <button onclick="openApprovalModal()"
                                 class="text-green-600 hover:text-green-900 transition-colors" title="Approve">
@@ -191,85 +159,32 @@
                             @hasrole(['admin', 'ngo'])
                             <div class="text-sm text-gray-500 italic">Not available</div>
                             @endhasrole
-                        </div>
-                    </td>
-                </tr>
-
-                <!-- Rejected Testimonial -->
-                <tr class="hover:bg-gray-50 transition-colors">
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm font-medium text-gray-900">Farmer Training Feedback</div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
-                            Rejected
-                        </span>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-900">Friendship</div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-900">10 February 2023</div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-500 italic">Not available</div>
-                    </td>
-                    <!-- <td class="px-6 py-4 whitespace-nowrap">
-            <div class="text-sm text-gray-500 italic">Not available</div>
-        </td> -->
-                    <td class="px-6 py-4 text-center whitespace-nowrap text-sm font-medium">
-                        @hasrole(['admin', 'authority'])
-                        <button class="text-purple-600 hover:text-purple-900 transition-colors">
-                            <i class="fas fa-redo mr-1"></i> Resubmit
-                        </button>
-                        @endhasrole
-                        @hasrole(['admin', 'ngo'])
-                        <div class="text-sm text-gray-500 italic">Not available</div>
-                        @endhasrole
-                    </td>
-                </tr>
-
-                <!-- Another Approved Testimonial -->
-                <tr class="hover:bg-gray-50 transition-colors">
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm font-medium text-gray-900">Rice Production Analysis</div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
-                            Approved
-                        </span>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-900">SKUS</div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-900">5 January 2023</div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="flex items-center">
-                            <button class="text-blue-600 text-sm hover:text-blue-900 transition-colors"
-                                title="Download">
-                                <i class="fas fa-download mr-1"></i> Download
+                            @elseif($testimonial->status === 'rejected')
+                            @hasrole(['admin', 'authority'])
+                            <button class="text-purple-600 hover:text-purple-900 transition-colors">
+                                <i class="fas fa-redo mr-1"></i> Resubmit
                             </button>
-                        </div>
-                    </td>
-                    <!-- <td class="px-6 py-4 whitespace-nowrap">
-            <div class="flex items-center">
-                <a href="#" class="text-blue-600 text-sm hover:text-blue-900 mr-2 transition-colors" title="View Testimonial">
-                    <i class="fas fa-eye mr-1"></i> View
-                </a>
-                <span class="text-sm text-gray-500">1.8 MB</span>
-            </div>
-        </td> -->
-                    <td class="px-6 py-4 text-center whitespace-nowrap text-sm font-medium">
-                        <div class="text-gray-400">
-                            <button class="text-blue-600 text-sm hover:text-blue-900 transition-colors"
-                                title="Download">
-                                <i class="fas fa-download mr-1"></i> Download
-                            </button>
+                            @endhasrole
+                            @hasrole(['admin', 'ngo'])
+                            <div class="text-sm text-gray-500 italic">Not available</div>
+                            @endhasrole
+                            @else
+                            <div class="text-gray-400 italic">
+                                <button class="text-blue-600 text-sm hover:text-blue-900 transition-colors"
+                                    title="Download">
+                                    <i class="fas fa-download mr-1"></i> Download
+                                </button>
+                            </div>
+                            @endif
                         </div>
                     </td>
                 </tr>
+                @empty
+                <tr>
+                    <td colspan="6" class="px-6 py-4 text-center text-gray-500">No testimonials available for this
+                        project.</td>
+                </tr>
+                @endforelse
             </tbody>
         </table>
     </div>

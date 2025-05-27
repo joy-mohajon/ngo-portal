@@ -23,7 +23,7 @@
             </div>
             <div>
                 <h4 class="text-sm font-medium text-gray-500">Start Date</h4>
-                <p class="mt-1 text-sm text-gray-900">{{ $project->start_date->format('M d, Y') }}</p>
+                <p class="mt-1 text-sm text-gray-900">{{ $project->start_date ? $project->start_date->format('M d, Y') : '-' }}</p>
             </div>
             <div>
                 <h4 class="text-sm font-medium text-gray-500">End Date</h4>

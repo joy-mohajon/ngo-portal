@@ -22,6 +22,13 @@ class ProjectTrainingSeeder extends Seeder
                 'start_date' => Carbon::parse('2023-01-01'),
                 'end_date' => Carbon::parse('2024-12-31'),
                 'status' => 'active',
+                'major_activities' => [
+                    'Mobile banking awareness campaigns',
+                    'Training on digital transaction safety',
+                    'Partnerships with local agents',
+                    'Distribution of mobile devices',
+                    'Workshops for rural entrepreneurs',
+                ],
                 'trainings' => [
                     [
                         'title' => 'Mobile banking & digital transaction safety',
@@ -46,6 +53,13 @@ class ProjectTrainingSeeder extends Seeder
                 'start_date' => Carbon::parse('2022-07-01'),
                 'end_date' => Carbon::parse('2024-06-30'),
                 'status' => 'completed',
+                'major_activities' => [
+                    'Asset transfer to ultra-poor families',
+                    'Livelihood skills training',
+                    'Regular home visits and mentoring',
+                    'Savings group formation',
+                    'Market linkage facilitation',
+                ],
                 'trainings' => [
                     [
                         'title' => 'Small business management',
@@ -70,6 +84,13 @@ class ProjectTrainingSeeder extends Seeder
                 'start_date' => Carbon::parse('2023-02-01'),
                 'end_date' => Carbon::parse('2024-06-30'),
                 'status' => 'active',
+                'major_activities' => [
+                    'IT skills bootcamps',
+                    'Vocational training workshops',
+                    'Internship placement programs',
+                    'Career counseling sessions',
+                    'Job fair events',
+                ],
                 'trainings' => [
                     [
                         'title' => 'Basic IT (6 weeks)',
@@ -105,6 +126,13 @@ class ProjectTrainingSeeder extends Seeder
                 'start_date' => Carbon::parse('2021-01-01'),
                 'end_date' => Carbon::parse('2025-12-31'),
                 'status' => 'Suspended',
+                'major_activities' => [
+                    'Livestock asset distribution',
+                    'Health and nutrition support',
+                    'Financial literacy training',
+                    'Community group meetings',
+                    'Monitoring and evaluation visits',
+                ],
                 'trainings' => [
                     [
                         'title' => 'Livestock rearing techniques',
@@ -129,6 +157,13 @@ class ProjectTrainingSeeder extends Seeder
                 'start_date' => Carbon::parse('2020-01-01'),
                 'end_date' => Carbon::parse('2025-12-31'),
                 'status' => 'active',
+                'major_activities' => [
+                    'Deployment of floating hospital ships',
+                    'Mobile medical camps',
+                    'Community health worker training',
+                    'Distribution of medical supplies',
+                    'Health awareness sessions',
+                ],
                 'trainings' => [
                     [
                         'title' => 'Community health worker certification',
@@ -153,6 +188,13 @@ class ProjectTrainingSeeder extends Seeder
                 'start_date' => Carbon::parse('2022-09-01'),
                 'end_date' => Carbon::parse('2024-08-31'),
                 'status' => 'completed',
+                'major_activities' => [
+                    'Disaster preparedness drills',
+                    'Climate-resilient crop introduction',
+                    'Community awareness campaigns',
+                    'Construction of raised shelters',
+                    'Water resource management',
+                ],
                 'trainings' => [
                     [
                         'title' => 'Disaster preparedness drills',
@@ -177,6 +219,13 @@ class ProjectTrainingSeeder extends Seeder
                 'start_date' => Carbon::parse('2023-01-01'),
                 'end_date' => Carbon::parse('2023-12-31'),
                 'status' => 'active',
+                'major_activities' => [
+                    'Scholarship distribution',
+                    'School supply provision',
+                    'Parent engagement meetings',
+                    'After-school tutoring',
+                    'Teacher training workshops',
+                ],
                 'trainings' => [
                     [
                         'title' => 'Teacher capacity building',
@@ -201,6 +250,13 @@ class ProjectTrainingSeeder extends Seeder
                 'start_date' => Carbon::parse('2023-03-01'),
                 'end_date' => Carbon::parse('2024-02-28'),
                 'status' => 'active',
+                'major_activities' => [
+                    'Vocational skills training',
+                    'Entrepreneurship workshops',
+                    'Micro-loan distribution',
+                    'Mentorship programs',
+                    'Community awareness events',
+                ],
                 'trainings' => [
                     [
                         'title' => 'Entrepreneurship courses',
@@ -225,6 +281,13 @@ class ProjectTrainingSeeder extends Seeder
                 'start_date' => Carbon::parse('2022-01-01'),
                 'end_date' => Carbon::parse('2024-12-31'),
                 'status' => 'active',
+                'major_activities' => [
+                    'Establishment of rural schools',
+                    'Teacher recruitment and training',
+                    'Provision of learning materials',
+                    'Community engagement sessions',
+                    'Student health checkups',
+                ],
                 'trainings' => [
                     [
                         'title' => 'Teacher training programs',
@@ -249,6 +312,13 @@ class ProjectTrainingSeeder extends Seeder
                 'start_date' => Carbon::parse('2023-02-01'),
                 'end_date' => Carbon::parse('2024-01-31'),
                 'status' => 'active',
+                'major_activities' => [
+                    'Tailoring and embroidery courses',
+                    'Small business management training',
+                    'Formation of women self-help groups',
+                    'Legal rights awareness sessions',
+                    'Access to microfinance',
+                ],
                 'trainings' => [
                     [
                         'title' => 'Tailoring and embroidery (3-month courses)',
@@ -290,7 +360,7 @@ class ProjectTrainingSeeder extends Seeder
                 'location' => $projectData['location'],
                 'budget' => $projectData['budget'],
                 'focus_area' => $projectData['focus_area'],
-                'major_activity' => $projectData['focus_area'], // or use a separate field if available
+                'major_activities' => $projectData['major_activities'],
                 'holder_id' => $holder->id,
                 'runner_id' => $runner->id,
                 'start_date' => $projectData['start_date'],

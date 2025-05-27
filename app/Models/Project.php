@@ -18,7 +18,7 @@ class Project extends Model
         'location',
         'budget',
         'focus_area',
-        'major_activity',
+        'major_activities',
         'holder_id',
         'runner_id',
         'start_date',
@@ -30,6 +30,7 @@ class Project extends Model
         'start_date' => 'date',
         'end_date' => 'date',
         'budget' => 'decimal:2',
+        'major_activities' => 'array',
     ];
 
     public function holder(): BelongsTo

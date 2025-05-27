@@ -87,14 +87,6 @@
                     </a>
                 </li>
                 <!-- @endhasrole -->
-                @hasrole(['admin', 'ngo'])
-                <li>
-                    <a href="{{ route('students.index') }}" class="flex items-center p-2 hover:bg-gray-700 rounded">
-                        <i class="fas fa-user-graduate mr-3"></i>
-                        <span>Students</span>
-                    </a>
-                </li>
-                @endhasrole
 
                 @hasrole(['admin', 'ngo'])
                 @if(auth()->user()->hasRole('ngo') && auth()->user()->ngo->status !== 'approved')

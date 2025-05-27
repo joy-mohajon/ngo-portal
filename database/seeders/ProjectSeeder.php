@@ -24,8 +24,19 @@ class ProjectSeeder extends Seeder
             }
             
             // Create 25 projects with different statuses
-            Project::factory()->count(2)->active()->create();
-            Project::factory()->count(1)->completed()->create();
+            $exampleActivities = [
+                'Farmer training on sustainable agriculture practices',
+                'Installation of improved irrigation systems',
+                'Distribution of high-yield crop varieties',
+                'Soil health management programs',
+                'Establishment of farmer cooperatives',
+            ];
+            Project::factory()->count(2)->active()->create([
+                'major_activities' => $exampleActivities
+            ]);
+            Project::factory()->count(1)->completed()->create([
+                'major_activities' => $exampleActivities
+            ]);
             //Project::factory()->count(1)->pending()->create();
             //Project::factory()->count(1)->suspended()->create();
             

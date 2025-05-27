@@ -29,7 +29,7 @@
                 @include('projects.partials.major-activities-card')
 
                 <!-- Project Location -->
-                @include('projects.partials.location-card')
+                <!-- @include('projects.partials.location-card') -->
 
             </div>
         </div>

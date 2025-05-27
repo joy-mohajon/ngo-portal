@@ -13,11 +13,11 @@
             <h4 class="text-sm font-medium text-gray-500 mb-2">Project Holder</h4>
             <div class="flex items-center">
                 <div class="flex-shrink-0 h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center">
-                    <span class="text-indigo-600 font-medium">BR</span>
+                    <span class="text-indigo-600 font-medium">{{ isset($project->holder->name) ? strtoupper(substr($project->holder->name, 0, 2)) : 'NA' }}</span>
                 </div>
                 <div class="ml-3">
-                    <p class="text-sm font-medium text-gray-900">Bangladesh Rural Advancement Committee (BRAC)</p>
-                    <p class="text-sm text-indigo-600">agriculture@brac.net</p>
+                    <p class="text-sm font-medium text-gray-900">{{ $project->holder->name ?? 'Not Assigned' }}</p>
+                    <p class="text-sm text-indigo-600">{{ $project->holder->email ?? '' }}</p>
                 </div>
             </div>
         </div>
@@ -25,11 +25,11 @@
             <h4 class="text-sm font-medium text-gray-500 mb-2">Project Runner</h4>
             <div class="flex items-center">
                 <div class="flex-shrink-0 h-10 w-10 rounded-full bg-emerald-100 flex items-center justify-center">
-                    <span class="text-emerald-600 font-medium">DA</span>
+                    <span class="text-emerald-600 font-medium">{{ isset($project->runner->name) ? strtoupper(substr($project->runner->name, 0, 2)) : 'NA' }}</span>
                 </div>
                 <div class="ml-3">
-                    <p class="text-sm font-medium text-gray-900">Friendship</p>
-                    <p class="text-sm text-emerald-600">info@friendship.ngo</p>
+                    <p class="text-sm font-medium text-gray-900">{{ $project->runner->name ?? 'Not Assigned' }}</p>
+                    <p class="text-sm text-emerald-600">{{ $project->runner->email ?? '' }}</p>
                 </div>
             </div>
         </div>

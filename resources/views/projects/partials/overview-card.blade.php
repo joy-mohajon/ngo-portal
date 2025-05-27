@@ -10,37 +10,36 @@
     </div>
     <div class="px-6 py-5">
         <div class="prose max-w-none text-gray-700 mb-6">
-            The Rangpur Agricultural Development Project aims to improve food security and livelihoods for smallholder
-            farmers in Pirgachha Upazila through sustainable farming practices, improved irrigation systems, and farmer
-            training programs. The project focuses on increasing rice and vegetable production while conserving water
-            resources.
+            {{ $project->description }}
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
                 <h4 class="text-sm font-medium text-gray-500">Focus Area</h4>
-                <p class="mt-1 text-sm text-gray-900">Agriculture & Food Security</p>
+                <p class="mt-1 text-sm text-gray-900">{{ $project->focus_area }}</p>
             </div>
             <div>
                 <h4 class="text-sm font-medium text-gray-500">Budget</h4>
-                <p class="mt-1 text-sm text-gray-900">৳12,750,000.00 (BDT)</p>
+                <p class="mt-1 text-sm text-gray-900">৳{{ number_format($project->budget, 2) }} (BDT)</p>
             </div>
             <div>
                 <h4 class="text-sm font-medium text-gray-500">Start Date</h4>
-                <p class="mt-1 text-sm text-gray-900">Jan 15, 2023</p>
+                <p class="mt-1 text-sm text-gray-900">
+                    {{ $project->start_date ? $project->start_date->format('M d, Y') : '-' }}</p>
             </div>
             <div>
                 <h4 class="text-sm font-medium text-gray-500">End Date</h4>
-                <p class="mt-1 text-sm text-gray-900">Dec 31, 2025</p>
+                <p class="mt-1 text-sm text-gray-900">
+                    {{ $project->end_date ? $project->end_date->format('M d, Y') : 'Ongoing' }}</p>
             </div>
-            <div>
+            <!-- <div>
                 <h4 class="text-sm font-medium text-gray-500">Beneficiaries</h4>
                 <p class="mt-1 text-sm text-gray-900">1,250 farming families</p>
             </div>
             <div>
                 <h4 class="text-sm font-medium text-gray-500">Coverage Area</h4>
                 <p class="mt-1 text-sm text-gray-900">12 villages in Pirgachha</p>
-            </div>
+            </div> -->
 
         </div>
     </div>

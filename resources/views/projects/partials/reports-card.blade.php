@@ -53,23 +53,31 @@
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
+                    @forelse($project->reports as $report)
                     <tr>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm font-medium text-gray-900">Quarterly Progress Report</div>
+                            <div class="text-sm font-medium text-gray-900">{{ $report->title }}</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-500">March 2023</div>
+                            <div class="text-sm text-gray-500">{{ $report->month ? \Carbon\Carbon::parse($report->month)->format('F Y') : '-' }}</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-500">Abdul Karim</div>
+                            <div class="text-sm text-gray-500">{{ $report->submitter->name ?? 'N/A' }}</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-500">progress_report_q1.pdf</div>
-                            <div class="text-xs text-gray-400">1.25 MB</div>
+                            <div class="text-sm text-gray-500">{{ $report->file_name }}</div>
+                            <div class="text-xs text-gray-400">
+                                @if(is_numeric($report->file_size) && $report->file_size > 0)
+                                    {{ number_format($report->file_size / 1048576, 2) . ' MB' }}
+                                @else
+                                    -
+                                @endif
+                            </div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                             <div class="flex space-x-3">
-                                <a href="#" target="_blank" class="text-indigo-600 hover:text-indigo-900" title="View">
+                                @if($report->file_path)
+                                <a href="{{ asset('storage/' . $report->file_path) }}" target="_blank" class="text-indigo-600 hover:text-indigo-900" title="View">
                                     <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -77,14 +85,15 @@
                                             d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                     </svg>
                                 </a>
-                                <a href="#" download class="text-emerald-600 hover:text-emerald-900" title="Download">
+                                <a href="{{ asset('storage/' . $report->file_path) }}" download class="text-emerald-600 hover:text-emerald-900" title="Download">
                                     <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                                     </svg>
                                 </a>
+                                @endif
                                 @hasrole(['admin', 'ngo'])
-                                <form action="#" method="POST"
+                                <form action="{{ route('reports.destroy', $report->id) }}" method="POST"
                                     onsubmit="return confirm('Are you sure you want to delete this report?');">
                                     @csrf
                                     @method('DELETE')
@@ -99,52 +108,11 @@
                             </div>
                         </td>
                     </tr>
+                    @empty
                     <tr>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm font-medium text-gray-900">Farmer Training Session</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-500">April 2023</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-500">Fatema Begum</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-500">training_april.docx</div>
-                            <div class="text-xs text-gray-400">0.87 MB</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <div class="flex space-x-3">
-                                <a href="#" target="_blank" class="text-indigo-600 hover:text-indigo-900" title="View">
-                                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                    </svg>
-                                </a>
-                                <a href="#" download class="text-emerald-600 hover:text-emerald-900" title="Download">
-                                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                                    </svg>
-                                </a>
-                                @hasrole(['admin', 'ngo'])
-                                <form action="#" method="POST"
-                                    onsubmit="return confirm('Are you sure you want to delete this report?');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="text-red-600 hover:text-red-900" title="Delete">
-                                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                        </svg>
-                                    </button>
-                                </form>
-                                @endhasrole
-                            </div>
-                        </td>
+                        <td colspan="5" class="px-6 py-4 text-center text-gray-500">No reports available for this project.</td>
                     </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
