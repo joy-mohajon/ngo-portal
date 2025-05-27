@@ -56,7 +56,8 @@
                             </a>
                         </li>
                         <li>
-                            <a href="{{ route('ngos.pending') }}"
+                            <a href="{{ route('ngos.pending') }}" @click="activeItem = 'ngos.pending'"
+                                :class="activeItem === 'ngos.index' ? 'bg-gray-700 text-white' : ''"
                                 class="p-2 hover:bg-gray-700 rounded flex items-center gap-3">
                                 <i class="fa fa-angle-right" aria-hidden="true"></i>
                                 <span>Pending NGOs</span>
@@ -69,6 +70,7 @@
                 @endhasrole
 
                 <!-- Projects -->
+                @hasrole(['admin', 'authority'])
                 <li>
                     <a href="{{ route('projects.index') }}" @click="activeItem = 'projects.index'"
                         :class="activeItem === 'projects.index' ? 'bg-gray-700 text-white' : ''"
@@ -77,6 +79,41 @@
                         <span>Projects</span>
                     </a>
                 </li>
+                @endhasrole
+
+                @hasrole(['admin', 'ngo'])
+                <li x-data="{ open: false }" class="opcion-con-desplegable">
+                    <div @click="open = !open" @click="activeItem = 'projects.holder'"
+                        :class="activeItem === 'projects.holder' ? 'bg-gray-700 text-white' : ''"
+                        class="flex items-center justify-between p-2 hover:bg-gray-700 rounded cursor-pointer">
+                        <div class="flex items-center">
+                            <i class="fas fa-chalkboard-teacher mr-3"></i>
+                            <span>Projects</span>
+                        </div>
+                        <i class="fas fa-chevron-down text-xs transition-transform duration-300"
+                            :class="{ 'rotate-180': open }"></i>
+                    </div>
+                    <ul x-show="open" x-transition class="desplegable ml-8 mt-2 space-y-1">
+                        <li>
+                            <a href="{{ route('projects.holder') }}" @click="activeItem = 'projects.holder'"
+                                :class="activeItem === 'projects.holder' ? 'bg-gray-700 text-white' : ''"
+                                class="p-2 hover:bg-gray-700 rounded flex items-center gap-3">
+                                <i class="fa fa-angle-right" aria-hidden="true"></i>
+                                <span>As a Holder</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('projects.runner') }}" @click="activeItem = 'projects.runner'"
+                                :class="activeItem === 'projects.runner' ? 'bg-gray-700 text-white' : ''"
+                                class="p-2 hover:bg-gray-700 rounded flex items-center gap-3">
+                                <i class="fa fa-angle-right" aria-hidden="true"></i>
+                                <span>As a Runner</span>
+                            </a>
+                        </li>
+
+                    </ul>
+                </li>
+                @endhasrole
 
                 <!-- Projects Overview - For authority and admin roles only -->
                 <!-- @hasrole(['admin', 'authority']) -->

@@ -294,4 +294,87 @@ public function index(Request $request)
             'data' => $trainings
         ]);
     }
+
+    public function holderProjects(Request $request)
+    {
+        $user = Auth::user();
+        $ngoId = $user && $user->ngo ? $user->ngo->id : null;
+        if (!$ngoId) abort(403);
+        $request->merge(['holder_id' => $ngoId]);
+        return $this->filteredProjectsByRole($request, 'holder_id');
+    }
+
+    public function runnerProjects(Request $request)
+    {
+        $user = Auth::user();
+        $ngoId = $user && $user->ngo ? $user->ngo->id : null;
+        if (!$ngoId) abort(403);
+        $request->merge(['runner_id' => $ngoId]);
+        return $this->filteredProjectsByRole($request, 'runner_id');
+    }
+
+    protected function filteredProjectsByRole(Request $request, $roleField)
+    {
+        $query = Project::with(['holder', 'runner', 'focusArea']);
+        $query->where($roleField, $request[$roleField]);
+        // Apply other filters as in index()
+        if ($request->has('status') && $request->status != '') {
+            $query->where('status', $request->status);
+        }
+        if ($request->has('sector') && $request->sector != '') {
+            $query->whereHas('focusArea', function($q) use ($request) {
+                $q->where('name', $request->sector);
+            });
+        }
+        if ($request->has('location') && $request->location != '') {
+            $query->where('location', 'like', '%'.$request->location.'%');
+        }
+        if ($request->has('organization') && $request->organization != '') {
+            $query->whereHas('holder', function($q) use ($request) {
+                $q->where('name', 'like', '%'.$request->organization.'%');
+            });
+        }
+        $projects = $query->latest()->get()->map(function ($project) {
+            return [
+                'id' => $project->id,
+                'name' => $project->title,
+                'organization' => $project->holder->name ?? 'Unknown',
+                'runner' => $project->runner->name ?? 'Unknown',
+                'email' => $project->holder->email ?? '',
+                'start_date' => $project->start_date->format('M Y'),
+                'end_date' => $project->end_date->format('M Y'),
+                'sector' => $project->focus_area,
+                'budget' => $project->budget,
+                'location' => $project->location,
+                'status' => $project->status,
+                'focus_area_name' => $project->focusArea->name ?? '-',
+            ];
+        });
+        // Get unique values for filter dropdowns (reuse logic from index)
+        $statuses = Project::select('status')->distinct()->pluck('status');
+        $focusAreaIds = Project::select('focus_area')->distinct()->pluck('focus_area');
+        $sectors = \App\Models\FocusArea::whereIn('id', $focusAreaIds)->pluck('name');
+        $locations = Project::select('location')->distinct()->pluck('location');
+        $organizations = \App\Models\Ngo::select('name as organization')->distinct()->pluck('organization');
+        $grouped = [];
+        foreach ($projects as $project) {
+            $firstLetter = strtoupper(substr($project['name'], 0, 1));
+            if (!isset($grouped[$firstLetter])) {
+                $grouped[$firstLetter] = [];
+            }
+            $grouped[$firstLetter][] = $project;
+        }
+        ksort($grouped);
+        $activeLetters = array_keys($grouped);
+        $letters = range('A', 'Z');
+        return view('projects.index', compact(
+            'grouped', 
+            'activeLetters', 
+            'letters',
+            'statuses',
+            'sectors',
+            'locations',
+            'organizations'
+        ));
+    }
 }

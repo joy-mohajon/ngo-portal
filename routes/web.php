@@ -32,18 +32,30 @@ Route::middleware('auth')->group(function () {
         // Resourceful routes
         Route::get('/', [NgoController::class, 'index'])->name('ngos.index');
         Route::get('/create', [NgoController::class, 'create'])->name('ngos.create');
-        Route::post('/store', [NgoController::class, 'store'])->name('ngos.store');
-        Route::post('/show', [NgoController::class, 'show'])->name('ngos.show');
-        // ... other resource routes as needed
-        
+        Route::post('/', [NgoController::class, 'store'])->name('ngos.store'); // Changed to POST /
+        Route::get('/{ngo}', [NgoController::class, 'show'])->name('ngos.show'); // Added {ngo} param
+        Route::get('/{ngo}/edit', [NgoController::class, 'edit'])->name('ngos.edit'); // Typically included
+        Route::put('/{ngo}', [NgoController::class, 'update'])->name('ngos.update'); // Typically included
+        Route::delete('/{ngo}', [NgoController::class, 'destroy'])->name('ngos.destroy'); // Typically included
+            
         // Approval routes
         Route::get('/pending', [NgoController::class, 'pending'])->name('ngos.pending');
         Route::post('/{ngo}/approve', [NgoController::class, 'approve'])->name('ngos.approve');
         Route::post('/{ngo}/reject', [NgoController::class, 'reject'])->name('ngos.reject');
     });
 
-    // Projects resource
-    Route::resource('projects', ProjectController::class);
+    // Project resource
+    // Allow only ngo and admin to access holder/runner project views
+//    Route::middleware(['auth', 'role:ngo|admin'])->group(function () {
+    Route::get('projects/holder', [App\Http\Controllers\ProjectController::class, 'holderProjects'])->name('projects.holder');
+    Route::get('projects/runner', [App\Http\Controllers\ProjectController::class, 'runnerProjects'])->name('projects.runner');
+// });
+    // Allow only admin and authority to access the main projects index
+    // Route::middleware(['auth', 'role:admin|authority'])->group(function () {
+        Route::resource('projects', ProjectController::class);
+    // });
+
+    
 
     // Complete nested resource route with all actions
     Route::resource('projects.trainings', ProjectTrainingController::class)

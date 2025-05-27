@@ -105,27 +105,27 @@ class NgoController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Ngo $ngo)
     {
-        $ngo = Ngo::findOrFail($id);
+        $projectsRunner = Project::where('runner_id', $ngo->id)
+            ->with([
+                'holder:id,name,logo',
+                'trainings' => fn($q) => $q->latest()->limit(5),
+                'reports' => fn($q) => $q->latest()->limit(3)
+            ])
+            ->latest()->get();
+            // ->paginate(10);
 
-        // Get projects where this NGO is the runner (implementing NGO)
-        $projectsRunner = Project::where('runner_id', $id)
-            ->with(['holder', 'trainings', 'reports'])
-            ->latest()
-            ->get();
+        $projectsHolder = Project::where('holder_id', $ngo->id)
+            ->with([
+                'runner:id,name,logo',
+                'trainings' => fn($q) => $q->latest()->limit(5),
+                'reports' => fn($q) => $q->latest()->limit(3)
+            ])
+            ->latest()->get();
+            // ->paginate(10);
 
-        // Get projects where this NGO is the holder (funding NGO)
-        $projectsHolder = Project::where('holder_id', $id)
-            ->with(['runner', 'trainings', 'reports'])
-            ->latest()
-            ->get();
-
-        return view('ngos.show', [
-            'ngo' => $ngo,
-            'projectsRunner' => $projectsRunner,
-            'projectsHolder' => $projectsHolder,
-        ]);
+        return view('ngos.show', compact('ngo', 'projectsRunner', 'projectsHolder'));
     }
 
     /**
