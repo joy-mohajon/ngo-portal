@@ -10,15 +10,15 @@ class FocusAreaSeeder extends Seeder
     public function run()
     {
         $focusAreas = [
-            ['name' => 'Financial Inclusion', 'slug' => 'financial-inclusion'],
-            ['name' => 'Healthcare', 'slug' => 'healthcare'],
-            ['name' => 'Education', 'slug' => 'education'],
-            ['name' => 'Community Development', 'slug' => 'community-development'],
-            ['name' => 'Women Empowerment', 'slug' => 'women-empowerment'],
-            ['name' => 'Disaster Relief', 'slug' => 'disaster-relief'],
-            ['name' => 'Environment', 'slug' => 'environment'],
-            ['name' => 'Human Rights', 'slug' => 'human-rights'],
-            ['name' => 'Agriculture', 'slug' => 'agriculture'],
+            ['name' => 'Financial Inclusion', 'slug' => 'financial-inclusion', 'type' => 'Project'],
+            ['name' => 'Healthcare', 'slug' => 'healthcare', 'type' => 'Project'],
+            ['name' => 'Education', 'slug' => 'education', 'type' => 'Project'],
+            ['name' => 'Community Development', 'slug' => 'community-development', 'type' => 'NGO'],
+            ['name' => 'Women Empowerment', 'slug' => 'women-empowerment', 'type' => 'NGO'],
+            ['name' => 'Disaster Relief', 'slug' => 'disaster-relief', 'type' => 'Project'],
+            ['name' => 'Environment', 'slug' => 'environment', 'type' => 'Project'],
+            ['name' => 'Human Rights', 'slug' => 'human-rights', 'type' => 'NGO'],
+            ['name' => 'Agriculture', 'slug' => 'agriculture', 'type' => 'Project'],
         ];
 
         foreach ($focusAreas as $focusArea) {
@@ -26,6 +26,7 @@ class FocusAreaSeeder extends Seeder
                 'name' => $focusArea['name'],
                 'slug' => $focusArea['slug'],
                 'description' => $this->getDescriptionForFocusArea($focusArea['name']),
+                'type' => $focusArea['type'],
             ]);
         }
     }

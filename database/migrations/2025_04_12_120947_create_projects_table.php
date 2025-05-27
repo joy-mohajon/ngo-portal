@@ -16,8 +16,9 @@ return new class extends Migration
             $table->string('title');
             $table->text('description');
             $table->string('location');
-            $table->decimal('budget', 10, 2);
+            $table->decimal('budget', 15, 2);
             $table->string('focus_area');
+            $table->json('major_activities')->nullable();
             $table->foreignId('holder_id')->constrained('ngos')->onDelete('cascade');
             $table->foreignId('runner_id')->constrained('ngos')->onDelete('cascade');
             $table->date('start_date');

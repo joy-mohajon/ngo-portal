@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\FocalPerson;
 use App\Models\FocusArea;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -15,21 +16,22 @@ return new class extends Migration
         Schema::create('ngos', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->string('logo')->nullable();
             $table->string('name');
+            $table->string('short_name')->nullable();
             $table->text('description')->nullable();
             $table->string('registration_id')->unique();
-            $table->string('phone_number');
             $table->string('email')->unique();
-            $table->string('location');
-            $table->string('logo')->nullable();
             $table->string('website')->nullable();
+            $table->string('location');
+            $table->string('focus_area')->nullable();
+            $table->json('focus_activities')->nullable(); 
             $table->string('certificate_path')->nullable();
             $table->string('established_year')->nullable();
             $table->enum('status', ['pending', 'approved', 'rejected', 'suspended'])->default('pending');
             $table->timestamps();
         });
     }
-
 
     /**
      * Reverse the migrations.

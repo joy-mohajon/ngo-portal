@@ -40,7 +40,7 @@ class UserSeeder extends Seeder
 
             // Create authority user and profile
             $authorityUser = User::create([
-                'name' => 'Authority User',
+                'name' => 'Joy',
                 'email' => 'authority@example.com',
                 'password' => Hash::make('password'),
             ]);
@@ -68,7 +68,7 @@ class UserSeeder extends Seeder
                 'user_id' => $ngoUser->id,
                 'name' => $ngoUser->name,
                 'registration_id' => "NGO-111111",
-                'phone_number' => '0987654321',
+                // 'phone_number' => '0987654321',
                 'email' => $ngoUser->email,
                 'location' => 'NGO Location',
             ]);
@@ -79,4 +79,4 @@ class UserSeeder extends Seeder
             throw $e;
         }
     }
-} 
+}

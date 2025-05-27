@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ngo_has_focus_area', function (Blueprint $table) {
+        Schema::create('focal_persons', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('ngo_id')->constrained()->onDelete('cascade');
-            $table->foreignId('focus_area_id')->constrained()->onDelete('cascade');
+            $table->string('name');
+            $table->string('mobile');
+            $table->string('email')->unique();
+            $table->string('designation');
             $table->timestamps();
-            
-            $table->unique(['ngo_id', 'focus_area_id']);
         });
     }
 
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('ngo_has_focus_area');
+        Schema::dropIfExists('focal_persons');
     }
 };

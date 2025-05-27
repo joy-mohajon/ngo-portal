@@ -20,7 +20,7 @@ class Report extends Model
         'file_type',
         'month',
         'description',
-        'status'
+        'status',
     ];
 
     public function project(): BelongsTo

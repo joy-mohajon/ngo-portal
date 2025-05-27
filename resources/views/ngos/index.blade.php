@@ -32,20 +32,16 @@
             <!-- Focus Area Tabs -->
             <div class="mb-8">
                 <div class="flex flex-wrap border-b border-gray-200">
-                    <button 
-                        @click="activeTab = 'all'; activeLetter = 'all'" 
+                    <button @click="activeTab = 'all'; activeLetter = 'all'"
                         :class="{ 'bg-white text-green-600 border-b-2 border-green-600': activeTab === 'all' }"
-                        class="px-6 py-3 font-medium text-sm rounded-t-lg transition-colors duration-200"
-                    >
+                        class="px-6 py-3 font-medium text-sm rounded-t-lg transition-colors duration-200">
                         All NGOs ({{ $allNgos->count() }})
                     </button>
-                    
+
                     @foreach($focusAreas as $focusArea)
-                    <button 
-                        @click="activeTab = '{{ $focusArea->slug }}'; activeLetter = 'all'"
+                    <button @click="activeTab = '{{ $focusArea->slug }}'; activeLetter = 'all'"
                         :class="{ 'bg-white rounded-t-lg text-green-600 border-b-2 border-green-600': activeTab === '{{ $focusArea->slug }}' }"
-                        class="px-6 py-3 font-medium text-sm transition-colors duration-200"
-                    >
+                        class="px-6 py-3 font-medium text-sm transition-colors duration-200">
                         {{ $focusArea->name }} ({{ $focusArea->ngos_count }})
                     </button>
                     @endforeach
@@ -57,62 +53,56 @@
                 <!-- A-Z Navigation -->
                 <div class="flex flex-wrap justify-start gap-2 mb-8" x-show="activeTab === 'all'">
                     @php
-                        $activeLetters = $grouped->keys()->map(function($letter) {
-                            return strtoupper($letter);
-                        })->toArray();
+                    $activeLetters = $grouped->keys()->map(function($letter) {
+                    return strtoupper($letter);
+                    })->toArray();
                     @endphp
-                    
-                    <button
-                        @click="activeLetter = 'all'"
+
+                    <button @click="activeLetter = 'all'"
                         :class="{ 'bg-[#9229AD] text-white': activeLetter === 'all', ' bg-gray-300 hover:bg-gray-200': activeLetter !== 'all' }"
-                        class="w-10 h-10 flex items-center justify-center rounded-lg font-medium text-sm transition-colors duration-200 shadow"
-                    >
+                        class="w-10 h-10 flex items-center justify-center rounded-lg font-medium text-sm transition-colors duration-200 shadow">
                         All
                     </button>
-                    
+
                     @foreach(range('A', 'Z') as $letter)
-                        @if(in_array($letter, $activeLetters))
-                            <button
-                                @click="activeLetter = '{{ $letter }}'"
-                                :class="{ 'bg-[#9229AD] text-white': activeLetter === '{{ $letter }}', 'bg-gray-300 hover:bg-[#9229AD] hover:text-white': activeLetter !== '{{ $letter }}' }"
-                                class="w-10 h-10 flex items-center justify-center rounded-lg font-medium text-sm transition-colors duration-200 shadow"
-                            >
-                                {{ $letter }}
-                            </button>
-                        @else
-                            <span class="w-10 h-10 flex items-center justify-center rounded-lg font-medium text-sm shadow bg-gray-100 text-gray-400 cursor-not-allowed">
-                                {{ $letter }}
-                            </span>
-                        @endif
+                    @if(in_array($letter, $activeLetters))
+                    <button @click="activeLetter = '{{ $letter }}'"
+                        :class="{ 'bg-[#9229AD] text-white': activeLetter === '{{ $letter }}', 'bg-gray-300 hover:bg-[#9229AD] hover:text-white': activeLetter !== '{{ $letter }}' }"
+                        class="w-10 h-10 flex items-center justify-center rounded-lg font-medium text-sm transition-colors duration-200 shadow">
+                        {{ $letter }}
+                    </button>
+                    @else
+                    <span
+                        class="w-10 h-10 flex items-center justify-center rounded-lg font-medium text-sm shadow bg-gray-100 text-gray-400 cursor-not-allowed">
+                        {{ $letter }}
+                    </span>
+                    @endif
                     @endforeach
                 </div>
 
                 <!-- All NGOs Content (Alphabetical) -->
                 <div x-show="activeTab === 'all'" x-transition x-cloak>
                     @foreach($grouped as $letter => $ngos)
-                        <div x-show="activeLetter === 'all' || activeLetter === '{{ $letter }}'" class="mb-4 {{ ($loop->iteration % 2 == 0)? 'bg-[#E8D4F0]' : 'bg-[#D1E7EC]'}} p-6 rounded-2xl">
-                            <h2 class="text-2xl font-bold mb-4">Section {{ $letter }}</h2>
-                            <div class="flex flex-1 flex-wrap justify-start items-center gap-6">
-                                @foreach($ngos as $ngo)
-                                    @include('ngos.partials.card', ['ngo' => $ngo])
-                                @endforeach
-                            </div>
+                    <div x-show="activeLetter === 'all' || activeLetter === '{{ $letter }}'"
+                        class="mb-4 {{ ($loop->iteration % 2 == 0)? 'bg-[#F2E0DB]' : 'bg-[#D1E7EC]'}} p-6 rounded-2xl">
+                        <h2 class="text-2xl font-bold mb-4">Section {{ $letter }}</h2>
+                        <div class="flex flex-1 flex-wrap justify-start items-center gap-6">
+                            @foreach($ngos as $ngo)
+                            @include('ngos.partials.card', ['ngo' => $ngo])
+                            @endforeach
                         </div>
+                    </div>
                     @endforeach
                 </div>
 
                 <!-- Focus Area Contents -->
                 @foreach($focusAreas as $focusArea)
-                <div 
-                    x-show="activeTab === '{{ $focusArea->slug }}'" 
-                    x-transition
-                    x-cloak
-                    class="p-6 rounded-2xl {{ ($loop->iteration % 2 == 0)? 'bg-[#E8D4F0]' : 'bg-[#D1E7EC]'}}"
-                >
+                <div x-show="activeTab === '{{ $focusArea->slug }}'" x-transition x-cloak
+                    class="p-6 rounded-2xl {{ ($loop->iteration % 2 == 0)? 'bg-[#F2E0DB]' : 'bg-[#D1E7EC]'}}">
                     <h2 class="text-2xl font-bold mb-6">{{ $focusArea->name }}</h2>
                     <div class="flex flex-1 flex-wrap justify-start items-center gap-6">
                         @foreach($focusArea->ngos as $ngo)
-                            @include('ngos.partials.card', ['ngo' => $ngo])
+                        @include('ngos.partials.card', ['ngo' => $ngo])
                         @endforeach
                     </div>
                 </div>

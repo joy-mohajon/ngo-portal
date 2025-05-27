@@ -10,21 +10,25 @@ class Ngo extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name',
-        'Description',
-        'registration_id',
-        'phone_number',
-        'email',
-        'location',
-        'certificate_path',
+        'user_id',
         'logo',
+        'name',
+        'short_name',
+        'description',
+        'registration_id',
+        'email',
         'website',
+        'location',
+        'focus_area',
+        'focus_activities',
+        'certificate_path',
+        'established_year',
         'status',
-        'established_year'
     ];
 
     protected $casts = [
         'status' => 'string',
+        'focus_activities' => 'array',
     ];
 
     public function user()
@@ -32,10 +36,16 @@ class Ngo extends Model
         return $this->belongsTo(User::class);
     }
 
-     public function focusAreas()
+    public function focusAreas()
     {
         return $this->belongsToMany(FocusArea::class, 'ngo_has_focus_area');
     }
+
+    public function focalPersons()
+    {
+        return $this->belongsToMany(FocalPerson::class, 'ngo_has_focal_persons')
+                    ->withTimestamps();
+    }                                                                                                                                                                       
 
     /**
      * Get the status label for display

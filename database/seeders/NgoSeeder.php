@@ -16,6 +16,9 @@ class NgoSeeder extends Seeder
     {
         $ngoRole = Role::firstOrCreate(['name' => 'ngo']);
 
+        // Before creating NGOs, get all focus areas as a map
+        $focusAreaMap = FocusArea::pluck('id', 'name');
+
         $ngos = [
             [
                 'name' => 'ASA',
@@ -76,7 +79,7 @@ class NgoSeeder extends Seeder
                 'logo' => 'logos/skus.png',
                 'description' => 'SKUS (Sushilan Kallyan Sangstha) is a community development organization working since 1985 to empower rural communities in Bangladesh through programs in agriculture, women\'s empowerment, disaster preparedness, and sustainable livelihoods.',
                 'location' => 'Fulchhari, Gaibandha',
-            ]
+            ],
         ];
 
         foreach ($ngos as $ngoData) {
@@ -91,7 +94,7 @@ class NgoSeeder extends Seeder
                 'name' => $ngoData['name'],
                 'description' => $ngoData['description'],
                 'registration_id' => $ngoData['registration_id'],
-                'phone_number' => $ngoData['phone'],
+                // 'phone_number' => $ngoData['phone'],
                 'email' => $ngoData['email'],
                 'website' => $ngoData['website'],
                 'location' => $ngoData['location'],
@@ -102,9 +105,9 @@ class NgoSeeder extends Seeder
 
             // Attach focus areas
             foreach ($ngoData['focus_areas'] as $focusAreaName) {
-                $focusArea = FocusArea::where('name', $focusAreaName)->first();
-                if ($focusArea) {
-                    $ngo->focusAreas()->attach($focusArea->id);
+                $focusAreaId = $focusAreaMap[$focusAreaName] ?? null;
+                if ($focusAreaId) {
+                    $ngo->focusAreas()->attach($focusAreaId);
                 }
             }
         }
