@@ -1,16 +1,7 @@
 <x-app-layout>
     <div class="p-4">
-        @if(session('success'))
-        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-            <span class="block sm:inline">{{ session('success') }}</span>
-        </div>
-        @endif
-
-        @if(session('error'))
-        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-            <span class="block sm:inline">{{ session('error') }}</span>
-        </div>
-        @endif
+        <!-- Flash Messages -->
+        @include('projects.partials.flash-messages')
 
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 relative">
             <div class="relative">
@@ -19,7 +10,7 @@
                 <p class="text-gray-600 mt-1.5">Browse and manage all active initiatives</p>
             </div>
             <div class="mt-4 md:mt-0">
-                <a href="#"
+                <a href="{{ route('projects.create') }}"
                     class="inline-flex items-center px-5 py-3 bg-gradient-to-r from-[#9229AD] to-[#7A1E93] font-medium text-white rounded-lg shadow-sm hover:shadow-xl transition-all duration-300 group relative overflow-hidden">
                     <span
                         class="absolute inset-0 bg-gradient-to-r from-[#D4AF37]/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
@@ -74,7 +65,8 @@
                             <option value="">All Sectors</option>
                             @foreach($sectors as $sector)
                             <option value="{{ $sector }}" {{ request('sector') == $sector ? 'selected' : '' }}>
-                                {{ $sector }}</option>
+                                {{ $sector }}
+                            </option>
                             @endforeach
                         </select>
                         <div
@@ -213,7 +205,7 @@
                                             {{ $project['name'] }}</h3>
                                     </div>
                                     <span class="text-xs bg-purple-100 text-purple-800 px-2.5 py-1 rounded-full">
-                                        {{ $project['sector'] }}
+                                        {{ $project['focus_area_name'] ?? '-' }}
                                     </span>
                                 </div>
 
@@ -281,7 +273,7 @@
                                             {{ $project['name'] }}</h3>
                                     </div>
                                     <span class="text-xs bg-purple-100 text-purple-800 px-2.5 py-1 rounded-full">
-                                        {{ $project['sector'] }}
+                                        {{ $project['focus_area_name'] ?? '-' }}
                                     </span>
                                 </div>
 

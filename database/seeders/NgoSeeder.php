@@ -16,6 +16,9 @@ class NgoSeeder extends Seeder
     {
         $ngoRole = Role::firstOrCreate(['name' => 'ngo']);
 
+        // Before creating NGOs, get all focus areas as a map
+        $focusAreaMap = FocusArea::pluck('id', 'name');
+
         $ngos = [
             [
                 'name' => 'ASA',
@@ -102,9 +105,9 @@ class NgoSeeder extends Seeder
 
             // Attach focus areas
             foreach ($ngoData['focus_areas'] as $focusAreaName) {
-                $focusArea = FocusArea::where('name', $focusAreaName)->first();
-                if ($focusArea) {
-                    $ngo->focusAreas()->attach($focusArea->id);
+                $focusAreaId = $focusAreaMap[$focusAreaName] ?? null;
+                if ($focusAreaId) {
+                    $ngo->focusAreas()->attach($focusAreaId);
                 }
             }
         }

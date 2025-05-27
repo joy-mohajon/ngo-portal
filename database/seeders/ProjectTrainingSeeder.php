@@ -346,6 +346,9 @@ class ProjectTrainingSeeder extends Seeder
             ]
         ];
 
+        // Before creating projects, get all focus areas as a map
+        $focusAreaMap = \App\Models\FocusArea::pluck('id', 'name');
+
         // Get all NGO users
         $ngos = Ngo::where('status', 'approved')->get(); 
 
@@ -359,7 +362,7 @@ class ProjectTrainingSeeder extends Seeder
                 'description' => $projectData['description'],
                 'location' => $projectData['location'],
                 'budget' => $projectData['budget'],
-                'focus_area' => $projectData['focus_area'],
+                'focus_area' => $focusAreaMap[$projectData['focus_area']] ?? "",
                 'major_activities' => $projectData['major_activities'],
                 'holder_id' => $holder->id,
                 'runner_id' => $runner->id,

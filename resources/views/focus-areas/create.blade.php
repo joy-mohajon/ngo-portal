@@ -14,6 +14,16 @@
                     @enderror
                 </div>
                 <div>
+                    <label for="type" class="block text-sm font-medium text-gray-700">Type</label>
+                    <select id="type" name="type" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
+                        <option value="Project" {{ old('type', 'Project') == 'Project' ? 'selected' : '' }}>Project</option>
+                        <option value="NGO" {{ old('type') == 'NGO' ? 'selected' : '' }}>NGO</option>
+                    </select>
+                    @error('type')
+                    <div class="text-red-600 text-sm mt-1">{{ $message }}</div>
+                    @enderror
+                </div>
+                <div>
                     <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
                     <textarea id="description" name="description" rows="3"
                         class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">{{ old('description') }}</textarea>

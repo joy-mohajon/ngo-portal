@@ -16,7 +16,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
                 <h4 class="text-sm font-medium text-gray-500">Focus Area</h4>
-                <p class="mt-1 text-sm text-gray-900">{{ $project->focus_area }}</p>
+                <p class="mt-1 text-sm text-gray-900">{{ $project->focusArea->name ?? '-' }}</p>
             </div>
             <div>
                 <h4 class="text-sm font-medium text-gray-500">Budget</h4>

@@ -64,4 +64,9 @@ class Project extends Model
             ->withPivot(['enrollment_date', 'completion_date', 'status', 'notes'])
             ->withTimestamps();
     }
+
+    public function focusArea()
+    {
+        return $this->belongsTo(FocusArea::class, 'focus_area');
+    }
 }

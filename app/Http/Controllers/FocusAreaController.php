@@ -24,11 +24,13 @@ class FocusAreaController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:focus_areas,name',
             'description' => 'nullable|string',
+            'type' => 'required|in:Project,NGO',
         ]);
         $focusArea = FocusArea::create([
             'name' => $validated['name'],
             'slug' => Str::slug($validated['name']),
             'description' => $validated['description'] ?? null,
+            'type' => $validated['type'],
         ]);
         return redirect()->route('focus-areas.index')->with('success', 'Focus Area created successfully.');
     }
@@ -43,11 +45,13 @@ class FocusAreaController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:focus_areas,name,' . $focus_area->id,
             'description' => 'nullable|string',
+            'type' => 'required|in:Project,NGO',
         ]);
         $focus_area->update([
             'name' => $validated['name'],
             'slug' => Str::slug($validated['name']),
             'description' => $validated['description'] ?? null,
+            'type' => $validated['type'],
         ]);
         return redirect()->route('focus-areas.index')->with('success', 'Focus Area updated successfully.');
     }

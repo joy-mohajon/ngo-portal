@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('slug');
             $table->text('description')->nullable();
+            $table->enum('type', ['Project', 'NGO'])->default('Project');
             $table->timestamps();
         });
     }

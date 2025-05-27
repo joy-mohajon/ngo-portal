@@ -14,6 +14,7 @@
             <div class="bg-white shadow-lg rounded-xl p-6 border border-indigo-100 flex flex-col justify-between">
                 <div>
                     <h3 class="text-xl font-semibold text-indigo-800 mb-2">{{ $focusArea->name }}</h3>
+                    <span class="inline-block px-2 py-1 text-xs rounded-full bg-indigo-100 text-indigo-700 font-semibold mb-2">{{ $focusArea->type }}</span>
                     <p class="text-gray-600 mb-4">{{ $focusArea->description ?? 'No description' }}</p>
                 </div>
                 <div class="flex space-x-2 mt-4">

@@ -252,13 +252,13 @@
                                     value="{{ $project->id }}">
                                 <div class="mb-4">
                                     <label for="from_date" class="block text-sm font-medium text-gray-700">From
-                                        Date</label>
-                                    <input type="month" name="from_date" id="from_date"
+                                    </label>
+                                    <input type="month" name="from_date" id="from_date" placeholder="1999-02"
                                         class="mt-1 focus:ring-emerald-500 focus:border-emerald-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
                                 </div>
                                 <div class="mb-4">
-                                    <label for="to_date" class="block text-sm font-medium text-gray-700">To Date</label>
-                                    <input type="month" name="to_date" id="to_date"
+                                    <label for="to_date" class="block text-sm font-medium text-gray-700">To</label>
+                                    <input type="month" name="to_date" id="to_date" placeholder="1999-02"
                                         class="mt-1 focus:ring-emerald-500 focus:border-emerald-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
                                 </div>
                                 <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
