@@ -122,12 +122,20 @@ class ReportController extends Controller
     /**
      * Download all reports for a project as a ZIP file
      */
-    public function downloadProjectReports(Project $project)
+    public function downloadProjectReports(Project $project, Request $request)
     {
-        $reports = $project->reports;
-        
+        $reportsQuery = $project->reports();
+        $from = $request->query('from_date');
+        $to = $request->query('to_date');
+        if ($from) {
+            $reportsQuery->where('month', '>=', $from);
+        }
+        if ($to) {
+            $reportsQuery->where('month', '<=', $to);
+        }
+        $reports = $reportsQuery->get();
         if ($reports->isEmpty()) {
-            return redirect()->back()->with('error', 'No reports available for this project');
+            return redirect()->back()->with('error', 'No reports available for this project in the selected date range');
         }
         
         // Create a temporary file to serve as the ZIP
