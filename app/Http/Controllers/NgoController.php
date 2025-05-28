@@ -142,7 +142,9 @@ class NgoController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $ngo = Ngo::with('focusAreas')->findOrFail($id);
+        $focusAreas = FocusArea::orderBy('name')->get();
+        return view('ngos.edit', compact('ngo', 'focusAreas'));
     }
 
     /**
@@ -150,7 +152,47 @@ class NgoController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $ngo = Ngo::findOrFail($id);
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email',
+            'short_name' => 'required|string|max:255',
+            'website' => 'nullable|url',
+            'location' => 'required|string|max:255',
+            'focus_areas' => 'nullable|array',
+            'focus_areas.*' => 'exists:focus_areas,id',
+            'focus_activities' => 'nullable|array',
+            'focus_activities.*' => 'nullable|string|max:255',
+            'logo' => 'nullable|image|max:2048',
+            'certificate_path' => 'nullable|file|max:4096',
+            'established_year' => 'required|string|max:10',
+            'description' => 'nullable|string',
+        ]);
+
+        // Handle file uploads
+        if ($request->hasFile('logo')) {
+            $logoPath = $request->file('logo')->store('logos', 'public');
+            $ngo->logo = $logoPath;
+        }
+        if ($request->hasFile('certificate_path')) {
+            $certificatePath = $request->file('certificate_path')->store('certificates', 'public');
+            $ngo->certificate_path = $certificatePath;
+        }
+
+        $ngo->name = $validated['name'];
+        $ngo->email = $validated['email'];
+        $ngo->short_name = $validated['short_name'];
+        $ngo->website = $validated['website'] ?? null;
+        $ngo->location = $validated['location'];
+        $ngo->focus_activities = $validated['focus_activities'] ?? [];
+        $ngo->established_year = $validated['established_year'];
+        $ngo->description = $validated['description'] ?? null;
+        $ngo->save();
+
+        // Sync focus areas
+        $ngo->focusAreas()->sync($validated['focus_areas'] ?? []);
+
+        return redirect()->route('ngos.show', $ngo->id)->with('success', 'NGO updated successfully.');
     }
 
     /**

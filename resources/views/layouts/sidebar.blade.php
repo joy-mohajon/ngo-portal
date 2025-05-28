@@ -177,9 +177,18 @@
                 </x-slot>
 
                 <x-slot name="content">
+                    @if(auth()->user()->hasRole('ngo'))
+                    <x-dropdown-link :href="route('ngos.edit', auth()->user()->ngo->id)">
+                        {{ __('Profile') }}
+                    </x-dropdown-link>
+                    <x-dropdown-link :href="route('profile.edit')">
+                        {{ __('Update Password') }}
+                    </x-dropdown-link>
+                    @else
                     <x-dropdown-link :href="route('profile.edit')">
                         {{ __('Profile') }}
                     </x-dropdown-link>
+                    @endif
 
                     <!-- Authentication -->
                     <form method="POST" action="{{ route('logout') }}">

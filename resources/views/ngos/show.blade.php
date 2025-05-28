@@ -47,15 +47,6 @@
 
                     <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div class="bg-gray-100 p-4 rounded-lg">
-                            <h3 class="text-xs font-medium text-gray-500 uppercase tracking-wider">Focus Areas</h3>
-                            <div class="flex flex-wrap gap-2 mt-1">
-                                @foreach($ngo->focusAreas as $focusArea)
-                                <span
-                                    class="px-2 py-1 text-xs rounded-full bg-indigo-100 text-indigo-700 font-semibold">{{ $focusArea->name }}</span>
-                                @endforeach
-                            </div>
-                        </div>
-                        <div class="bg-gray-100 p-4 rounded-lg">
                             <h3 class="text-xs font-medium text-gray-500 uppercase tracking-wider">Location</h3>
                             <p class="mt-1 text-gray-800 font-medium">{{ $ngo->location }}</p>
                         </div>
@@ -71,7 +62,15 @@
                             <h3 class="text-xs font-medium text-gray-500 uppercase tracking-wider">Contact Email</h3>
                             <p class="mt-1 text-blue-600 font-medium">{{ $ngo->email }}</p>
                         </div>
-
+                        <div class="bg-gray-100 p-4 rounded-lg">
+                            <h3 class="text-xs font-medium text-gray-500 uppercase tracking-wider">Focus Areas</h3>
+                            <div class="flex flex-wrap gap-2 mt-1">
+                                @foreach($ngo->focusAreas as $focusArea)
+                                <span
+                                    class="px-2 py-1 text-xs rounded-full bg-indigo-100 text-indigo-700 font-semibold">{{ $focusArea->name }}</span>
+                                @endforeach
+                            </div>
+                        </div>
                         <div class="bg-gray-100 p-4 rounded-lg">
                             <h3 class="text-xs font-medium text-gray-500 uppercase tracking-wider">Focus Activities</h3>
                             <ul class="list-disc list-inside mt-1 text-gray-800 text-sm">
