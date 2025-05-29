@@ -10,7 +10,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <!-- Left Column - Project Details -->
             <div class="lg:col-span-2 space-y-6">
-                <!-- Project Overview Card -->
+                @include('projects.partials.gallery-card', ['project' => $project])
                 @include('projects.partials.overview-card')
 
                 <!-- Reports Section -->
@@ -37,6 +37,9 @@
 
     <!-- Upload Reports Modal -->
 
+
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script src="/js/project-gallery.js"></script>
 
     <script>
     // JavaScript code remains the same as in your original code

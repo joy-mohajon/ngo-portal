@@ -69,4 +69,9 @@ class Project extends Model
     {
         return $this->belongsTo(FocusArea::class, 'focus_area');
     }
+
+    public function galleries()
+    {
+        return $this->hasMany(ProjectGallery::class)->orderBy('sort_order');
+    }
 }

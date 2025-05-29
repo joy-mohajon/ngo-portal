@@ -9,6 +9,7 @@ use App\Http\Controllers\ProjectTrainingController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\TestimonialController;
+use App\Http\Controllers\ProjectGalleryController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -71,6 +72,9 @@ Route::middleware('auth')->group(function () {
     Route::post('testimonials/{testimonial}/reject', [TestimonialController::class, 'reject'])->name('testimonials.reject');
     Route::get('testimonials/{testimonial}/download-application', [TestimonialController::class, 'downloadApplication'])->name('testimonials.download-application');
     Route::get('testimonials/{testimonial}/download-testimonial', [TestimonialController::class, 'downloadTestimonial'])->name('testimonials.download-testimonial');
+
+    Route::resource('projects.galleries', ProjectGalleryController::class)
+        ->only(['index', 'store', 'destroy']);
 
 });
 
