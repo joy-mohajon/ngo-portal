@@ -10,7 +10,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <!-- Left Column - Project Details -->
             <div class="lg:col-span-2 space-y-6">
-                @include('projects.partials.gallery-card', ['project' => $project])
+
                 @include('projects.partials.overview-card')
 
                 <!-- Reports Section -->
@@ -28,6 +28,7 @@
                 <!-- Major Activities -->
                 @include('projects.partials.major-activities-card')
 
+                @include('projects.partials.gallery-card', ['project' => $project])
                 <!-- Project Location -->
                 <!-- @include('projects.partials.location-card') -->
 
