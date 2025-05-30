@@ -1,8 +1,9 @@
 <x-app-layout>
     <div class="container mx-auto max-w-2xl py-10">
         <div class="bg-white shadow-xl rounded-lg p-8 border border-gray-200 premium-form">
-            <h2 class="text-3xl font-bold text-center text-indigo-700 mb-6">Edit NGO</h2>
-            <form method="POST" action="{{ route('ngos.update', $ngo->id) }}" enctype="multipart/form-data" class="space-y-6">
+            <h2 class="text-3xl font-bold text-center text-indigo-700 mb-6">Update Profile</h2>
+            <form method="POST" action="{{ route('ngos.update', $ngo->id) }}" enctype="multipart/form-data"
+                class="space-y-6">
                 @csrf
                 @method('PATCH')
                 <div>
@@ -25,7 +26,8 @@
                 </div>
                 <div class="border-radius-lg">
                     <div class="flex items-center justify-between mb-2">
-                        <label for="focus_areas" class="block text-sm font-medium text-gray-700 mb-2">Focus Areas</label>
+                        <label for="focus_areas" class="block text-sm font-medium text-gray-700 mb-2">Focus
+                            Areas</label>
                         <a href="{{ route('focus-areas.create') }}"
                             class="px-4 py-2 text-white bg-indigo-600 rounded-lg shadow transition text-sm font-semibold">+
                             Add Focus Area</a>
@@ -44,7 +46,9 @@
                           "extraMarkup": "<div class=\"absolute top-1/2 end-3 -translate-y-1/2\"><svg class=\"shrink-0 size-3.5 text-indigo-500\" xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"m7 15 5 5 5-5\"/><path d=\"m7 9 5-5 5 5\"/></svg></div>"
                         }' class="">
                         @foreach($focusAreas as $focusArea)
-                        <option value="{{ $focusArea->id }}" {{ in_array($focusArea->id, old('focus_areas', $ngo->focusAreas->pluck('id')->toArray())) ? 'selected' : '' }}>{{ $focusArea->name }}</option>
+                        <option value="{{ $focusArea->id }}"
+                            {{ in_array($focusArea->id, old('focus_areas', $ngo->focusAreas->pluck('id')->toArray())) ? 'selected' : '' }}>
+                            {{ $focusArea->name }}</option>
                         @endforeach
                     </select>
                     @error('focus_areas')
@@ -65,7 +69,8 @@
                         <label for="logo" class="block text-sm font-medium text-gray-700 mb-2">NGO Logo</label>
                         @if($ngo->logo)
                         <div class="mb-2">
-                            <img src="{{ asset('storage/' . $ngo->logo) }}" alt="Current Logo" class="h-16 w-16 object-contain rounded-lg border" />
+                            <img src="{{ asset('storage/' . $ngo->logo) }}" alt="Current Logo"
+                                class="h-16 w-16 object-contain rounded-lg border" />
                         </div>
                         @endif
                         <input type="file" id="logo" name="logo"
@@ -97,34 +102,40 @@
                     <label class="block text-sm font-medium text-gray-700 mb-2">Focus Activities</label>
                     <div id="focus-activities-list">
                         @php
-                            $activities = old('focus_activities', $ngo->focus_activities ?? []);
+                        $activities = old('focus_activities', $ngo->focus_activities ?? []);
                         @endphp
                         @if(!empty($activities))
-                            @foreach($activities as $activity)
-                                <div class="flex items-center mb-2 activity-field">
-                                    <input type="text" name="focus_activities[]" value="{{ $activity }}"
-                                        class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                        placeholder="Enter activity" />
-                                    <button type="button"
-                                        class="ml-2 px-2 py-1 rounded-full bg-red-500 text-white flex items-center justify-center remove-activity-btn"
-                                        title="Remove Activity">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
-                                    </button>
-                                </div>
-                            @endforeach
+                        @foreach($activities as $activity)
+                        <div class="flex items-center mb-2 activity-field">
+                            <input type="text" name="focus_activities[]" value="{{ $activity }}"
+                                class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                placeholder="Enter activity" />
+                            <button type="button"
+                                class="ml-2 px-2 py-1 rounded-full bg-red-500 text-white flex items-center justify-center remove-activity-btn"
+                                title="Remove Activity">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+                        @endforeach
                         @else
-                            <div class="flex items-center mb-2 activity-field">
-                                <input type="text" name="focus_activities[]"
-                                    class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                    placeholder="Enter activity" />
-                                <button type="button"
-                                    class="ml-2 px-2 py-1 rounded-full bg-indigo-600 text-white flex items-center justify-center add-activity-btn"
-                                    title="Add Activities">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                                    </svg>
-                                </button>
-                            </div>
+                        <div class="flex items-center mb-2 activity-field">
+                            <input type="text" name="focus_activities[]"
+                                class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                placeholder="Enter activity" />
+                            <button type="button"
+                                class="ml-2 px-2 py-1 rounded-full bg-indigo-600 text-white flex items-center justify-center add-activity-btn"
+                                title="Add Activities">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 4v16m8-8H4" />
+                                </svg>
+                            </button>
+                        </div>
                         @endif
                     </div>
                     @error('focus_activities')
@@ -132,10 +143,12 @@
                     @enderror
                 </div>
                 <div>
-                    <label for="certificate_path" class="block text-sm font-medium text-gray-700">Registration Certificate</label>
+                    <label for="certificate_path" class="block text-sm font-medium text-gray-700">Registration
+                        Certificate</label>
                     @if($ngo->certificate_path)
                     <div class="mb-2">
-                        <a href="{{ asset('storage/' . $ngo->certificate_path) }}" target="_blank" class="text-indigo-600 underline">View Current Certificate</a>
+                        <a href="{{ asset('storage/' . $ngo->certificate_path) }}" target="_blank"
+                            class="text-indigo-600 underline">View Current Certificate</a>
                     </div>
                     @endif
                     <input type="file" id="certificate_path" name="certificate_path"
@@ -145,7 +158,8 @@
                     @enderror
                 </div>
                 <div>
-                    <label for="established_year" class="block text-sm font-medium text-gray-700">Established Year</label>
+                    <label for="established_year" class="block text-sm font-medium text-gray-700">Established
+                        Year</label>
                     <input type="text" id="established_year" name="established_year"
                         class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                         placeholder="YYYY" value="{{ old('established_year', $ngo->established_year) }}" required />
@@ -163,13 +177,18 @@
                     @enderror
                 </div>
                 <div class="pt-4 flex justify-between items-center">
-                    <a href="{{ route('ngos.show', $ngo->id) }}" class="text-indigo-600 hover:underline">&larr; Back to NGO</a>
+                    <a href="{{ route('ngos.show', $ngo->id) }}" class="text-indigo-600 hover:underline">&larr; Back
+                        to
+                        NGO</a>
                     <button type="submit"
-                        class="py-3 px-6 rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold text-lg shadow-lg hover:from-indigo-700 hover:to-purple-700 transition">Update NGO</button>
+                        class="py-3 px-6 rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold text-lg shadow-lg hover:from-indigo-700 hover:to-purple-700 transition">Update
+                        NGO</button>
                 </div>
             </form>
         </div>
+        @include('ngos.partials.focal_persons_card_crud', ['ngo' => $ngo, 'crudEndived' => true])
     </div>
+
     <style>
     .premium-form {
         background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%);
@@ -177,6 +196,7 @@
         box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
         border: 1px solid #e0e7ff;
     }
+
     .premium-multiselect {
         background: linear-gradient(135deg, #e0e7ff 0%, #f8fafc 100%);
         border: 1.5px solid #a5b4fc;
@@ -184,6 +204,7 @@
         box-shadow: 0 2px 8px 0 rgba(99, 102, 241, 0.08);
         transition: border 0.2s, box-shadow 0.2s;
     }
+
     .premium-multiselect:focus {
         border-color: #6366f1;
         box-shadow: 0 0 0 2px #6366f1;
@@ -223,4 +244,4 @@
         });
     });
     </script>
-</x-app-layout> 
+</x-app-layout>

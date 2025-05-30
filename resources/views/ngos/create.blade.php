@@ -1,7 +1,7 @@
 <x-app-layout>
     <div class="container mx-auto max-w-2xl py-10">
         <div class="bg-white shadow-xl rounded-lg p-8 border border-gray-200 premium-form">
-            <h2 class="text-3xl font-bold text-center text-indigo-700 mb-6">Create New NGO</h2>
+            <h2 class="text-3xl font-bold text-center text-indigo-700 mb-6">Get Approval for your NGO</h2>
             <form method="POST" action="{{ route('ngos.store') }}" enctype="multipart/form-data" class="space-y-6">
                 @csrf
                 <div>

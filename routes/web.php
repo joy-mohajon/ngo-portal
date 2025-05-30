@@ -10,6 +10,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\TestimonialController;
 use App\Http\Controllers\ProjectGalleryController;
+use App\Http\Controllers\FocalPersonController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -75,6 +76,9 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('projects.galleries', ProjectGalleryController::class)
         ->only(['index', 'store', 'destroy']);
+
+    Route::resource('ngos.focal-persons', FocalPersonController::class)
+        ->only(['index','store','update','destroy']);
 
 });
 

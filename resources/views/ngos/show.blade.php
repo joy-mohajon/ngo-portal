@@ -84,6 +84,8 @@
             </div>
         </div>
 
+        @include('ngos.partials.focal_persons_card', ['ngo' => $ngo, 'crudEnabled' => false])
+
         <!-- Projects Section -->
         <div class="mt-12">
             <div class="flex border-b border-gray-200">
@@ -146,6 +148,8 @@
                 @endforelse
             </div>
         </div>
+
+
     </div>
 
     <!-- Font Awesome for icons -->
