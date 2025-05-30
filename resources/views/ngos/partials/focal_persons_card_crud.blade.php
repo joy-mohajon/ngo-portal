@@ -46,26 +46,9 @@ $crudEnabled = $crudEnabled ?? false;
                 @auth
                 @hasrole('ngo')
                 <div class="mt-4 flex space-x-2">
-                    <button type="button" id="editFocalPersonBtn{{ $person->id }}"
-                        class="text-indigo-600 hover:text-indigo-900 text-xs font-semibold">Edit</button>
-                    <script>
-                    document.getElementById('editFocalPersonBtn{{ $person->id }}').addEventListener('click',
-                        function() {
-                            openEditFocalPersonModal({
-                                {
-                                    $person - > id
-                                }
-                            }, {
-                                !!json_encode($person - > name) !!
-                            }, {
-                                !!json_encode($person - > designation) !!
-                            }, {
-                                !!json_encode($person - > email) !!
-                            }, {
-                                !!json_encode($person - > mobile) !!
-                            });
-                        });
-                    </script>
+                    <button type="button" class="edit-focal-person-btn" data-id="{{ $person->id }}" data-name="{{ htmlspecialchars($person->name, ENT_QUOTES) }}" data-designation="{{ htmlspecialchars($person->designation, ENT_QUOTES) }}" data-email="{{ htmlspecialchars($person->email, ENT_QUOTES) }}" data-mobile="{{ htmlspecialchars($person->mobile, ENT_QUOTES) }}">
+                        Edit
+                    </button>
                     <button type="button" onclick="openDeleteFocalPersonModal({{ $person->id }})"
                         class="text-red-600 hover:text-red-900 text-xs font-semibold">Delete</button>
                 </div>
@@ -83,31 +66,30 @@ $crudEnabled = $crudEnabled ?? false;
 
     <!-- Add Modal -->
     <div id="addFocalPersonModal"
-        class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 hidden">
+        class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 @if($errors->has('name') || $errors->has('designation') || $errors->has('email') || $errors->has('mobile')) flex @else hidden @endif">
         <div class="bg-white rounded-xl shadow-xl border border-indigo-100 w-full max-w-lg p-8 relative">
             <form method="POST" action="{{ route('ngos.focal-persons.store', $ngo->id) }}" class="space-y-6">
                 @csrf
                 <h2 class="text-2xl font-bold text-indigo-700 mb-4">Add Focal Person</h2>
                 <div>
                     <x-input-label for="add_name" value="Name" />
-                    <x-text-input id="add_name" name="name" type="text" class="mt-1 block w-full" required />
-                    <x-input-error for="name" />
+                    <x-text-input id="add_name" name="name" type="text" class="mt-1 block w-full" required value="{{ old('name') }}" />
+                    <x-input-error :messages="$errors->get('name')" />
                 </div>
                 <div>
                     <x-input-label for="add_designation" value="Designation" />
-                    <x-text-input id="add_designation" name="designation" type="text" class="mt-1 block w-full"
-                        required />
-                    <x-input-error for="designation" />
+                    <x-text-input id="add_designation" name="designation" type="text" class="mt-1 block w-full" required value="{{ old('designation') }}" />
+                    <x-input-error :messages="$errors->get('designation')" />
                 </div>
                 <div>
                     <x-input-label for="add_email" value="Email" />
-                    <x-text-input id="add_email" name="email" type="email" class="mt-1 block w-full" required />
-                    <x-input-error for="email" />
+                    <x-text-input id="add_email" name="email" type="email" class="mt-1 block w-full" required value="{{ old('email') }}" />
+                    <x-input-error :messages="$errors->get('email')" />
                 </div>
                 <div>
                     <x-input-label for="add_mobile" value="Mobile" />
-                    <x-text-input id="add_mobile" name="mobile" type="text" class="mt-1 block w-full" required />
-                    <x-input-error for="mobile" />
+                    <x-text-input id="add_mobile" name="mobile" type="text" class="mt-1 block w-full" required value="{{ old('mobile') }}" />
+                    <x-input-error :messages="$errors->get('mobile')" />
                 </div>
                 <div class="flex justify-end space-x-2 mt-4">
                     <button type="button" onclick="closeModal('addFocalPersonModal')"
@@ -198,4 +180,18 @@ function openDeleteFocalPersonModal(id) {
     document.getElementById('deleteFocalPersonForm').action = `/ngos/{{ $ngo->id }}/focal-persons/${id}`;
     document.getElementById('deleteFocalPersonModal').style.display = 'flex';
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.edit-focal-person-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            openEditFocalPersonModal(
+                btn.getAttribute('data-id'),
+                btn.getAttribute('data-name'),
+                btn.getAttribute('data-designation'),
+                btn.getAttribute('data-email'),
+                btn.getAttribute('data-mobile')
+            );
+        });
+    });
+});
 </script>
