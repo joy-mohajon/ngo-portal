@@ -27,15 +27,29 @@ class StudentController extends Controller
             $query->where('status', $request->status);
         }
 
+        if ($request->has('project_id')) {
+            $projectId = $request->project_id;
+            $query->whereHas('projects', function($q) use ($projectId) {
+                $q->where('projects.id', $projectId);
+            });
+        }
+
         $students = $query->latest()->paginate(10);
 
         return view('students.index', compact('students'));
     }
 
-    public function create()
+    public function create(Request $request)
     {
-        $projects = Project::all();
-        return view('students.create', compact('projects'));
+        $user = $request->user();
+        $ngo = $user && $user->hasRole('ngo') ? $user->ngo : null;
+        $projects = collect();
+        if ($ngo) {
+            $projects = \App\Models\Project::where('runner_id', $ngo->id)
+                ->get();
+        }
+        $selectedProjectId = $request->input('project_id');
+        return view('students.create', compact('projects', 'selectedProjectId'));
     }
 
     public function store(Request $request)

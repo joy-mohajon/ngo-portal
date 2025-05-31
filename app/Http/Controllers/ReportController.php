@@ -165,4 +165,19 @@ class ReportController extends Controller
         
         return redirect()->back()->with('error', 'Could not create ZIP file');
     }
+
+    /**
+     * Download an individual report file
+     */
+    public function download(Report $report)
+    {
+        // Check if file exists
+        $filePath = storage_path('app/public/' . $report->file_path);
+        if (!File::exists($filePath)) {
+            return redirect()->back()->with('error', 'File not found');
+        }
+        
+        // Return the file for download with original file name
+        return response()->download($filePath, $report->file_name);
+    }
 }

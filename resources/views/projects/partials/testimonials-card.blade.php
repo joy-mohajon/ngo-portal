@@ -76,7 +76,7 @@
             </svg>
             Testimonials
         </h3>
-        @hasrole(['admin', 'ngo'])
+        @can('manageAsRunner', $project)
         <button onclick="openRequestModal()"
             class="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700">
             <svg class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -84,7 +84,7 @@
             </svg>
             Request
         </button>
-        @endhasrole
+        @endcan
     </div>
 
     <div class="overflow-x-auto bg-white px-6 py-4 shadow rounded-lg">
@@ -145,37 +145,39 @@
                         @endif
                     </td>
                     <td class="px-6 py-4 text-center whitespace-nowrap text-sm font-medium">
-                        <div class="flex space-x-3 justify-center">
-                            @if($testimonial->status === 'pending')
-                            @hasrole(['admin', 'authority'])
-                            <button onclick="openApproveModal({{ $testimonial->id }})"
-                                class="text-green-600 hover:text-green-900 transition-colors" title="Approve">
-                                <i class="fas fa-check mr-1"></i> Approve
-                            </button>
-                            <button onclick="submitRejectForm({{ $testimonial->id }})"
-                                class="text-red-600 hover:text-red-900 transition-colors" title="Reject">
-                                <i class="fas fa-times mr-1"></i> Reject
-                            </button>
-                            @endhasrole
-                            @hasrole(['admin', 'ngo'])
-                            <div class="text-sm text-gray-500 italic">Not available</div>
-                            @endhasrole
-                            @elseif($testimonial->status === 'rejected')
-                            <div class="text-purple-600 italic">Not available</div>
+                        @if($testimonial->status === 'pending')
+                        @hasrole(['admin', 'authority'])
+                        {{-- Approve Button --}}
+                        <button onclick="openApproveModal({{ $testimonial->id }})"
+                            class="text-green-600 hover:text-green-900 transition-colors" title="Approve">
+                            <i class="fas fa-check mr-1"></i> Approve
+                        </button>
+
+                        {{-- Reject Button --}}
+                        <button onclick="submitRejectForm({{ $testimonial->id }})"
+                            class="text-red-600 hover:text-red-900 transition-colors" title="Reject">
+                            <i class="fas fa-times mr-1"></i> Reject
+                        </button>
+                        @else
+                        <div class="text-sm text-gray-500 italic">Not available</div>
+                        @endhasrole
+
+                        @elseif($testimonial->status === 'rejected')
+                        <div class="text-purple-600 italic">Not available</div>
+
+                        @else
+                        <div class="text-gray-400 italic">
+                            @if($testimonial->testimonial_file)
+                            <a href="{{ route('testimonials.download-testimonial', $testimonial->id) }}"
+                                class="text-blue-600 text-sm hover:text-blue-900 transition-colors"
+                                title="Download Testimonial" download>
+                                <i class="fas fa-download mr-1"></i> Download Testimonial
+                            </a>
                             @else
-                            <div class="text-gray-400 italic">
-                                @if($testimonial->testimonial_file)
-                                <a href="{{ route('testimonials.download-testimonial', $testimonial->id) }}"
-                                    class="text-blue-600 text-sm hover:text-blue-900 transition-colors"
-                                    title="Download Testimonial" download>
-                                    <i class="fas fa-download mr-1"></i> Download Testimonial
-                                </a>
-                                @else
-                                <span class="text-green-600">Approved</span>
-                                @endif
-                            </div>
+                            <div class="text-sm text-gray-500 italic">Not available</div>
                             @endif
                         </div>
+                        @endif
                     </td>
                 </tr>
                 @empty

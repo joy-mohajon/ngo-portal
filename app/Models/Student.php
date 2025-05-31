@@ -31,6 +31,7 @@ class Student extends Model
         'education_institution',
         'status',
         'notes',
+        'batch',
     ];
 
     protected $casts = [

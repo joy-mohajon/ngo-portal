@@ -2,10 +2,12 @@
     <div class="bg-white rounded-lg shadow overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
             <h2 class="text-2xl font-semibold text-gray-800">Students</h2>
+            @hasrole('ngo')
             <a href="{{ route('students.create') }}"
                 class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md flex items-center">
                 <i class="fas fa-plus mr-2"></i> Add Student
             </a>
+            @endhasrole
         </div>
 
         <div class="px-6 py-4">

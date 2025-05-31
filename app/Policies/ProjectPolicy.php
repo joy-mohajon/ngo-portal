@@ -67,4 +67,14 @@ class ProjectPolicy
     {
         return false;
     }
+
+    public function manageAsRunner(User $user, Project $project)
+    {
+        return $user->hasRole('ngo') && $user->ngo && $user->ngo->id === $project->runner_id;
+    }
+
+    public function manageAsHolder(User $user, Project $project)
+    {
+        return $user->hasRole('ngo') && $user->ngo && $user->ngo->id === $project->holder_id;
+    }
 }

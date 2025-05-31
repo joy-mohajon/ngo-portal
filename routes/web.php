@@ -60,6 +60,8 @@ Route::middleware('auth')->group(function () {
         ->name('projects.upload-reports');
     Route::get('projects/{project}/download-reports', [ReportController::class, 'downloadProjectReports'])
         ->name('projects.download-reports');
+    Route::get('reports/{report}/download', [ReportController::class, 'download'])
+        ->name('reports.download');
         
     // Reports
     Route::resource('reports', ReportController::class)->except(['edit', 'update']);

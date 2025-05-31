@@ -8,7 +8,7 @@
             Project Reports
         </h3>
         <div class="flex space-x-2">
-            @hasrole(['admin', 'ngo'])
+            @can('manageAsRunner', $project)
             <button onclick="openUploadModal(`{{ $project->id }}`, `{{ $project->name }}`)"
                 class="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700">
                 <svg class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -17,7 +17,7 @@
                 </svg>
                 Upload
             </button>
-            @endhasrole
+            @endcan
             @hasrole(['admin', 'authority'])
             <button onclick="openDownloadModal()"
                 class="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-emerald-600 hover:bg-emerald-700">
@@ -75,19 +75,11 @@
                                 @endif
                             </div>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <div class="flex space-x-3">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-center font-medium">
+                            @can('manageAsRunner', $project)
+                            <div class="flex justify-center space-x-3">
                                 @if($report->file_path)
-                                <a href="{{ asset('storage/' . $report->file_path) }}" target="_blank"
-                                    class="text-indigo-600 hover:text-indigo-900" title="View">
-                                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                    </svg>
-                                </a>
-                                <a href="{{ asset('storage/' . $report->file_path) }}" download
+                                <a href="{{ route('reports.download', $report->id) }}"
                                     class="text-emerald-600 hover:text-emerald-900" title="Download">
                                     <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -95,7 +87,6 @@
                                     </svg>
                                 </a>
                                 @endif
-                                @hasrole(['admin', 'ngo'])
                                 <form action="{{ route('reports.destroy', $report->id) }}" method="POST"
                                     onsubmit="return confirm('Are you sure you want to delete this report?');">
                                     @csrf
@@ -107,8 +98,28 @@
                                         </svg>
                                     </button>
                                 </form>
-                                @endhasrole
                             </div>
+                            @endcan
+                            @can('manageAsHolder', $project)
+                            <div class="flex justify-center space-x-3">
+                                @if($report->file_path)
+                                <a href="{{ route('reports.download', $report->id) }}"
+                                    class="text-emerald-600 hover:text-emerald-900" title="Download">
+                                    Download
+                                </a>
+                                @endif
+                            </div>
+                            @endcan
+                            @hasrole(['admin', 'authority'])
+                            <div class="flex justify-center space-x-3">
+                                @if($report->file_path)
+                                <a href="{{ route('reports.download', $report->id) }}"
+                                    class="text-emerald-600 hover:text-emerald-900" title="Download">
+                                    Download
+                                </a>
+                                @endif
+                            </div>
+                            @endhasrole
                         </td>
                     </tr>
                     @empty
@@ -247,9 +258,9 @@
                             Download Reports
                         </h3>
                         <div class="mt-4">
-                            <form id="downloadReportForm" method="GET">
-                                <input type="hidden" id="downloadProjectId" name="project_id"
-                                    value="{{ $project->id }}">
+                            <form id="downloadReportForm" method="GET"
+                                action="{{ route('projects.download-reports', $project) }}">
+                                <input type="hidden" name="project_id" value="{{ $project->id }}">
                                 <div class="mb-4">
                                     <label for="from_date" class="block text-sm font-medium text-gray-700">From
                                     </label>
@@ -262,7 +273,7 @@
                                         class="mt-1 focus:ring-emerald-500 focus:border-emerald-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
                                 </div>
                                 <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                                    <button type="submit" id="downloadButton"
+                                    <button type="submit"
                                         class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-emerald-600 text-base font-medium text-white hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 sm:ml-3 sm:w-auto sm:text-sm">
                                         Download
                                     </button>
@@ -300,6 +311,14 @@ function clearUploadReportErrors() {
     document.getElementById('uploadReportTitleError').textContent = '';
     document.getElementById('uploadReportMonthError').textContent = '';
     document.getElementById('uploadReportFilesError').textContent = '';
+}
+
+function openDownloadModal() {
+    document.getElementById('downloadReportModal').classList.remove('hidden');
+}
+
+function closeDownloadModal() {
+    document.getElementById('downloadReportModal').classList.add('hidden');
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -345,24 +364,4 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
-
-function openDownloadModal() {
-    document.getElementById('downloadReportModal').classList.remove('hidden');
-}
-
-function closeDownloadModal() {
-    document.getElementById('downloadReportModal').classList.add('hidden');
-}
-
-document.getElementById('downloadReportForm').onsubmit = function(e) {
-    e.preventDefault();
-    const projectId = document.getElementById('downloadProjectId').value;
-    const fromDate = document.getElementById('from_date').value;
-    const toDate = document.getElementById('to_date').value;
-    let url = `/projects/${projectId}/download-reports?`;
-    if (fromDate) url += `from_date=${fromDate}&`;
-    if (toDate) url += `to_date=${toDate}`;
-    window.location.href = url;
-    closeDownloadModal();
-};
 </script>

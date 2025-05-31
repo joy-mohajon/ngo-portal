@@ -55,6 +55,12 @@
                 </div>
 
                 <div>
+                    <label for="batch" class="block text-sm font-medium text-gray-700">Batch</label>
+                    <input type="text" name="batch" id="batch" value="{{ old('batch', $student->batch) }}"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                </div>
+
+                <div>
                     <label for="photo" class="block text-sm font-medium text-gray-700">Photo</label>
                     @if($student->photo)
                     <div class="mt-1 flex items-center">

@@ -29,6 +29,7 @@ return new class extends Migration
             $table->string('education_institution')->nullable();
             $table->enum('status', ['active', 'inactive', 'graduated', 'dropped'])->default('active');
             $table->text('notes')->nullable();
+            $table->string('batch')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

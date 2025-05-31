@@ -28,7 +28,7 @@
             </svg>
             Back to List
         </a>
-        @hasrole(['admin', 'ngo'])
+        @can('manageAsRunner', $project)
         <a href="{{ route('projects.edit', $project->id) }}"
             class="flex items-center px-4 py-2 bg-indigo-600 rounded-lg shadow-sm text-sm font-medium text-white hover:bg-indigo-700">
             <svg class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -37,6 +37,6 @@
             </svg>
             Edit Project
         </a>
-        @endhasrole
+        @endcan
     </div>
 </div>

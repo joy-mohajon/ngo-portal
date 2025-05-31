@@ -7,6 +7,7 @@
             </svg>
             Gallery
         </h3>
+        @can('manageAsRunner', $project)
         <button id="add-photos-btn"
             class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 transition"
             type="button">
@@ -15,6 +16,7 @@
             </svg>
             Add
         </button>
+        @endcan
     </div>
     <div class="px-6 py-4">
         <div id="gallery-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2"
@@ -74,3 +76,7 @@
         </form>
     </div>
 </div>
+
+@can('manageAsRunner', $project)
+<!-- Gallery upload button/modal code here -->
+@endcan
