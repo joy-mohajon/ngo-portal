@@ -13,11 +13,10 @@ use App\Http\Controllers\TestimonialController;
 use App\Http\Controllers\ProjectGalleryController;
 use App\Http\Controllers\FocalPersonController;
 use App\Http\Controllers\StudentAccessController;
+use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -97,7 +96,8 @@ Route::middleware('auth')->group(function () {
     Route::get('testimonials/{testimonial}/download-testimonial', [TestimonialController::class, 'downloadTestimonial'])->name('testimonials.download-testimonial');
 
     Route::resource('projects.galleries', ProjectGalleryController::class)
-        ->only(['index', 'store', 'destroy']);
+        ->only(['index', 'store', 'destroy'])
+        ->middleware(\App\Http\Middleware\GalleryUploadCors::class);
 
     Route::resource('ngos.focal-persons', FocalPersonController::class)
         ->only(['index','store','update','destroy']);

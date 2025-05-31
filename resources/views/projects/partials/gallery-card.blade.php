@@ -51,8 +51,7 @@
             </svg>
         </button>
         <h4 class="text-2xl font-bold mb-2 text-indigo-700 text-center">Upload Project Photos</h4>
-        <p class="text-gray-500 mb-6 text-center">Drag & drop images here, or click to select. Max 4MB each. JPG, PNG,
-            GIF, WEBP.</p>
+        <p class="text-gray-500 mb-6 text-center">Drag & drop images here, or click to select. Max 2MB each. Larger images will be automatically resized. JPG, PNG, GIF, WEBP.</p>
         <form id="gallery-upload-form" enctype="multipart/form-data" class="space-y-4">
             @csrf
             <label for="gallery-images-input" class="block cursor-pointer">
@@ -68,6 +67,10 @@
                 <input type="file" name="images[]" id="gallery-images-input" accept="image/*" multiple class="hidden">
             </label>
             <div id="gallery-preview" class="flex flex-wrap gap-3 mb-2 min-h-[48px]"></div>
+            
+            <!-- Error container -->
+            <div id="upload-error-container" class="hidden p-3 bg-red-50 text-red-700 rounded-md border border-red-200 text-sm"></div>
+            
             <div id="gallery-upload-progress" class="w-full h-2 bg-indigo-100 rounded overflow-hidden mb-2 hidden">
                 <div class="h-full bg-indigo-500 transition-all" style="width:0%"></div>
             </div>

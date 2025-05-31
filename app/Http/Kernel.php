@@ -65,6 +65,7 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'runner.ngo' => \App\Http\Middleware\RunnerNgoMiddleware::class,
         'project.runner' => \App\Http\Middleware\ProjectRunnerMiddleware::class,
+        'gallery.cors' => \App\Http\Middleware\GalleryUploadCors::class,
         // Spatie Laravel Permission
         'role' => \Spatie\Permission\Middlewares\RoleMiddleware::class,
         'permission' => \Spatie\Permission\Middlewares\PermissionMiddleware::class,
