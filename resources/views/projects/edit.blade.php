@@ -106,8 +106,8 @@
                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
                         <option value="">Select Focus Area</option>
                         @foreach($focusAreas as $focusArea)
-                        <option value="{{ $focusArea->id }}"
-                            {{ old('focus_area', $project->focus_area) == $focusArea->id ? 'selected' : '' }}>
+                        <option value="{{ $focusArea->id }}" 
+                            {{ (int)$project->focus_area === (int)$focusArea->id ? 'selected' : '' }}>
                             {{ $focusArea->name }}</option>
                         @endforeach
                     </select>
@@ -121,7 +121,7 @@
                         <option value="">Select NGO</option>
                         @foreach(App\Models\Ngo::all() as $ngo)
                         <option value="{{ $ngo->id }}"
-                            {{ old('holder_id', $project->holder_id) == $ngo->id ? 'selected' : '' }}>{{ $ngo->name }}
+                            {{ (int)$project->holder_id === (int)$ngo->id ? 'selected' : '' }}>{{ $ngo->name }}
                         </option>
                         @endforeach
                     </select>
@@ -137,7 +137,7 @@
                         <option value="">Select NGO</option>
                         @foreach(App\Models\Ngo::all() as $ngo)
                         <option value="{{ $ngo->id }}"
-                            {{ old('runner_id', $project->runner_id) == $ngo->id ? 'selected' : '' }}>{{ $ngo->name }}
+                            {{ (int)$project->runner_id === (int)$ngo->id ? 'selected' : '' }}>{{ $ngo->name }}
                         </option>
                         @endforeach
                     </select>
@@ -147,7 +147,7 @@
                     <label for="start_date" class="block text-sm font-medium text-gray-700">Start Date <span
                             class="text-red-500">*</span></label>
                     <input type="date" name="start_date" id="start_date"
-                        value="{{ old('start_date', $project->start_date ? $project->start_date->format('Y-m-d') : '') }}"
+                        value="{{ $project->start_date ? $project->start_date->format('Y-m-d') : '' }}"
                         required
                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
                     @error('start_date')<span class="text-xs text-red-600">{{ $message }}</span>@enderror
@@ -158,7 +158,7 @@
                     <label for="end_date" class="block text-sm font-medium text-gray-700">End Date <span
                             class="text-red-500">*</span></label>
                     <input type="date" name="end_date" id="end_date"
-                        value="{{ old('end_date', $project->end_date ? $project->end_date->format('Y-m-d') : '') }}"
+                        value="{{ $project->end_date ? $project->end_date->format('Y-m-d') : '' }}"
                         required
                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
                     @error('end_date')<span class="text-xs text-red-600">{{ $message }}</span>@enderror
@@ -168,14 +168,10 @@
                             class="text-red-500">*</span></label>
                     <select name="status" id="status" required
                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-                        <option value="pending" {{ old('status', $project->status) == 'pending' ? 'selected' : '' }}>
-                            Pending</option>
-                        <option value="active" {{ old('status', $project->status) == 'active' ? 'selected' : '' }}>
-                            Active</option>
-                        <option value="completed"
-                            {{ old('status', $project->status) == 'completed' ? 'selected' : '' }}>Completed</option>
-                        <option value="suspended"
-                            {{ old('status', $project->status) == 'suspended' ? 'selected' : '' }}>Suspended</option>
+                        <option value="pending" {{ strtolower($project->status) === 'pending' ? 'selected' : '' }}>Pending</option>
+                        <option value="active" {{ strtolower($project->status) === 'active' ? 'selected' : '' }}>Active</option>
+                        <option value="completed" {{ strtolower($project->status) === 'completed' ? 'selected' : '' }}>Completed</option>
+                        <option value="suspended" {{ strtolower($project->status) === 'suspended' ? 'selected' : '' }}>Suspended</option>
                     </select>
                     @error('status')<span class="text-xs text-red-600">{{ $message }}</span>@enderror
                 </div>

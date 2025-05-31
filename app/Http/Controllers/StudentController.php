@@ -13,30 +13,44 @@ class StudentController extends Controller
     {
         $query = Student::query()->with('projects');
 
+        // Apply search filters
         if ($request->has('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
                 ->orWhere('email', 'like', "%{$search}%")
                 ->orWhere('phone', 'like', "%{$search}%")
-                ->orWhere('national_id', 'like', "%{$search}%");
+                ->orWhere('national_id', 'like', "%{$search}%")
+                ->orWhere('birth_certificate_number', 'like', "%{$search}%");
             });
         }
 
-        if ($request->has('status')) {
+        if ($request->has('status') && $request->status != '') {
             $query->where('status', $request->status);
         }
 
-        if ($request->has('project_id')) {
+        if ($request->has('project_id') && $request->project_id != '') {
             $projectId = $request->project_id;
             $query->whereHas('projects', function($q) use ($projectId) {
                 $q->where('projects.id', $projectId);
             });
         }
+        
+        if ($request->has('batch') && $request->batch != '') {
+            $query->where('batch', $request->batch);
+        }
+        
+        if ($request->has('gender') && $request->gender != '') {
+            $query->where('gender', $request->gender);
+        }
 
-        $students = $query->latest()->paginate(10);
+        // Get students with pagination
+        $students = $query->latest()->paginate(10)->withQueryString();
+        
+        // Get all distinct batches for the filter dropdown
+        $batches = Student::distinct('batch')->whereNotNull('batch')->pluck('batch')->sort();
 
-        return view('students.index', compact('students'));
+        return view('students.index', compact('students', 'batches'));
     }
 
     public function create(Request $request)

@@ -10,10 +10,99 @@
             @endhasrole
         </div>
 
+        <!-- Search and Filter Section -->
+        <div class="px-6 py-4 bg-gray-50">
+            <form action="{{ route('students.index') }}" method="GET" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                    <div>
+                        <label for="search" class="block text-sm font-medium text-gray-700">Search</label>
+                        <input type="text" name="search" id="search" value="{{ request('search') }}" 
+                            placeholder="Name, Email, Phone, ID, Birth Certificate No."
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    </div>
+                    <div>
+                        <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
+                        <select name="status" id="status" 
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                            <option value="">All Statuses</option>
+                            <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Active</option>
+                            <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>Inactive</option>
+                            <option value="graduated" {{ request('status') == 'graduated' ? 'selected' : '' }}>Graduated</option>
+                            <option value="dropped" {{ request('status') == 'dropped' ? 'selected' : '' }}>Dropped</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="project_id" class="block text-sm font-medium text-gray-700">Project</label>
+                        <select name="project_id" id="project_id" 
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                            <option value="">All Projects</option>
+                            @foreach(App\Models\Project::orderBy('title')->get() as $project)
+                                <option value="{{ $project->id }}" {{ request('project_id') == $project->id ? 'selected' : '' }}>
+                                    {{ $project->title }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div>
+                        <label for="batch" class="block text-sm font-medium text-gray-700">Batch</label>
+                        <select name="batch" id="batch" 
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                            <option value="">All Batches</option>
+                            @foreach($batches as $batch)
+                                <option value="{{ $batch }}" {{ request('batch') == $batch ? 'selected' : '' }}>
+                                    {{ $batch }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div>
+                        <label for="gender" class="block text-sm font-medium text-gray-700">Gender</label>
+                        <select name="gender" id="gender" 
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                            <option value="">All Genders</option>
+                            <option value="male" {{ request('gender') == 'male' ? 'selected' : '' }}>Male</option>
+                            <option value="female" {{ request('gender') == 'female' ? 'selected' : '' }}>Female</option>
+                            <option value="other" {{ request('gender') == 'other' ? 'selected' : '' }}>Other</option>
+                        </select>
+                    </div>
+                    <div class="flex items-end">
+                        <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md mr-2">
+                            <i class="fas fa-search mr-1"></i> Search
+                        </button>
+                        <a href="{{ route('students.index') }}" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md">
+                            <i class="fas fa-redo mr-1"></i> Reset
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+
         <div class="px-6 py-4">
             @if(session('success'))
             <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
                 {{ session('success') }}
+            </div>
+            @endif
+
+            <!-- Search results summary if search was performed -->
+            @if(request()->has('search') || request()->has('status') || request()->has('project_id') || request()->has('batch') || request()->has('gender'))
+            <div class="mb-4 text-sm text-gray-600">
+                <p>
+                    @if(request()->has('search')) Search: <span class="font-semibold">{{ request('search') }}</span> @endif
+                    @if(request()->has('status') && request('status') != '') Status: <span class="font-semibold">{{ ucfirst(request('status')) }}</span> @endif
+                    @if(request()->has('project_id') && request('project_id') != '') 
+                        Project: <span class="font-semibold">
+                            {{ App\Models\Project::find(request('project_id'))?->title ?? 'Unknown' }}
+                        </span> 
+                    @endif
+                    @if(request()->has('batch') && request('batch') != '')
+                        Batch: <span class="font-semibold">{{ request('batch') }}</span>
+                    @endif
+                    @if(request()->has('gender') && request('gender') != '')
+                        Gender: <span class="font-semibold">{{ ucfirst(request('gender')) }}</span>
+                    @endif
+                    ({{ $students->total() }} results)
+                </p>
             </div>
             @endif
 
@@ -29,6 +118,8 @@
                                 Contact</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Projects</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Batch</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Status</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -50,7 +141,15 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="text-sm font-medium text-gray-900">{{ $student->name }}</div>
-                                <div class="text-sm text-gray-500">{{ $student->national_id }}</div>
+                                <div class="text-sm text-gray-500">
+                                    @if($student->national_id)
+                                    ID: {{ $student->national_id }}
+                                    @endif
+                                    @if($student->birth_certificate_number)
+                                    @if($student->national_id) | @endif
+                                    Birth Cert: {{ $student->birth_certificate_number }}
+                                    @endif
+                                </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="text-sm text-gray-900">{{ $student->email }}</div>
@@ -63,6 +162,15 @@
                                         class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">{{ $project->title }}</span>
                                     @endforeach
                                 </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                @if($student->batch)
+                                <span class="px-2 py-1 bg-indigo-100 text-indigo-800 text-xs rounded-full">
+                                    {{ $student->batch }}
+                                </span>
+                                @else
+                                <span class="text-gray-400">-</span>
+                                @endif
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 @php
@@ -94,7 +202,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="6" class="px-6 py-4 text-center text-gray-500">No students found.</td>
+                            <td colspan="7" class="px-6 py-4 text-center text-gray-500">No students found.</td>
                         </tr>
                         @endforelse
                     </tbody>

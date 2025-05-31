@@ -6,6 +6,7 @@ use App\Models\Project;
 use App\Models\Ngo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class ProjectController extends Controller
 {
@@ -145,6 +146,36 @@ public function index(Request $request)
      */
     public function edit(Project $project)
     {
+        // Normalize data types and formats for all fields to ensure consistent comparison in view
+        
+        // 1. Cast numeric fields to appropriate types
+        $project->focus_area = (int)$project->focus_area;
+        $project->holder_id = (int)$project->holder_id;
+        $project->runner_id = (int)$project->runner_id;
+        $project->budget = (float)$project->budget;
+        
+        // 2. Ensure string fields are properly cast and normalized
+        $project->title = (string)$project->title;
+        $project->description = (string)$project->description;
+        $project->location = (string)$project->location;
+        
+        // 3. Normalize status to lowercase for case-insensitive comparison
+        $project->status = strtolower((string)$project->status);
+        
+        // 4. Date fields are handled by Laravel's date casting
+        // No need to format them here as it's done in the view
+        
+        // 5. Ensure major_activities is an array
+        if (!is_array($project->major_activities)) {
+            if (empty($project->major_activities)) {
+                $project->major_activities = [];
+            } else if (is_string($project->major_activities)) {
+                $project->major_activities = explode(',', $project->major_activities);
+            } else {
+                $project->major_activities = (array)$project->major_activities;
+            }
+        }
+        
         $ngos = Ngo::pluck('name', 'id');
         $focusAreas = \App\Models\FocusArea::where('type', 'Project')->orderBy('name')->get();
         return view('projects.edit', compact('project', 'ngos', 'focusAreas'));
@@ -169,8 +200,31 @@ public function index(Request $request)
             'major_activities' => 'nullable|array',
             'major_activities.*' => 'nullable|string|max:255',
         ]);
-        $validated['major_activities'] = $request->has('major_activities') ? array_values(array_filter($request->major_activities, fn($a) => $a !== null && $a !== '')) : [];
+        
+        // Process and normalize data before saving
+        
+        // 1. Ensure numeric fields are properly formatted
+        $validated['focus_area'] = (int)$validated['focus_area'];
+        $validated['holder_id'] = (int)$validated['holder_id'];
+        $validated['runner_id'] = (int)$validated['runner_id'];
+        
+        if (isset($validated['budget'])) {
+            $validated['budget'] = (float)$validated['budget'];
+        }
+        
+        // 2. Process major_activities to ensure consistent format
+        $validated['major_activities'] = $request->has('major_activities') 
+            ? array_values(array_filter($request->major_activities, fn($a) => $a !== null && $a !== '')) 
+            : [];
+            
+        // 3. Date fields are handled by Laravel's date casting
+        // No need to format them here
+        
+        // 4. Ensure status is properly formatted (lowercase for database consistency)
+        $validated['status'] = strtolower($validated['status']);
+        
         $project->update($validated);
+        
         return redirect()->route('projects.show', $project)->with('success', 'Project updated successfully.');
     }
 
