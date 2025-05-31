@@ -5,12 +5,14 @@ use App\Http\Controllers\NgoController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TrainingController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\ProjectAccessController;
 use App\Http\Controllers\ProjectTrainingController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\TestimonialController;
 use App\Http\Controllers\ProjectGalleryController;
 use App\Http\Controllers\FocalPersonController;
+use App\Http\Controllers\StudentAccessController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -38,15 +40,21 @@ Route::middleware('auth')->group(function () {
     Route::resource('ngos', NgoController::class);
 
 
-    // Project resource
-//    Route::middleware(['auth', 'role:ngo|admin'])->group(function () {
+    // Project resource - allow only runner NGOs to edit their projects
     Route::get('projects/holder', [App\Http\Controllers\ProjectController::class, 'holderProjects'])->name('projects.holder');
     Route::get('projects/runner', [App\Http\Controllers\ProjectController::class, 'runnerProjects'])->name('projects.runner');
-// });
-    // Allow only admin and authority to access the main projects index
-    // Route::middleware(['auth', 'role:admin|authority'])->group(function () {
-        Route::resource('projects', ProjectController::class);
-    // });
+    
+    // Read-only routes for projects
+    Route::get('projects', [App\Http\Controllers\ProjectController::class, 'index'])->name('projects.index');
+    Route::get('projects/create', [App\Http\Controllers\ProjectController::class, 'create'])->name('projects.create');
+    Route::post('projects', [App\Http\Controllers\ProjectController::class, 'store'])->name('projects.store');
+    Route::get('projects/{project}', [App\Http\Controllers\ProjectController::class, 'show'])->name('projects.show');
+    
+    // Runner-only routes - can only be accessed by the NGO that is the runner of the project
+    // Using ProjectAccessController to handle permissions instead of middleware
+    Route::get('projects/{project}/edit', [App\Http\Controllers\ProjectAccessController::class, 'edit'])->name('projects.edit');
+    Route::put('projects/{project}', [App\Http\Controllers\ProjectAccessController::class, 'update'])->name('projects.update');
+    Route::delete('projects/{project}', [App\Http\Controllers\ProjectAccessController::class, 'destroy'])->name('projects.destroy');
 
     
 
@@ -66,7 +74,19 @@ Route::middleware('auth')->group(function () {
     // Reports
     Route::resource('reports', ReportController::class)->except(['edit', 'update']);
 
-    Route::resource('students', StudentController::class);
+    // Students routes - separate read and write operations
+    Route::middleware(['auth'])->group(function () {
+        Route::get('students', [StudentController::class, 'index'])->name('students.index');
+        
+        // Only NGO runners can modify students - using StudentAccessController instead of middleware
+        Route::get('students/create', [StudentAccessController::class, 'create'])->name('students.create');
+        Route::post('students', [StudentAccessController::class, 'store'])->name('students.store');
+        Route::get('students/{student}/edit', [StudentAccessController::class, 'edit'])->name('students.edit');
+        Route::put('students/{student}', [StudentAccessController::class, 'update'])->name('students.update');
+        Route::delete('students/{student}', [StudentAccessController::class, 'destroy'])->name('students.destroy');
+        
+        Route::get('students/{student}', [StudentController::class, 'show'])->name('students.show');
+    });
 
     Route::resource('focus-areas', FocusAreaController::class);
 
@@ -84,6 +104,9 @@ Route::middleware('auth')->group(function () {
 
 });
 
-
+// Test route to check middleware
+Route::get('/test-middleware', function () {
+    return 'Middleware test successful';
+})->middleware([\App\Http\Middleware\ProjectRunnerMiddleware::class]);
 
 require __DIR__.'/auth.php';

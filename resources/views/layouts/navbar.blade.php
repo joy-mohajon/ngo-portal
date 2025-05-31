@@ -16,9 +16,14 @@
                     class="inline-flex items-center gap-4 text-base leading-4 font-medium rounded-md text-white transition ease-in-out duration-150">
                     <div class="flex flex-col items-end gap-1">
                         <span>{{ Auth::user()->name }}</span>
-                        @php $role = Auth::user()->getRoleNames()->first(); @endphp
-                        @if($role)
-                            <span class="text-xs text-gray-300">{{ ucfirst($role) }}</span>
+                        @php 
+                            $roleName = DB::table('model_has_roles')
+                                ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+                                ->where('model_has_roles.model_id', Auth::id())
+                                ->value('roles.name');
+                        @endphp
+                        @if($roleName)
+                            <span class="text-xs text-gray-300">{{ ucfirst($roleName) }}</span>
                         @endif
                     </div>
 

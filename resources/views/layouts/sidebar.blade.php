@@ -21,20 +21,32 @@
                     </a>
                 </li>
 
-                <!-- NGO Management - For authority and admin roles only -->
-                <!-- @hasrole(['admin', 'authority'])
-                <li>
-                    <a href="{{ route('ngos.index') }}" @click="activeItem = 'ngos.index'"
-                        :class="activeItem === 'ngos.index' ? 'bg-gray-700 text-white' : ''"
-                        class="p-2 text-[15px] hover:bg-gray-700 rounded flex items-center gap-3">
-                        <i class="fas fa-hands-helping"></i>
-                        <span>NGOs</span>
-                    </a>
-                </li>
-                @endhasrole -->
+                @php
+                $user = Auth::user();
+                $userId = $user->id;
 
+                // Check for admin or authority role
+                $hasAdminOrAuthorityRole = DB::table('model_has_roles')
+                ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+                ->where('model_has_roles.model_id', $userId)
+                ->whereIn('roles.name', ['admin', 'authority'])
+                ->exists();
 
-                @hasrole(['admin', 'authority'])
+                // Check for NGO role
+                $hasNgoRole = DB::table('model_has_roles')
+                ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+                ->where('model_has_roles.model_id', $userId)
+                ->where('roles.name', 'ngo')
+                ->exists();
+
+                // Get first role name
+                $roleName = DB::table('model_has_roles')
+                ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+                ->where('model_has_roles.model_id', $userId)
+                ->value('roles.name');
+                @endphp
+
+                @if($hasAdminOrAuthorityRole)
                 <li x-data="{ open: false }" class="opcion-con-desplegable">
                     <div @click="open = !open" @click="activeItem = 'ngos.index'"
                         :class="activeItem === 'ngos.index' ? 'bg-gray-700 text-white' : ''"
@@ -67,10 +79,10 @@
 
                     </ul>
                 </li>
-                @endhasrole
+                @endif
 
                 <!-- Projects -->
-                @hasrole(['admin', 'authority'])
+                @if($hasAdminOrAuthorityRole)
                 <li>
                     <a href="{{ route('projects.index') }}" @click="activeItem = 'projects.index'"
                         :class="activeItem === 'projects.index' ? 'bg-gray-700 text-white' : ''"
@@ -79,9 +91,9 @@
                         <span>Projects</span>
                     </a>
                 </li>
-                @endhasrole
+                @endif
 
-                @hasrole(['admin', 'ngo'])
+                @if($hasNgoRole)
                 <li x-data="{ open: false }" class="opcion-con-desplegable">
                     <div @click="open = !open" @click="activeItem = 'projects.holder'"
                         :class="activeItem === 'projects.holder' ? 'bg-gray-700 text-white' : ''"
@@ -113,20 +125,17 @@
 
                     </ul>
                 </li>
-                @endhasrole
+                @endif
 
-                <!-- Projects Overview - For authority and admin roles only -->
-                <!-- @hasrole(['admin', 'authority']) -->
+                <!-- Students -->
                 <li>
                     <a href="{{ route('students.index') }}" class="flex items-center p-2 hover:bg-gray-700 rounded">
                         <i class="fas fa-user-graduate mr-3"></i>
                         <span>Students</span>
                     </a>
                 </li>
-                <!-- @endhasrole -->
 
-                @hasrole(['admin', 'ngo'])
-                @if(auth()->user()->hasRole('ngo') && auth()->user()->ngo->status !== 'approved')
+                @if($hasNgoRole && $user->ngo && $user->ngo->status !== 'approved')
                 <li>
                     <a href="{{ route('ngos.create') }}" class="flex items-center p-2 hover:bg-gray-700 rounded">
                         <i class="fas fa-user-check mr-3"></i>
@@ -134,15 +143,6 @@
                     </a>
                 </li>
                 @endif
-                @endhasrole
-
-                <!-- <script>
-                function goToProjects() {
-                    // console.log('Navigating to projects page directly');
-                    window.location.href = '/direct-projects';
-                    return false;
-                }
-                </script> -->
 
             </ul>
         </nav>
@@ -168,17 +168,16 @@
 
                         <div class="flex flex-col items-start gap-1 ttext-[15px]">
                             <span>{{ Auth::user()->name }}</span>
-                            @php $role = Auth::user()->getRoleNames()->first(); @endphp
-                            @if($role)
-                            <span class="text-xs text-gray-300">{{ ucfirst($role) }}</span>
+                            @if($roleName)
+                            <span class="text-xs text-gray-300">{{ ucfirst($roleName) }}</span>
                             @endif
                         </div>
                     </button>
                 </x-slot>
 
                 <x-slot name="content">
-                    @if(auth()->user()->hasRole('ngo'))
-                    <x-dropdown-link :href="route('ngos.edit', auth()->user()->ngo->id)">
+                    @if($hasNgoRole && $user->ngo)
+                    <x-dropdown-link :href="route('ngos.edit', $user->ngo->id)">
                         {{ __('Profile') }}
                     </x-dropdown-link>
                     <x-dropdown-link :href="route('profile.edit')">

@@ -7,6 +7,7 @@ use App\Models\Ngo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 class ProjectController extends Controller
 {
@@ -146,6 +147,26 @@ public function index(Request $request)
      */
     public function edit(Project $project)
     {
+        $user = Auth::user();
+        
+        // If user is an NGO, check if they are the runner of this project
+        if ($user && $user->ngo) {
+            // Check if user has NGO role using direct database query
+            $hasNgoRole = DB::table('model_has_roles')
+                ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+                ->where('model_has_roles.model_id', $user->id)
+                ->where('roles.name', 'ngo')
+                ->exists();
+                
+            if ($hasNgoRole) {
+                // Check if they are the runner for this project
+                if ($project->runner_id != $user->ngo->id) {
+                    return redirect()->route('projects.index')
+                        ->with('error', 'You do not have permission to edit this project. You can only edit projects where you are the runner.');
+                }
+            }
+        }
+        
         // Normalize data types and formats for all fields to ensure consistent comparison in view
         
         // 1. Cast numeric fields to appropriate types
@@ -186,6 +207,26 @@ public function index(Request $request)
      */
     public function update(Request $request, Project $project)
     {
+        $user = Auth::user();
+        
+        // If user is an NGO, check if they are the runner of this project
+        if ($user && $user->ngo) {
+            // Check if user has NGO role using direct database query
+            $hasNgoRole = DB::table('model_has_roles')
+                ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+                ->where('model_has_roles.model_id', $user->id)
+                ->where('roles.name', 'ngo')
+                ->exists();
+                
+            if ($hasNgoRole) {
+                // Check if they are the runner for this project
+                if ($project->runner_id != $user->ngo->id) {
+                    return redirect()->route('projects.index')
+                        ->with('error', 'You do not have permission to update this project. You can only update projects where you are the runner.');
+                }
+            }
+        }
+        
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -223,6 +264,11 @@ public function index(Request $request)
         // 4. Ensure status is properly formatted (lowercase for database consistency)
         $validated['status'] = strtolower($validated['status']);
         
+        // For NGO users, ensure they can't change the runner to someone else
+        if ($user && $user->ngo && $hasNgoRole) {
+            $validated['runner_id'] = $user->ngo->id;
+        }
+        
         $project->update($validated);
         
         return redirect()->route('projects.show', $project)->with('success', 'Project updated successfully.');
@@ -233,6 +279,26 @@ public function index(Request $request)
      */
     public function destroy(Project $project)
     {
+        $user = Auth::user();
+        
+        // If user is an NGO, check if they are the runner of this project
+        if ($user && $user->ngo) {
+            // Check if user has NGO role using direct database query
+            $hasNgoRole = DB::table('model_has_roles')
+                ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+                ->where('model_has_roles.model_id', $user->id)
+                ->where('roles.name', 'ngo')
+                ->exists();
+                
+            if ($hasNgoRole) {
+                // Check if they are the runner for this project
+                if ($project->runner_id != $user->ngo->id) {
+                    return redirect()->route('projects.index')
+                        ->with('error', 'You do not have permission to delete this project. You can only delete projects where you are the runner.');
+                }
+            }
+        }
+        
         $project->delete();
         return redirect()->route('projects.index')->with('success', 'Project deleted successfully.');
     }

@@ -19,6 +19,34 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
 
+    <!-- Custom styles -->
+    <style>
+        /* Fix horizontal scrolling issues */
+        html, body {
+            overflow-x: hidden;
+            max-width: 100%;
+        }
+        
+        /* Responsive table handling */
+        @media (max-width: 1024px) {
+            table.table-fixed {
+                table-layout: fixed;
+                width: 100%;
+            }
+        }
+        
+        /* Project badges wrapping */
+        .flex-wrap span {
+            margin-bottom: 0.25rem;
+            display: inline-block;
+        }
+        
+        /* Prevent overflow on main container */
+        main {
+            overflow-x: hidden;
+        }
+    </style>
+
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -34,7 +62,7 @@
             @include('layouts.navbar')
 
             <!-- Page Content -->
-            <main class="flex-1 overflow-y-auto px-6 py-4 bg-[#F5F3EB]">
+            <main class="flex-1 overflow-y-auto overflow-x-hidden px-3 md:px-6 py-4 bg-[#F5F3EB]">
                 {{ $slot }}
             </main>
         </div>
