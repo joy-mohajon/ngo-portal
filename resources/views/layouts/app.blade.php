@@ -32,6 +32,7 @@
             table.table-fixed {
                 table-layout: fixed;
                 width: 100%;
+                min-width: 800px; /* Ensure minimum width for content */
             }
         }
         
@@ -39,11 +40,19 @@
         .flex-wrap span {
             margin-bottom: 0.25rem;
             display: inline-block;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         
         /* Prevent overflow on main container */
         main {
             overflow-x: hidden;
+        }
+        
+        /* Make table containers scrollable */
+        .overflow-x-auto {
+            -webkit-overflow-scrolling: touch;
         }
     </style>
 

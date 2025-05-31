@@ -121,19 +121,21 @@
             </div>
             @endif
 
-            <div class="w-full border border-gray-200 rounded-lg">
+            <div class="w-full border border-gray-200 rounded-lg overflow-x-auto">
                 <table class="w-full divide-y divide-gray-200 table-fixed">
                     <thead class="bg-gray-50">
                         <tr>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                                 style="width: 80px">
                                 Photo</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                style="width: 180px">
                                 Name</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                style="width: 180px">
                                 Contact</th>
-                            <th
-                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider text-center">
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider text-center"
+                                style="width: 200px">
                                 Projects</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                                 style="width: 100px">
@@ -176,10 +178,10 @@
                                 <div class="text-sm text-gray-500">{{ $student->phone }}</div>
                             </td>
                             <td class="px-6 py-4">
-                                <div class="flex flex-wrap justify-center gap-1">
+                                <div class="flex flex-wrap justify-center items-center gap-1 max-w-[200px] mx-auto">
                                     @foreach($student->projects as $project)
                                     <span
-                                        class="px-2 py-1 inline-block bg-blue-100 text-blue-800 text-xs rounded-full mb-1 text-center break-words">
+                                        class="px-2 py-1 inline-block bg-blue-100 text-blue-800 text-xs rounded-full mb-1 text-center truncate max-w-full">
                                         {{ $project->title }}
                                     </span>
                                     @endforeach
