@@ -46,10 +46,14 @@ $crudEnabled = $crudEnabled ?? false;
                 @auth
                 @hasrole('ngo')
                 <div class="mt-4 flex space-x-2">
-                    <button type="button" class="edit-focal-person-btn" data-id="{{ $person->id }}" data-name="{{ htmlspecialchars($person->name, ENT_QUOTES) }}" data-designation="{{ htmlspecialchars($person->designation, ENT_QUOTES) }}" data-email="{{ htmlspecialchars($person->email, ENT_QUOTES) }}" data-mobile="{{ htmlspecialchars($person->mobile, ENT_QUOTES) }}">
+                    <button type="button" class="edit-focal-person-btn" data-id="{{ $person->id }}"
+                        data-name="{{ htmlspecialchars($person->name, ENT_QUOTES) }}"
+                        data-designation="{{ htmlspecialchars($person->designation, ENT_QUOTES) }}"
+                        data-email="{{ htmlspecialchars($person->email, ENT_QUOTES) }}"
+                        data-mobile="{{ htmlspecialchars($person->mobile, ENT_QUOTES) }}">
                         Edit
                     </button>
-                    <button type="button" onclick="openDeleteFocalPersonModal({{ $person->id }})"
+                    <button type="button" onclick="openDeleteFocalPersonModal(`{{ $person->id }}`)"
                         class="text-red-600 hover:text-red-900 text-xs font-semibold">Delete</button>
                 </div>
                 @endhasrole
@@ -73,22 +77,26 @@ $crudEnabled = $crudEnabled ?? false;
                 <h2 class="text-2xl font-bold text-indigo-700 mb-4">Add Focal Person</h2>
                 <div>
                     <x-input-label for="add_name" value="Name" />
-                    <x-text-input id="add_name" name="name" type="text" class="mt-1 block w-full" required value="{{ old('name') }}" />
+                    <x-text-input id="add_name" name="name" type="text" class="mt-1 block w-full" required
+                        value="{{ old('name') }}" />
                     <x-input-error :messages="$errors->get('name')" />
                 </div>
                 <div>
                     <x-input-label for="add_designation" value="Designation" />
-                    <x-text-input id="add_designation" name="designation" type="text" class="mt-1 block w-full" required value="{{ old('designation') }}" />
+                    <x-text-input id="add_designation" name="designation" type="text" class="mt-1 block w-full" required
+                        value="{{ old('designation') }}" />
                     <x-input-error :messages="$errors->get('designation')" />
                 </div>
                 <div>
                     <x-input-label for="add_email" value="Email" />
-                    <x-text-input id="add_email" name="email" type="email" class="mt-1 block w-full" required value="{{ old('email') }}" />
+                    <x-text-input id="add_email" name="email" type="email" class="mt-1 block w-full" required
+                        value="{{ old('email') }}" />
                     <x-input-error :messages="$errors->get('email')" />
                 </div>
                 <div>
                     <x-input-label for="add_mobile" value="Mobile" />
-                    <x-text-input id="add_mobile" name="mobile" type="text" class="mt-1 block w-full" required value="{{ old('mobile') }}" />
+                    <x-text-input id="add_mobile" name="mobile" type="text" class="mt-1 block w-full" required
+                        value="{{ old('mobile') }}" />
                     <x-input-error :messages="$errors->get('mobile')" />
                 </div>
                 <div class="flex justify-end space-x-2 mt-4">

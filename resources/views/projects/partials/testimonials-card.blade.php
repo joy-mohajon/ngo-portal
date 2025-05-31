@@ -148,13 +148,13 @@
                         @if($testimonial->status === 'pending')
                         @hasrole(['admin', 'authority'])
                         {{-- Approve Button --}}
-                        <button onclick="openApproveModal({{ $testimonial->id }})"
+                        <button onclick="openApproveModal(`{{ $testimonial->id }}`)"
                             class="text-green-600 hover:text-green-900 transition-colors" title="Approve">
                             <i class="fas fa-check mr-1"></i> Approve
                         </button>
 
                         {{-- Reject Button --}}
-                        <button onclick="submitRejectForm({{ $testimonial->id }})"
+                        <button onclick="submitRejectForm(`{{ $testimonial->id }}`)"
                             class="text-red-600 hover:text-red-900 transition-colors" title="Reject">
                             <i class="fas fa-times mr-1"></i> Reject
                         </button>
