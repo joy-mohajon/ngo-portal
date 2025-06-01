@@ -80,7 +80,7 @@ class StudentController extends Controller
 
         // Get students with pagination
         $students = $query->latest()->paginate(10)->withQueryString();
-        
+
         // Get all distinct batches for the filter dropdown
         $batches = Student::distinct('batch')->whereNotNull('batch')->pluck('batch')->sort();
 

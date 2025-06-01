@@ -17,6 +17,10 @@ use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
+Route::get('/api/gallery-images', [WelcomeController::class, 'getGalleryImages'])->name('api.gallery-images');
+Route::get('/api/ngos-by-focus-area', [WelcomeController::class, 'getNgosByFocusArea'])->name('api.ngos-by-focus-area');
+Route::get('/projects/{project}/details', [WelcomeController::class, 'projectDetails'])->name('projects.public.details');
+Route::get('/public/gallery', [WelcomeController::class, 'galleryIndex'])->name('gallery.public.index');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
