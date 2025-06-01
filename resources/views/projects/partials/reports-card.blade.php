@@ -449,14 +449,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (!allowedTypes.includes(file.type)) {
                         fileErrors.push(
                             `"${file.name}" is not an allowed file type. Only PDF, DOC, DOCX, XLS, and XLSX are supported.`
-                            );
+                        );
                     }
 
                     // Check file size
                     if (file.size > maxSize) {
                         fileErrors.push(
                             `"${file.name}" exceeds the 10MB size limit (${(file.size / (1024 * 1024)).toFixed(2)}MB).`
-                            );
+                        );
                     }
                 }
 
@@ -597,7 +597,7 @@ document.addEventListener('DOMContentLoaded', function() {
         fileInput.addEventListener('change', function() {
             fileList.innerHTML = '';
             document.getElementById('uploadReportFilesError').textContent =
-            ''; // Clear file errors when new files are selected
+                ''; // Clear file errors when new files are selected
 
             if (this.files.length === 0) {
                 return;
