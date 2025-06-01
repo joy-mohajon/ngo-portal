@@ -144,6 +144,8 @@
                     <a href="#" class="text-gray-700 hover:text-blue-600">Home</a>
                     <a href="#ngos" class="text-gray-700 hover:text-blue-600">NGOs</a>
                     <a href="#gallery" class="text-gray-700 hover:text-blue-600">Gallery</a>
+                    <a href="#impact-stories" class="text-gray-700 hover:text-blue-600">Impact Stories</a>
+                    <a href="#achievements" class="text-gray-700 hover:text-blue-600">Achievements</a>
                     <a href="{{ route('gallery.public.index') }}" class="text-gray-700 hover:text-blue-600">All Images</a>
                     <button
                         class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition duration-200">
@@ -221,7 +223,7 @@
                 </div>
             </div>
             <div class="md:w-1/2 flex justify-center">
-                <div class="relative">
+                    <div class="relative">
                     <div class="absolute -right-4 -bottom-4 w-full h-full bg-blue-400 rounded-xl opacity-50"></div>
                     <div class="absolute inset-0 bg-gradient-to-tr from-blue-500/20 to-transparent rounded-xl"></div>
                     <img src="{{ asset('images/hero-illustration.jpg') }}" alt="Collaboration Illustration"
@@ -251,9 +253,9 @@
                 <button type="button" data-focus-area="{{ $area->id }}"
                     class="focus-filter px-4 py-2 rounded-full text-sm font-medium {{ request('focus_area') == $area->id ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300' }}">
                     {{ $area->name }}
-                </button>
+                        </button>
                 @endforeach
-            </div>
+                </div>
 
             <!-- Gallery Grid -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -280,7 +282,7 @@
                                         <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"></path>
                                     </svg>
                                     {{ $image->ngo_name ?? 'NGO' }}
-                                </div>
+                            </div>
                             </div>
                         </div>
                     </a>
@@ -300,6 +302,112 @@
                     <svg class="ml-2 -mr-1 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
                     </svg>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials/Impact Stories Section -->
+    <section id="impact-stories" class="py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-900 font-serif">Impact Stories</h2>
+                <p class="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
+                    Real-world results and transformations from our NGO partners
+                </p>
+            </div>
+            
+            <!-- Testimonial Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Testimonial 1 -->
+                <div class="bg-white rounded-xl shadow-md overflow-hidden relative">
+                    <div class="absolute top-0 right-0 bg-blue-600 text-white px-4 py-1 text-sm font-medium">
+                        Education
+                    </div>
+                    <div class="h-48 bg-blue-600 flex items-center justify-center">
+                        <svg class="text-white/20 w-24 h-24" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M20 17.722c.595-.347 1-.985 1-1.722V5c0-1.103-.897-2-2-2H5c-1.103 0-2 .897-2 2v11c0 1.103.897 2 2 2h7.5c.5 0 .5 0 1.5 1l3.5 2.5a1 1 0 0 0 1.5-.8V18.5c0-.15-.1-.3-.2-.4-.1-.2-.2-.3-.3-.378z"></path>
+                        </svg>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-gray-600 italic mb-4">
+                            "The educational initiatives have transformed our village. Children who never had access to quality education are now excelling in school and dreaming of bright futures."
+                        </p>
+                        <div class="flex items-center">
+                            <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+                                <svg class="h-6 w-6 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <div class="ml-3">
+                                <h4 class="text-base font-semibold text-gray-900">Rahima Begum</h4>
+                                <p class="text-sm text-gray-500">Village Leader, Sylhet</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Testimonial 2 -->
+                <div class="bg-white rounded-xl shadow-md overflow-hidden relative">
+                    <div class="absolute top-0 right-0 bg-green-600 text-white px-4 py-1 text-sm font-medium">
+                        Healthcare
+                    </div>
+                    <div class="h-48 bg-green-600 flex items-center justify-center">
+                        <svg class="text-white/20 w-24 h-24" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M20 17.722c.595-.347 1-.985 1-1.722V5c0-1.103-.897-2-2-2H5c-1.103 0-2 .897-2 2v11c0 1.103.897 2 2 2h7.5c.5 0 .5 0 1.5 1l3.5 2.5a1 1 0 0 0 1.5-.8V18.5c0-.15-.1-.3-.2-.4-.1-.2-.2-.3-.3-.378z"></path>
+                        </svg>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-gray-600 italic mb-4">
+                            "The mobile health clinic has been life-changing for our community. Now elderly people and pregnant women receive regular check-ups without traveling long distances."
+                        </p>
+                        <div class="flex items-center">
+                            <div class="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center">
+                                <svg class="h-6 w-6 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <div class="ml-3">
+                                <h4 class="text-base font-semibold text-gray-900">Dr. Kamal Hossain</h4>
+                                <p class="text-sm text-gray-500">Local Physician, Rangpur</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Testimonial 3 -->
+                <div class="bg-white rounded-xl shadow-md overflow-hidden relative">
+                    <div class="absolute top-0 right-0 bg-yellow-600 text-white px-4 py-1 text-sm font-medium">
+                        Livelihood
+                    </div>
+                    <div class="h-48 bg-yellow-600 flex items-center justify-center">
+                        <svg class="text-white/20 w-24 h-24" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M20 17.722c.595-.347 1-.985 1-1.722V5c0-1.103-.897-2-2-2H5c-1.103 0-2 .897-2 2v11c0 1.103.897 2 2 2h7.5c.5 0 .5 0 1.5 1l3.5 2.5a1 1 0 0 0 1.5-.8V18.5c0-.15-.1-.3-.2-.4-.1-.2-.2-.3-.3-.378z"></path>
+                        </svg>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-gray-600 italic mb-4">
+                            "The microfinance program helped me start my tailoring business. Now I can support my family and even employ two other women from my village."
+                        </p>
+                        <div class="flex items-center">
+                            <div class="h-10 w-10 rounded-full bg-yellow-100 flex items-center justify-center">
+                                <svg class="h-6 w-6 text-yellow-600" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <div class="ml-3">
+                                <h4 class="text-base font-semibold text-gray-900">Fatima Akter</h4>
+                                <p class="text-sm text-gray-500">Entrepreneur, Khulna</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- View More Button -->
+            <div class="text-center mt-10">
+                <a href="#" class="inline-block border border-blue-600 text-blue-600 hover:bg-blue-50 px-6 py-3 rounded-lg transition duration-200">
+                    View More Success Stories
                 </a>
             </div>
         </div>
@@ -338,7 +446,7 @@
                 @forelse($ngos as $ngo)
                 <!-- NGO Card -->
                 <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300">
-                    <div class="p-6">
+                        <div class="p-6">
                         <div class="flex items-center justify-between mb-4">
                             @if($ngo->logo)
                             <img src="{{ asset('storage/' . $ngo->logo) }}" alt="{{ $ngo->name }} Logo"
@@ -388,7 +496,7 @@
                     </p>
                 </div>
                 @endforelse
-            </div>
+                    </div>
 
             <!-- Load More Button -->
             <div class="mt-10 text-center" id="load-more-container">
@@ -407,30 +515,212 @@
         </div>
     </section>
 
+    <!-- Statistics/Achievements Section -->
+    <section id="achievements" class="py-20 bg-gradient-to-br from-blue-900 to-blue-700 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold font-serif">Our Collective Impact</h2>
+                <p class="mt-4 text-blue-100 max-w-2xl mx-auto">
+                    Together with our NGO partners, we've made significant progress across Bangladesh
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Stat 1 -->
+                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center border border-white/20 hover:transform hover:scale-105 transition-all duration-300">
+                    <div class="inline-block p-4 rounded-full bg-white/10 mb-4">
+                        <svg class="w-10 h-10 text-blue-200" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-4xl font-bold mb-2">250+</h3>
+                    <p class="text-xl text-blue-100">NGO Partners</p>
+                </div>
+                
+                <!-- Stat 2 -->
+                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center border border-white/20 hover:transform hover:scale-105 transition-all duration-300">
+                    <div class="inline-block p-4 rounded-full bg-white/10 mb-4">
+                        <svg class="w-10 h-10 text-blue-200" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 01-1.5.87l-4.5-2.58-4.5 2.58A1 1 0 014 16V4z" clip-rule="evenodd"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-4xl font-bold mb-2">1,200+</h3>
+                    <p class="text-xl text-blue-100">Projects Completed</p>
+                </div>
+                
+                <!-- Stat 3 -->
+                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center border border-white/20 hover:transform hover:scale-105 transition-all duration-300">
+                    <div class="inline-block p-4 rounded-full bg-white/10 mb-4">
+                        <svg class="w-10 h-10 text-blue-200" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z"></path>
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clip-rule="evenodd"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-4xl font-bold mb-2">৳65B+</h3>
+                    <p class="text-xl text-blue-100">Funds Distributed</p>
+                </div>
+                
+                <!-- Stat 4 -->
+                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center border border-white/20 hover:transform hover:scale-105 transition-all duration-300">
+                    <div class="inline-block p-4 rounded-full bg-white/10 mb-4">
+                        <svg class="w-10 h-10 text-blue-200" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-4xl font-bold mb-2">42</h3>
+                    <p class="text-xl text-blue-100">Districts Covered</p>
+                </div>
+            </div>
+            
+            <!-- Additional Impact Details -->
+            <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white/5 backdrop-blur-sm rounded-lg p-6 border border-white/10">
+                    <h4 class="text-xl font-semibold mb-3 flex items-center">
+                        <svg class="w-6 h-6 mr-2 text-blue-300" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                        </svg>
+                        Health Achievements
+                    </h4>
+                    <ul class="space-y-2 text-blue-100">
+                        <li class="flex items-start">
+                            <svg class="w-5 h-5 text-blue-300 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                            </svg>
+                            <span>150+ mobile health clinics deployed</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="w-5 h-5 text-blue-300 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                            </svg>
+                            <span>750,000+ medical consultations</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="w-5 h-5 text-blue-300 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                            </svg>
+                            <span>85% increase in maternal healthcare access</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="bg-white/5 backdrop-blur-sm rounded-lg p-6 border border-white/10">
+                    <h4 class="text-xl font-semibold mb-3 flex items-center">
+                        <svg class="w-6 h-6 mr-2 text-blue-300" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z" />
+                        </svg>
+                        Education Progress
+                    </h4>
+                    <ul class="space-y-2 text-blue-100">
+                        <li class="flex items-start">
+                            <svg class="w-5 h-5 text-blue-300 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                            </svg>
+                            <span>320 schools built or renovated</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="w-5 h-5 text-blue-300 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                            </svg>
+                            <span>120,000+ children received education</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="w-5 h-5 text-blue-300 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                            </svg>
+                            <span>5,000+ teachers trained and employed</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="bg-white/5 backdrop-blur-sm rounded-lg p-6 border border-white/10">
+                    <h4 class="text-xl font-semibold mb-3 flex items-center">
+                        <svg class="w-6 h-6 mr-2 text-blue-300" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 3a1 1 0 01.707.293l3 3a1 1 0 01-1.414 1.414L10 5.414 7.707 7.707a1 1 0 01-1.414-1.414l3-3A1 1 0 0110 3zm-3.707 9.293a1 1 0 011.414 0L10 14.586l2.293-2.293a1 1 0 011.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                        Economic Impact
+                    </h4>
+                    <ul class="space-y-2 text-blue-100">
+                        <li class="flex items-start">
+                            <svg class="w-5 h-5 text-blue-300 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                            </svg>
+                            <span>45,000+ microloans disbursed</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="w-5 h-5 text-blue-300 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                            </svg>
+                            <span>12,500 small businesses created</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="w-5 h-5 text-blue-300 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                            </svg>
+                            <span>68% average income increase for participants</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Call to Action -->
-    <section class="py-16 bg-blue-600 text-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 class="text-3xl font-bold mb-4">Join Our Network Today</h2>
-            <p class="max-w-2xl mx-auto mb-8 text-blue-100">
-                Register your NGO and connect with government authorities, access funding opportunities, and showcase
-                your impact.
-            </p>
-            <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
-                @auth
-                <a href="{{ url('/dashboard') }}"
-                    class="bg-white text-blue-600 hover:bg-gray-100 px-6 py-3 rounded-lg font-medium transition duration-200">
-                    Go to Dashboard
-                </a>
-                @else
-                <a href="{{ route('register') }}"
-                    class="bg-white text-blue-600 hover:bg-gray-100 px-6 py-3 rounded-lg font-medium transition duration-200">
-                    Register Now
-                </a>
-                <a href="{{ route('login') }}"
-                    class="border-2 border-white text-white hover:bg-blue-700 px-6 py-3 rounded-lg font-medium transition duration-200">
-                    Login
-                </a>
-                @endauth
+    <section class="py-20 bg-blue-600 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row items-center justify-between">
+                <div class="md:w-2/3 mb-8 md:mb-0">
+                    <h2 class="text-3xl font-serif font-bold mb-4">Join Our Network Today</h2>
+                    <p class="text-blue-100 text-lg max-w-2xl mb-6">
+                        Register your NGO and connect with government authorities, access funding opportunities, and showcase your impact through our trusted platform.
+                    </p>
+                    <div class="flex flex-wrap gap-4 mt-2">
+                        <div class="flex items-center bg-white/10 px-4 py-2 rounded-lg">
+                            <svg class="w-5 h-5 mr-2 text-blue-200" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span>Verified Profile</span>
+                        </div>
+                        <div class="flex items-center bg-white/10 px-4 py-2 rounded-lg">
+                            <svg class="w-5 h-5 mr-2 text-blue-200" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"></path>
+                            </svg>
+                            <span>Project Analytics</span>
+                        </div>
+                        <div class="flex items-center bg-white/10 px-4 py-2 rounded-lg">
+                            <svg class="w-5 h-5 mr-2 text-blue-200" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span>Networking</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="md:w-1/3 bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/20 shadow-lg">
+                    <h3 class="text-xl font-semibold mb-4">Create an Account</h3>
+                    @auth
+                        <div class="bg-white/20 backdrop-blur-sm p-4 rounded-lg mb-6">
+                            <p class="font-medium">You're already logged in!</p>
+                            <p class="text-sm text-blue-100 mt-1">Access your dashboard to manage projects and settings.</p>
+                        </div>
+                        <a href="{{ url('/dashboard') }}"
+                           class="block w-full bg-white text-blue-600 hover:bg-blue-50 text-center px-6 py-3 rounded-lg font-medium transition duration-200">
+                            Go to Dashboard
+                        </a>
+                    @else
+                        <div class="space-y-4 mb-6">
+                            <a href="{{ route('register') }}"
+                               class="block w-full bg-white text-blue-600 hover:bg-blue-50 text-center px-6 py-3 rounded-lg font-medium transition duration-200">
+                                Register Now
+                            </a>
+                            <a href="{{ route('login') }}"
+                               class="block w-full border-2 border-white text-white hover:bg-blue-700 text-center px-6 py-3 rounded-lg font-medium transition duration-200">
+                                Login
+                            </a>
+                        </div>
+                        <p class="text-sm text-center text-blue-100">
+                            Join over 250 verified NGOs using our platform
+                        </p>
+                    @endauth
+                </div>
             </div>
         </div>
     </section>
@@ -465,9 +755,11 @@
                     <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
                     <ul class="space-y-2 text-gray-400">
                         <li><a href="#" class="hover:text-white">Home</a></li>
-                        <li><a href="#" class="hover:text-white">About Us</a></li>
-                        <li><a href="#" class="hover:text-white">NGOs</a></li>
-                        <li><a href="{{ route('gallery.public.index') }}" class="hover:text-white">Gallery</a></li>
+                        <li><a href="#ngos" class="hover:text-white">NGOs</a></li>
+                        <li><a href="#gallery" class="hover:text-white">Gallery</a></li>
+                        <li><a href="#impact-stories" class="hover:text-white">Impact Stories</a></li>
+                        <li><a href="#achievements" class="hover:text-white">Achievements</a></li>
+                        <li><a href="{{ route('gallery.public.index') }}" class="hover:text-white">All Images</a></li>
                     </ul>
                 </div>
                 <div>
@@ -759,7 +1051,7 @@
                                 ${image.ngo_name || 'NGO'}
                             </div>
                         </div>
-                    </div>
+    </div>
                 </a>
             `;
             

@@ -11,77 +11,77 @@
         rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
     <style>
-        .gallery-item {
-            position: relative;
-            border-radius: 0.75rem;
-            overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            transition: all 0.4s ease;
-        }
-        
-        .gallery-item:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
-        }
-        
-        .gallery-item img {
-            transition: all 0.5s ease;
-            transform-origin: center;
-        }
-        
-        .gallery-item:hover img {
-            transform: scale(1.08);
-        }
-        
-        .gallery-item .overlay {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0) 100%);
-            opacity: 0.85;
-            transition: all 0.4s ease;
-            z-index: 1;
-        }
-        
-        .gallery-item:hover .overlay {
-            opacity: 0.95;
-        }
-        
-        .gallery-item .focus-area-badge {
-            position: absolute;
-            top: 16px;
-            right: 16px;
-            z-index: 2;
-            padding: 6px 12px;
-            background-color: rgba(255, 255, 255, 0.9);
-            color: #1e40af;
-            font-weight: 600;
-            font-size: 0.75rem;
-            border-radius: 20px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-        }
-        
-        .gallery-item:hover .focus-area-badge {
-            background-color: #ffffff;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
-        
-        .gallery-item .ngo-badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 6px 14px;
-            background-color: rgba(37, 99, 235, 0.9);
-            color: white;
-            font-weight: 500;
-            border-radius: 6px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s ease;
-        }
-        
-        .gallery-item:hover .ngo-badge {
-            background-color: rgb(37, 99, 235);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-        }
+    .gallery-item {
+        position: relative;
+        border-radius: 0.75rem;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        transition: all 0.4s ease;
+    }
+
+    .gallery-item:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .gallery-item img {
+        transition: all 0.5s ease;
+        transform-origin: center;
+    }
+
+    .gallery-item:hover img {
+        transform: scale(1.08);
+    }
+
+    .gallery-item .overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0) 100%);
+        opacity: 0.85;
+        transition: all 0.4s ease;
+        z-index: 1;
+    }
+
+    .gallery-item:hover .overlay {
+        opacity: 0.95;
+    }
+
+    .gallery-item .focus-area-badge {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        z-index: 2;
+        padding: 6px 12px;
+        background-color: rgba(255, 255, 255, 0.9);
+        color: #1e40af;
+        font-weight: 600;
+        font-size: 0.75rem;
+        border-radius: 20px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .gallery-item:hover .focus-area-badge {
+        background-color: #ffffff;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .gallery-item .ngo-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 6px 14px;
+        background-color: rgba(37, 99, 235, 0.9);
+        color: white;
+        font-weight: 500;
+        border-radius: 6px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+    }
+
+    .gallery-item:hover .ngo-badge {
+        background-color: rgb(37, 99, 235);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    }
     </style>
 </head>
 
@@ -103,9 +103,11 @@
                     <a href="{{ url('/#ngos') }}" class="text-gray-700 hover:text-blue-600">NGOs</a>
                     <a href="{{ url('/public/projects') }}" class="text-blue-600 font-medium">Projects</a>
                     @auth
-                        <a href="{{ url('/dashboard') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition duration-200">Dashboard</a>
+                    <a href="{{ url('/dashboard') }}"
+                        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition duration-200">Dashboard</a>
                     @else
-                        <a href="{{ route('login') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition duration-200">Login</a>
+                    <a href="{{ route('login') }}"
+                        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition duration-200">Login</a>
                     @endauth
                 </div>
             </div>
@@ -118,7 +120,8 @@
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                 <div>
                     <h1 class="text-4xl font-bold font-serif">All Projects</h1>
-                    <p class="mt-2 text-blue-100 text-lg">Explore verified projects implemented by NGOs across the country</p>
+                    <p class="mt-2 text-blue-100 text-lg">Explore verified projects implemented by NGOs across the
+                        country</p>
                 </div>
                 <div class="flex items-center bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
                     <div class="text-center px-4 border-r border-white/20">
@@ -141,44 +144,50 @@
             <div class="flex justify-between items-center mb-5">
                 <h2 class="text-lg font-bold text-gray-800">Filter Projects</h2>
                 <div class="text-sm text-gray-500">
-                    Showing {{ $projects->firstItem() ?? 0 }}-{{ $projects->lastItem() ?? 0 }} of {{ $projects->total() }} projects
+                    Showing {{ $projects->firstItem() ?? 0 }}-{{ $projects->lastItem() ?? 0 }} of
+                    {{ $projects->total() }} projects
                 </div>
             </div>
-            
+
             <form action="{{ route('projects.public.index') }}" method="GET" class="flex flex-wrap gap-4">
                 <!-- Focus Area Filter -->
                 <div class="w-full md:w-1/3">
                     <label for="focus_area" class="block text-sm font-medium text-gray-700 mb-1">Focus Area</label>
-                    <select name="focus_area" id="focus_area" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    <select name="focus_area" id="focus_area"
+                        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                         <option value="">All Focus Areas</option>
                         @foreach($focusAreas as $area)
-                            <option value="{{ $area->id }}" {{ request('focus_area') == $area->id ? 'selected' : '' }}>
-                                {{ $area->name }}
-                            </option>
+                        <option value="{{ $area->id }}" {{ request('focus_area') == $area->id ? 'selected' : '' }}>
+                            {{ $area->name }}
+                        </option>
                         @endforeach
                     </select>
                 </div>
-                
+
                 <!-- Status Filter -->
                 <div class="w-full md:w-1/3">
                     <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Project Status</label>
-                    <select name="status" id="status" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    <select name="status" id="status"
+                        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                         <option value="">All Statuses</option>
                         <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Active</option>
-                        <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Completed</option>
+                        <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Completed
+                        </option>
                         <option value="planned" {{ request('status') == 'planned' ? 'selected' : '' }}>Planned</option>
                     </select>
                 </div>
-                
+
                 <!-- Submit Button -->
                 <div class="w-full md:w-auto flex items-end">
-                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition duration-200">
+                    <button type="submit"
+                        class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition duration-200">
                         <i class="fas fa-filter mr-1"></i> Apply Filters
                     </button>
                     @if(request('focus_area') || request('status'))
-                        <a href="{{ route('projects.public.index') }}" class="ml-2 text-gray-600 hover:text-gray-800 font-medium py-2 px-4 border border-gray-300 rounded-md transition duration-200">
-                            <i class="fas fa-times mr-1"></i> Clear
-                        </a>
+                    <a href="{{ route('projects.public.index') }}"
+                        class="ml-2 text-gray-600 hover:text-gray-800 font-medium py-2 px-4 border border-gray-300 rounded-md transition duration-200">
+                        <i class="fas fa-times mr-1"></i> Clear
+                    </a>
                     @endif
                 </div>
             </form>
@@ -188,21 +197,21 @@
         <div class="flex justify-between items-center mb-6">
             <h2 class="text-xl font-bold text-gray-800">
                 @if(request('focus_area') && $focusAreas->where('id', request('focus_area'))->first())
-                    {{ $focusAreas->where('id', request('focus_area'))->first()->name }} Projects
+                {{ $focusAreas->where('id', request('focus_area'))->first()->name }} Projects
                 @elseif(request('status'))
-                    {{ ucfirst(request('status')) }} Projects
+                {{ ucfirst(request('status')) }} Projects
                 @else
-                    All Projects
+                All Projects
                 @endif
             </h2>
-            
+
             <div class="flex items-center gap-3 text-sm text-gray-500">
                 <span class="hidden md:flex items-center gap-1">
                     <i class="fas fa-th-large text-gray-400"></i> Grid View
                 </span>
                 <span class="hidden md:inline text-gray-300">|</span>
                 <span class="flex items-center gap-1">
-                    <i class="fas fa-sort-amount-down text-gray-400 mr-1"></i> 
+                    <i class="fas fa-sort-amount-down text-gray-400 mr-1"></i>
                     Sorted by Latest
                 </span>
             </div>
@@ -211,85 +220,96 @@
         <!-- Projects Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
             @forelse($projects as $project)
-                <div class="gallery-item">
-                    <a href="{{ route('projects.public.details', $project) }}" class="block">
-                        <div class="overlay"></div>
-                        
-                        @if($project->focusArea)
-                        <div class="focus-area-badge">
-                            {{ $project->focusArea->name }}
-                        </div>
-                        @endif
-                        
-                        @if($project->galleries->isNotEmpty())
-                            <img src="{{ asset('storage/' . $project->galleries->first()->image_path) }}"
-                                alt="{{ $project->title }}" class="w-full h-64 object-cover">
-                        @else
-                            <div class="w-full h-64 bg-gray-200 flex items-center justify-center">
-                                <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                </svg>
-                            </div>
-                        @endif
-                        
-                        <div class="absolute bottom-0 left-0 right-0 px-5 py-4 z-10">
-                            <div class="flex items-start justify-between">
-                                <h3 class="text-white font-bold text-xl mb-3 leading-tight">{{ $project->title }}</h3>
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ 
+            <div class="gallery-item">
+                <a href="{{ route('projects.public.details', $project) }}" class="block">
+                    <div class="overlay"></div>
+
+                    @if($project->focusArea)
+                    <div class="focus-area-badge">
+                        {{ $project->focusArea->name }}
+                    </div>
+                    @endif
+
+                    @if($project->galleries->isNotEmpty())
+                    <img src="{{ asset('storage/' . $project->galleries->first()->image_path) }}"
+                        alt="{{ $project->title }}" class="w-full h-64 object-cover">
+                    @else
+                    <div class="w-full h-64 bg-gray-200 flex items-center justify-center">
+                        <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
+                            </path>
+                        </svg>
+                    </div>
+                    @endif
+
+                    <div class="absolute bottom-0 left-0 right-0 px-5 py-4 z-10">
+                        <div class="flex items-start justify-between">
+                            <h3 class="text-white font-bold text-xl mb-3 leading-tight">{{ $project->title }}</h3>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ 
                                     $project->status === 'active' ? 'bg-green-100 text-green-800' : 
                                     ($project->status === 'completed' ? 'bg-blue-100 text-blue-800' : 'bg-yellow-100 text-yellow-800') 
                                 }}">
-                                    {{ ucfirst($project->status) }}
-                                </span>
-                            </div>
-                            
-                            <div class="flex items-center text-white/80 text-sm mb-3">
-                                <span class="flex items-center mr-3">
-                                    <i class="fas fa-calendar-alt mr-1"></i>
-                                    {{ $project->start_date->format('M Y') }} - {{ $project->end_date->format('M Y') }}
-                                </span>
-                                @if($project->location)
-                                <span class="flex items-center">
-                                    <i class="fas fa-map-marker-alt mr-1"></i>
-                                    {{ $project->location }}
-                                </span>
-                                @endif
-                            </div>
-                            
-                            <div class="flex items-center justify-between">
-                                <div class="ngo-badge">
-                                    <svg class="w-4 h-4 mr-2 opacity-90" fill="currentColor" viewBox="0 0 20 20">
-                                        <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"></path>
-                                    </svg>
-                                    {{ $project->runner->name ?? 'Unknown NGO' }}
-                                </div>
-                                @if($project->galleries->count() > 1)
-                                <div class="flex items-center gap-1 bg-white/20 backdrop-blur-sm px-2 py-1 rounded-md text-white text-xs">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                    </svg>
-                                    <span>{{ $project->galleries->count() }} Photos</span>
-                                </div>
-                                @endif
-                            </div>
+                                {{ ucfirst($project->status) }}
+                            </span>
                         </div>
-                    </a>
-                </div>
-            @empty
-                <div class="col-span-3 py-12 text-center">
-                    <div class="bg-white rounded-lg shadow-sm p-8">
-                        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
-                        </svg>
-                        <h3 class="mt-4 text-lg font-medium text-gray-900">No projects found</h3>
-                        <p class="mt-2 text-gray-500">There are no projects matching your filter criteria. Please try a different filter or check back later.</p>
-                        <div class="mt-6">
-                            <a href="{{ route('projects.public.index') }}" class="text-blue-600 hover:text-blue-700 font-medium">
-                                View all projects
-                            </a>
+
+                        <div class="flex items-center text-white/80 text-sm mb-3">
+                            <span class="flex items-center mr-3">
+                                <i class="fas fa-calendar-alt mr-1"></i>
+                                {{ $project->start_date->format('M Y') }} - {{ $project->end_date->format('M Y') }}
+                            </span>
+                            @if($project->location)
+                            <span class="flex items-center">
+                                <i class="fas fa-map-marker-alt mr-1"></i>
+                                {{ $project->location }}
+                            </span>
+                            @endif
+                        </div>
+
+                        <div class="flex items-center justify-between">
+                            <div class="ngo-badge">
+                                <svg class="w-4 h-4 mr-2 opacity-90" fill="currentColor" viewBox="0 0 20 20">
+                                    <path
+                                        d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z">
+                                    </path>
+                                </svg>
+                                {{ $project->runner->name ?? 'Unknown NGO' }}
+                            </div>
+                            @if($project->galleries->count() > 1)
+                            <div
+                                class="flex items-center gap-1 bg-white/20 backdrop-blur-sm px-2 py-1 rounded-md text-white text-xs">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                    </path>
+                                </svg>
+                                <span>{{ $project->galleries->count() }} Photos</span>
+                            </div>
+                            @endif
                         </div>
                     </div>
+                </a>
+            </div>
+            @empty
+            <div class="col-span-3 py-12 text-center">
+                <div class="bg-white rounded-lg shadow-sm p-8">
+                    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2">
+                        </path>
+                    </svg>
+                    <h3 class="mt-4 text-lg font-medium text-gray-900">No projects found</h3>
+                    <p class="mt-2 text-gray-500">There are no projects matching your filter criteria. Please try a
+                        different filter or check back later.</p>
+                    <div class="mt-6">
+                        <a href="{{ route('projects.public.index') }}"
+                            class="text-blue-600 hover:text-blue-700 font-medium">
+                            View all projects
+                        </a>
+                    </div>
                 </div>
+            </div>
             @endforelse
         </div>
 
@@ -375,4 +395,5 @@
     });
     </script>
 </body>
-</html> 
+
+</html>
