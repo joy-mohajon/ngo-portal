@@ -26,11 +26,11 @@ class ProjectController extends Controller
             
         if (!$hasAdminRole) {
             return redirect()->route('projects.runner')
-                ->with('error', 'You do not have permission to view all projects. You can only view projects where you are the holder or runner.');
+                ->with('error', 'You do not have permission to view all projects. You can only view projects where you are the donner or runner.');
         }
         
         // Start with base query
-        $query = Project::with(['holder', 'runner', 'focusArea']);
+        $query = Project::with(['donner', 'runner', 'focusArea']);
 
         // Apply filters if they exist
         if ($request->has('status') && $request->status != '') {
@@ -48,7 +48,7 @@ class ProjectController extends Controller
         }
 
         if ($request->has('organization') && $request->organization != '') {
-            $query->whereHas('holder', function($q) use ($request) {
+            $query->whereHas('donner', function($q) use ($request) {
                 $q->where('name', 'like', '%'.$request->organization.'%');
             });
         }
@@ -60,9 +60,9 @@ class ProjectController extends Controller
                 return [
                     'id' => $project->id,
                     'name' => $project->title,
-                    'organization' => $project->holder->name ?? 'Unknown',
+                    'organization' => $project->donner->name ?? 'Unknown',
                     'runner' => $project->runner->name ?? 'Unknown',
-                    'email' => $project->holder->email ?? '',
+                    'email' => $project->donner->email ?? '',
                     'start_date' => $project->start_date->format('M Y'),
                     'end_date' => $project->end_date->format('M Y'),
                     'sector' => $project->focus_area,
@@ -126,7 +126,7 @@ class ProjectController extends Controller
             'location' => 'nullable|string|max:255',
             'budget' => 'nullable|numeric|min:0',
             'focus_area' => 'required',
-            'holder_id' => 'required|exists:ngos,id',
+            'donner_id' => 'required|exists:ngos,id',
             'runner_id' => 'required|exists:ngos,id',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
@@ -157,15 +157,15 @@ class ProjectController extends Controller
                 
             if ($hasNgoRole) {
                 // Use the policy to verify permission
-                if (!($user->ngo->id === $project->holder_id || $user->ngo->id === $project->runner_id)) {
+                if (!($user->ngo->id === $project->donner_id || $user->ngo->id === $project->runner_id)) {
                     return redirect()->route('projects.runner')
-                        ->with('error', 'You do not have permission to view this project. You can only view projects where you are the holder or runner.');
+                        ->with('error', 'You do not have permission to view this project. You can only view projects where you are the donner or runner.');
                 }
             }
         }
         
         $project->load([
-            'holder', 
+            'donner', 
             'runner', 
             'trainings', 
             'reports',
@@ -205,7 +205,7 @@ class ProjectController extends Controller
         
         // 1. Cast numeric fields to appropriate types
         $project->focus_area = (int)$project->focus_area;
-        $project->holder_id = (int)$project->holder_id;
+        $project->donner_id = (int)$project->donner_id;
         $project->runner_id = (int)$project->runner_id;
         $project->budget = (float)$project->budget;
         
@@ -267,7 +267,7 @@ class ProjectController extends Controller
             'location' => 'nullable|string|max:255',
             'budget' => 'nullable|numeric|min:0',
             'focus_area' => 'required',
-            'holder_id' => 'required|exists:ngos,id',
+            'donner_id' => 'required|exists:ngos,id',
             'runner_id' => 'required|exists:ngos,id',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
@@ -280,7 +280,7 @@ class ProjectController extends Controller
         
         // 1. Ensure numeric fields are properly formatted
         $validated['focus_area'] = (int)$validated['focus_area'];
-        $validated['holder_id'] = (int)$validated['holder_id'];
+        $validated['donner_id'] = (int)$validated['donner_id'];
         $validated['runner_id'] = (int)$validated['runner_id'];
         
         if (isset($validated['budget'])) {
@@ -357,11 +357,11 @@ class ProjectController extends Controller
         if (!$hasAdminRole) {
             return response()->json([
                 'success' => false,
-                'message' => 'You do not have permission to view all projects. You can only view projects where you are the holder or runner.'
+                'message' => 'You do not have permission to view all projects. You can only view projects where you are the donner or runner.'
             ], 403);
         }
         
-        $projects = Project::with(['holder', 'runner'])->latest()->get();
+        $projects = Project::with(['donner', 'runner'])->latest()->get();
         return response()->json([
             'success' => true,
             'data' => $projects
@@ -386,16 +386,16 @@ class ProjectController extends Controller
                 
             if ($hasNgoRole) {
                 // Use the policy to verify permission
-                if (!($user->ngo->id === $project->holder_id || $user->ngo->id === $project->runner_id)) {
+                if (!($user->ngo->id === $project->donner_id || $user->ngo->id === $project->runner_id)) {
                     return response()->json([
                         'success' => false,
-                        'message' => 'You do not have permission to view this project. You can only view projects where you are the holder or runner.'
+                        'message' => 'You do not have permission to view this project. You can only view projects where you are the donner or runner.'
                     ], 403);
                 }
             }
         }
         
-        $project->load(['holder', 'runner', 'trainings', 'reports']);
+        $project->load(['donner', 'runner', 'trainings', 'reports']);
         return response()->json([
             'success' => true,
             'data' => $project
@@ -413,7 +413,7 @@ class ProjectController extends Controller
             'location' => 'nullable|string|max:255',
             'budget' => 'nullable|numeric|min:0',
             'focus_area' => 'nullable|string|max:255',
-            'holder_id' => 'required|exists:ngos,id',
+            'donner_id' => 'required|exists:ngos,id',
             'runner_id' => 'required|exists:ngos,id',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
@@ -440,7 +440,7 @@ class ProjectController extends Controller
             'location' => 'sometimes|nullable|string|max:255',
             'budget' => 'sometimes|nullable|numeric|min:0',
             'focus_area' => 'sometimes|nullable|string|max:255',
-            'holder_id' => 'sometimes|required|exists:ngos,id',
+            'donner_id' => 'sometimes|required|exists:ngos,id',
             'runner_id' => 'sometimes|required|exists:ngos,id',
             'start_date' => 'sometimes|required|date',
             'end_date' => 'sometimes|required|date|after_or_equal:start_date',
@@ -486,13 +486,13 @@ class ProjectController extends Controller
         ]);
     }
 
-    public function holderProjects(Request $request)
+    public function donnerProjects(Request $request)
     {
         $user = Auth::user();
         $ngoId = $user && $user->ngo ? $user->ngo->id : null;
         if (!$ngoId) abort(403);
-        $request->merge(['holder_id' => $ngoId]);
-        return $this->filteredProjectsByRole($request, 'holder_id');
+        $request->merge(['donner_id' => $ngoId]);
+        return $this->filteredProjectsByRole($request, 'donner_id');
     }
 
     public function runnerProjects(Request $request)
@@ -506,7 +506,7 @@ class ProjectController extends Controller
 
     protected function filteredProjectsByRole(Request $request, $roleField)
     {
-        $query = Project::with(['holder', 'runner', 'focusArea']);
+        $query = Project::with(['donner', 'runner', 'focusArea']);
         $query->where($roleField, $request[$roleField]);
         // Apply other filters as in index()
         if ($request->has('status') && $request->status != '') {
@@ -521,7 +521,7 @@ class ProjectController extends Controller
             $query->where('location', 'like', '%'.$request->location.'%');
         }
         if ($request->has('organization') && $request->organization != '') {
-            $query->whereHas('holder', function($q) use ($request) {
+            $query->whereHas('donner', function($q) use ($request) {
                 $q->where('name', 'like', '%'.$request->organization.'%');
             });
         }
@@ -529,9 +529,9 @@ class ProjectController extends Controller
             return [
                 'id' => $project->id,
                 'name' => $project->title,
-                'organization' => $project->holder->name ?? 'Unknown',
+                'organization' => $project->donner->name ?? 'Unknown',
                 'runner' => $project->runner->name ?? 'Unknown',
-                'email' => $project->holder->email ?? '',
+                'email' => $project->donner->email ?? '',
                 'start_date' => $project->start_date->format('M Y'),
                 'end_date' => $project->end_date->format('M Y'),
                 'sector' => $project->focus_area,

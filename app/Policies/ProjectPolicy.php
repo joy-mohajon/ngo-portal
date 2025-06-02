@@ -23,7 +23,7 @@ class ProjectPolicy
     {
         if ($user->hasRole('admin')) return true;
         $ngo = $user->ngo;
-        return $ngo && ($ngo->id === $project->holder_id || $ngo->id === $project->runner_id);
+        return $ngo && ($ngo->id === $project->donner_id || $ngo->id === $project->runner_id);
     }
 
     /**
@@ -41,7 +41,7 @@ class ProjectPolicy
     {
         if ($user->hasRole('admin')) return true;
         $ngo = $user->ngo;
-        return $ngo && ($ngo->id === $project->holder_id || $ngo->id === $project->runner_id);
+        return $ngo && ($ngo->id === $project->donner_id || $ngo->id === $project->runner_id);
     }
 
     /**
@@ -73,8 +73,14 @@ class ProjectPolicy
         return $user->hasRole('ngo') && $user->ngo && $user->ngo->id === $project->runner_id;
     }
 
+    public function manageAsDonner(User $user, Project $project)
+    {
+        return $user->hasRole('ngo') && $user->ngo && $user->ngo->id === $project->donner_id;
+    }
+    
+    // For backward compatibility during transition
     public function manageAsHolder(User $user, Project $project)
     {
-        return $user->hasRole('ngo') && $user->ngo && $user->ngo->id === $project->holder_id;
+        return $this->manageAsDonner($user, $project);
     }
 }

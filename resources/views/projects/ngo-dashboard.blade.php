@@ -6,7 +6,7 @@
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 relative">
             <div>
                 <h1 class="text-3xl font-bold text-gray-900">My Projects</h1>
-                <p class="text-gray-600 mt-1.5">Manage projects where you are a runner or holder NGO</p>
+                <p class="text-gray-600 mt-1.5">Manage projects where you are a runner or donner NGO</p>
             </div>
             <div class="mt-4 md:mt-0">
                 <a href="{{ route('projects.create') }}"
@@ -25,7 +25,7 @@
         </div>
 
         <!-- Role Tabs -->
-        <div class="bg-white rounded-xl shadow-sm mb-6 border border-gray-100" x-data="{ activeTab: '{{ request()->route()->getName() == 'projects.runner' ? 'runner' : 'holder' }}' }">
+        <div class="bg-white rounded-xl shadow-sm mb-6 border border-gray-100" x-data="{ activeTab: '{{ request()->route()->getName() == 'projects.runner' ? 'runner' : 'donner' }}' }">
             <div class="flex border-b border-gray-200">
                 <a href="{{ route('projects.runner') }}" 
                    class="px-6 py-4 text-center flex-1 font-medium text-sm"
@@ -41,16 +41,16 @@
                         Can Edit
                     </span>
                 </a>
-                <a href="{{ route('projects.holder') }}" 
+                <a href="{{ route('projects.donner') }}" 
                    class="px-6 py-4 text-center flex-1 font-medium text-sm"
-                   :class="activeTab === 'holder' ? 'border-b-2 border-[#9229AD] text-[#9229AD]' : 'text-gray-500 hover:text-gray-700'"
-                   @click.prevent="activeTab = 'holder'; window.location.href='{{ route('projects.holder') }}'">
+                   :class="activeTab === 'donner' ? 'border-b-2 border-[#9229AD] text-[#9229AD]' : 'text-gray-500 hover:text-gray-700'"
+                   @click.prevent="activeTab = 'donner'; window.location.href='{{ route('projects.donner') }}'">
                     <span class="inline-flex items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                         </svg>
-                        My Holder Projects
+                        My Donner Projects
                     </span>
                     <span class="ml-2 bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
                         View Only

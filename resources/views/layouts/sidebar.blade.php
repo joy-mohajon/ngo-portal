@@ -95,8 +95,8 @@
 
                 @if($hasNgoRole)
                 <li x-data="{ open: false }" class="opcion-con-desplegable">
-                    <div @click="open = !open" @click="activeItem = 'projects.holder'"
-                        :class="activeItem === 'projects.holder' ? 'bg-gray-700 text-white' : ''"
+                    <div @click="open = !open" @click="activeItem = 'projects.donner'"
+                        :class="activeItem === 'projects.donner' ? 'bg-gray-700 text-white' : ''"
                         class="flex items-center justify-between p-2 hover:bg-gray-700 rounded cursor-pointer">
                         <div class="flex items-center">
                             <i class="fas fa-chalkboard-teacher mr-3"></i>
@@ -107,11 +107,11 @@
                     </div>
                     <ul x-show="open" x-transition class="desplegable ml-8 mt-2 space-y-1">
                         <li>
-                            <a href="{{ route('projects.holder') }}" @click="activeItem = 'projects.holder'"
-                                :class="activeItem === 'projects.holder' ? 'bg-gray-700 text-white' : ''"
+                            <a href="{{ route('projects.donner') }}" @click="activeItem = 'projects.donner'"
+                                :class="activeItem === 'projects.donner' ? 'bg-gray-700 text-white' : ''"
                                 class="p-2 hover:bg-gray-700 rounded flex items-center gap-3">
                                 <i class="fa fa-angle-right" aria-hidden="true"></i>
-                                <span>As a Holder</span>
+                                <span>As a Donner</span>
                             </a>
                         </li>
                         <li>

@@ -108,11 +108,11 @@ class NgoController extends Controller
     public function show(Ngo $ngo)
     {
         $allProjects = \App\Models\Project::where(function($q) use ($ngo) {
-            $q->where('holder_id', $ngo->id)
+            $q->where('donner_id', $ngo->id)
               ->orWhere('runner_id', $ngo->id);
         })
         ->with([
-            'holder:id,name,logo',
+            'donner:id,name,logo',
             'runner:id,name,logo',
             'trainings' => fn($q) => $q->latest()->limit(5),
             'reports' => fn($q) => $q->latest()->limit(3)
@@ -121,20 +121,20 @@ class NgoController extends Controller
 
         // Run & Funded By (both)
         $projectsBoth = $allProjects->filter(function($project) use ($ngo) {
-            return $project->holder_id == $ngo->id && $project->runner_id == $ngo->id;
+            return $project->donner_id == $ngo->id && $project->runner_id == $ngo->id;
         });
 
         // Run By (runner only, not both)
         $projectsRunner = $allProjects->filter(function($project) use ($ngo) {
-            return $project->runner_id == $ngo->id && $project->holder_id != $ngo->id;
+            return $project->runner_id == $ngo->id && $project->donner_id != $ngo->id;
         });
 
-        // Funded By (holder only, not both)
-        $projectsHolder = $allProjects->filter(function($project) use ($ngo) {
-            return $project->holder_id == $ngo->id && $project->runner_id != $ngo->id;
+        // Funded By (donner only, not both)
+        $projectsDonner = $allProjects->filter(function($project) use ($ngo) {
+            return $project->donner_id == $ngo->id && $project->runner_id != $ngo->id;
         });
 
-        return view('ngos.show', compact('ngo', 'projectsRunner', 'projectsHolder', 'projectsBoth'));
+        return view('ngos.show', compact('ngo', 'projectsRunner', 'projectsDonner', 'projectsBoth'));
     }
 
     /**

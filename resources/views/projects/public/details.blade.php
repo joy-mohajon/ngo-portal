@@ -123,18 +123,18 @@
                         <h2 class="text-lg font-bold text-gray-900">Key Organizations</h2>
                     </div>
                     <div class="p-6 space-y-5">
-                        <!-- Holder Organization -->
+                        <!-- Donner Organization -->
                         <div>
-                            <div class="text-sm font-medium text-gray-500 mb-1">Project Holder</div>
+                            <div class="text-sm font-medium text-gray-500 mb-1">Project Donner</div>
                             <div class="flex items-center">
-                                @if($project->holder->logo)
-                                <img src="{{ asset('storage/' . $project->holder->logo) }}" alt="{{ $project->holder->name }} Logo" class="h-8 w-8 rounded-full object-cover mr-2">
+                                @if($project->donner->logo)
+                                <img src="{{ asset('storage/' . $project->donner->logo) }}" alt="{{ $project->donner->name }} Logo" class="h-8 w-8 rounded-full object-cover mr-2">
                                 @else
                                 <div class="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center mr-2">
-                                    <span class="text-blue-600 font-semibold">{{ substr($project->holder->name, 0, 1) }}</span>
+                                    <span class="text-blue-600 font-semibold">{{ substr($project->donner->name, 0, 1) }}</span>
                                 </div>
                                 @endif
-                                <span class="text-gray-900 font-medium">{{ $project->holder->name }}</span>
+                                <span class="text-gray-900 font-medium">{{ $project->donner->name }}</span>
                             </div>
                         </div>
 

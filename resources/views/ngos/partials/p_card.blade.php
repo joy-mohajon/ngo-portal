@@ -37,7 +37,7 @@
                 <span class="text-base font-semibold text-gray-500">Funded By: </span>
                 <span
                     class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                    {{ $project->holder->name ?? '-' }}
+                    {{ $project->donner->name ?? '-' }}
                 </span>
             </div>
             <a href="{{ route('projects.show', $project->id) }}"

@@ -21,8 +21,8 @@
                             <x-nav-link :href="route('projects.runner')" :active="request()->routeIs('projects.runner')">
                                 {{ __('My Runner Projects') }}
                             </x-nav-link>
-                            <x-nav-link :href="route('projects.holder')" :active="request()->routeIs('projects.holder')">
-                                {{ __('My Holder Projects') }}
+                            <x-nav-link :href="route('projects.donner')" :active="request()->routeIs('projects.donner')">
+                                {{ __('My Donner Projects') }}
                             </x-nav-link>
                         @endif
                     @else
@@ -101,8 +101,8 @@
                     <x-responsive-nav-link :href="route('projects.runner')" :active="request()->routeIs('projects.runner')">
                         {{ __('My Runner Projects') }}
                     </x-responsive-nav-link>
-                    <x-responsive-nav-link :href="route('projects.holder')" :active="request()->routeIs('projects.holder')">
-                        {{ __('My Holder Projects') }}
+                    <x-responsive-nav-link :href="route('projects.donner')" :active="request()->routeIs('projects.donner')">
+                        {{ __('My Donner Projects') }}
                     </x-responsive-nav-link>
                 @endif
             @else

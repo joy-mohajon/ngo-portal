@@ -188,7 +188,7 @@
                                     <a href="{{ route('projects.show', $project) }}" class="hover:underline">{{ $project->title }}</a>
                                 </h4>
                                 <div class="text-xs text-gray-500 mt-1 mb-2">
-                                    <span class="mr-2"><strong>Holder NGO:</strong> {{ $project->holder?->name ?? '-' }}</span>
+                                    <span class="mr-2"><strong>Donner NGO:</strong> {{ $project->donner?->name ?? '-' }}</span>
                                     <span><strong>Runner NGO:</strong> {{ $project->runner?->name ?? '-' }}</span>
                                 </div>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2">

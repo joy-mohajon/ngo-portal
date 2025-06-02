@@ -44,7 +44,7 @@ Route::middleware('auth')->group(function () {
 
 
     // Project resource - allow only runner NGOs to edit their projects
-    Route::get('projects/holder', [App\Http\Controllers\ProjectController::class, 'holderProjects'])->name('projects.holder');
+    Route::get('projects/donner', [App\Http\Controllers\ProjectController::class, 'donnerProjects'])->name('projects.donner');
     Route::get('projects/runner', [App\Http\Controllers\ProjectController::class, 'runnerProjects'])->name('projects.runner');
     
     // Read-only routes for projects - restrict main index to admin and authority roles

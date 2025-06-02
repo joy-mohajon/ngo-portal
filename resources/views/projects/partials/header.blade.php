@@ -30,7 +30,7 @@
                             </svg>
                             Runner NGO
                         </span>
-                    @elseif(Auth::user()->ngo->id === $project->holder_id)
+                    @elseif(Auth::user()->ngo->id === $project->donner_id)
                         <span class="ml-3 bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-xs font-semibold flex items-center">
                             <svg class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
@@ -38,7 +38,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
                                     d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                             </svg>
-                            Holder NGO
+                            Donner NGO
                         </span>
                     @endif
                 @endif
@@ -65,9 +65,9 @@
                         </svg>
                         Edit Project
                     </a>
-                @elseif(Auth::user()->ngo->id === $project->holder_id)
-                    <!-- Holder NGO Actions (View Only) -->
-                    <a href="{{ route('projects.holder') }}"
+                @elseif(Auth::user()->ngo->id === $project->donner_id)
+                    <!-- Donner NGO Actions (View Only) -->
+                    <a href="{{ route('projects.donner') }}"
                         class="flex items-center px-4 py-2 bg-white border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50">
                         <svg class="h-5 w-5 mr-2 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />

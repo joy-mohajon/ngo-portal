@@ -35,8 +35,8 @@
         <div class="bg-gray-50 p-4 rounded-lg mb-6">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                    <span class="text-gray-500 block">Project Holder</span>
-                    <span class="font-medium">{{ $project->holder->name ?? 'N/A' }}</span>
+                    <span class="text-gray-500 block">Project Donner</span>
+                    <span class="font-medium">{{ $project->donner->name ?? 'N/A' }}</span>
                 </div>
                 <div>
                     <span class="text-gray-500 block">Project Runner</span>

@@ -39,7 +39,7 @@
                                 </div>
                             </a>
                             
-                            <a href="{{ route('projects.holder') }}" class="bg-white p-4 rounded-lg border border-indigo-200 flex items-center hover:shadow-md transition-all">
+                            <a href="{{ route('projects.donner') }}" class="bg-white p-4 rounded-lg border border-indigo-200 flex items-center hover:shadow-md transition-all">
                                 <div class="bg-indigo-100 p-3 rounded-full mr-3">
                                     <svg class="h-6 w-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -47,7 +47,7 @@
                                     </svg>
                                 </div>
                                 <div>
-                                    <h3 class="font-semibold text-indigo-900">My Holder Projects</h3>
+                                    <h3 class="font-semibold text-indigo-900">My Donner Projects</h3>
                                     <p class="text-sm text-indigo-700">Projects you can monitor (view-only)</p>
                                 </div>
                             </a>
