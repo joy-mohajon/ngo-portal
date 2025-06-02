@@ -15,6 +15,24 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+                    
+                    @hasrole('ngo')
+                        @if(Auth::user()->ngo)
+                            <x-nav-link :href="route('projects.runner')" :active="request()->routeIs('projects.runner')">
+                                {{ __('My Runner Projects') }}
+                            </x-nav-link>
+                            <x-nav-link :href="route('projects.holder')" :active="request()->routeIs('projects.holder')">
+                                {{ __('My Holder Projects') }}
+                            </x-nav-link>
+                        @endif
+                    @else
+                        <x-nav-link :href="route('projects.index')" :active="request()->routeIs('projects.index')">
+                            {{ __('Projects') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('ngos.index')" :active="request()->routeIs('ngos.index')">
+                            {{ __('NGOs') }}
+                        </x-nav-link>
+                    @endhasrole
                 </div>
             </div>
 
@@ -77,6 +95,24 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+            
+            @hasrole('ngo')
+                @if(Auth::user()->ngo)
+                    <x-responsive-nav-link :href="route('projects.runner')" :active="request()->routeIs('projects.runner')">
+                        {{ __('My Runner Projects') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('projects.holder')" :active="request()->routeIs('projects.holder')">
+                        {{ __('My Holder Projects') }}
+                    </x-responsive-nav-link>
+                @endif
+            @else
+                <x-responsive-nav-link :href="route('projects.index')" :active="request()->routeIs('projects.index')">
+                    {{ __('Projects') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('ngos.index')" :active="request()->routeIs('ngos.index')">
+                    {{ __('NGOs') }}
+                </x-responsive-nav-link>
+            @endhasrole
         </div>
 
         <!-- Responsive Settings Options -->

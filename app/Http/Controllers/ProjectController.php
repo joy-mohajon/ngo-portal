@@ -130,6 +130,26 @@ public function index(Request $request)
      */
     public function show(Project $project)
     {
+        $user = Auth::user();
+        
+        // For NGO users, enforce access control
+        if ($user && $user->ngo) {
+            // Check if user has NGO role using direct database query
+            $hasNgoRole = DB::table('model_has_roles')
+                ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+                ->where('model_has_roles.model_id', $user->id)
+                ->where('roles.name', 'ngo')
+                ->exists();
+                
+            if ($hasNgoRole) {
+                // Use the policy to verify permission
+                if (!($user->ngo->id === $project->holder_id || $user->ngo->id === $project->runner_id)) {
+                    return redirect()->route('projects.runner')
+                        ->with('error', 'You do not have permission to view this project. You can only view projects where you are the holder or runner.');
+                }
+            }
+        }
+        
         $project->load([
             'holder', 
             'runner', 
@@ -324,6 +344,28 @@ public function index(Request $request)
      */
     public function apiShow(Project $project)
     {
+        $user = Auth::user();
+        
+        // For NGO users, enforce access control
+        if ($user && $user->ngo) {
+            // Check if user has NGO role using direct database query
+            $hasNgoRole = DB::table('model_has_roles')
+                ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+                ->where('model_has_roles.model_id', $user->id)
+                ->where('roles.name', 'ngo')
+                ->exists();
+                
+            if ($hasNgoRole) {
+                // Use the policy to verify permission
+                if (!($user->ngo->id === $project->holder_id || $user->ngo->id === $project->runner_id)) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'You do not have permission to view this project. You can only view projects where you are the holder or runner.'
+                    ], 403);
+                }
+            }
+        }
+        
         $project->load(['holder', 'runner', 'trainings', 'reports']);
         return response()->json([
             'success' => true,
