@@ -47,8 +47,9 @@ Route::middleware('auth')->group(function () {
     Route::get('projects/holder', [App\Http\Controllers\ProjectController::class, 'holderProjects'])->name('projects.holder');
     Route::get('projects/runner', [App\Http\Controllers\ProjectController::class, 'runnerProjects'])->name('projects.runner');
     
-    // Read-only routes for projects
+    // Read-only routes for projects - restrict main index to admin and authority roles
     Route::get('projects', [App\Http\Controllers\ProjectController::class, 'index'])->name('projects.index');
+
     Route::get('projects/create', [App\Http\Controllers\ProjectController::class, 'create'])->name('projects.create');
     Route::post('projects', [App\Http\Controllers\ProjectController::class, 'store'])->name('projects.store');
     Route::get('projects/{project}', [App\Http\Controllers\ProjectController::class, 'show'])->name('projects.show');

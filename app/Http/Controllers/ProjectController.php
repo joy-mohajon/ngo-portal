@@ -14,83 +14,97 @@ class ProjectController extends Controller
     /**
      * Display a listing of the resource.
      */
-public function index(Request $request)
-{
-    // Start with base query
-    $query = Project::with(['holder', 'runner', 'focusArea']);
-
-    // Apply filters if they exist
-    if ($request->has('status') && $request->status != '') {
-        $query->where('status', $request->status);
-    }
-
-    if ($request->has('sector') && $request->sector != '') {
-        $query->whereHas('focusArea', function($q) use ($request) {
-            $q->where('name', $request->sector);
-        });
-    }
-
-    if ($request->has('location') && $request->location != '') {
-        $query->where('location', 'like', '%'.$request->location.'%');
-    }
-
-    if ($request->has('organization') && $request->organization != '') {
-        $query->whereHas('holder', function($q) use ($request) {
-            $q->where('name', 'like', '%'.$request->organization.'%');
-        });
-    }
-
-    // Get filtered projects
-    $projects = $query->latest()
-        ->get()
-        ->map(function ($project) {
-            return [
-                'id' => $project->id,
-                'name' => $project->title,
-                'organization' => $project->holder->name ?? 'Unknown',
-                'runner' => $project->runner->name ?? 'Unknown',
-                'email' => $project->holder->email ?? '',
-                'start_date' => $project->start_date->format('M Y'),
-                'end_date' => $project->end_date->format('M Y'),
-                'sector' => $project->focus_area,
-                'budget' => $project->budget,
-                'location' => $project->location,
-                'status' => $project->status,
-                'focus_area_name' => $project->focusArea->name ?? '-',
-            ];
-        });
-
-    // Get unique values for filter dropdowns
-    $statuses = Project::select('status')->distinct()->pluck('status');
-    $focusAreaIds = Project::select('focus_area')->distinct()->pluck('focus_area');
-    $sectors = \App\Models\FocusArea::whereIn('id', $focusAreaIds)->pluck('name');
-    $locations = Project::select('location')->distinct()->pluck('location');
-    $organizations = Ngo::select('name as organization')->distinct()->pluck('organization');
-
-    // Group projects by first letter of their name
-    $grouped = [];
-    foreach ($projects as $project) {
-        $firstLetter = strtoupper(substr($project['name'], 0, 1));
-        if (!isset($grouped[$firstLetter])) {
-            $grouped[$firstLetter] = [];
+    public function index(Request $request)
+    {
+        // Check if user has admin or authority role using DB query
+        $user = Auth::user();
+        $hasAdminRole = DB::table('model_has_roles')
+            ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+            ->where('model_has_roles.model_id', $user->id)
+            ->whereIn('roles.name', ['admin', 'authority'])
+            ->exists();
+            
+        if (!$hasAdminRole) {
+            return redirect()->route('projects.runner')
+                ->with('error', 'You do not have permission to view all projects. You can only view projects where you are the holder or runner.');
         }
-        $grouped[$firstLetter][] = $project;
+        
+        // Start with base query
+        $query = Project::with(['holder', 'runner', 'focusArea']);
+
+        // Apply filters if they exist
+        if ($request->has('status') && $request->status != '') {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->has('sector') && $request->sector != '') {
+            $query->whereHas('focusArea', function($q) use ($request) {
+                $q->where('name', $request->sector);
+            });
+        }
+
+        if ($request->has('location') && $request->location != '') {
+            $query->where('location', 'like', '%'.$request->location.'%');
+        }
+
+        if ($request->has('organization') && $request->organization != '') {
+            $query->whereHas('holder', function($q) use ($request) {
+                $q->where('name', 'like', '%'.$request->organization.'%');
+            });
+        }
+
+        // Get filtered projects
+        $projects = $query->latest()
+            ->get()
+            ->map(function ($project) {
+                return [
+                    'id' => $project->id,
+                    'name' => $project->title,
+                    'organization' => $project->holder->name ?? 'Unknown',
+                    'runner' => $project->runner->name ?? 'Unknown',
+                    'email' => $project->holder->email ?? '',
+                    'start_date' => $project->start_date->format('M Y'),
+                    'end_date' => $project->end_date->format('M Y'),
+                    'sector' => $project->focus_area,
+                    'budget' => $project->budget,
+                    'location' => $project->location,
+                    'status' => $project->status,
+                    'focus_area_name' => $project->focusArea->name ?? '-',
+                ];
+            });
+
+        // Get unique values for filter dropdowns
+        $statuses = Project::select('status')->distinct()->pluck('status');
+        $focusAreaIds = Project::select('focus_area')->distinct()->pluck('focus_area');
+        $sectors = \App\Models\FocusArea::whereIn('id', $focusAreaIds)->pluck('name');
+        $locations = Project::select('location')->distinct()->pluck('location');
+        $organizations = Ngo::select('name as organization')->distinct()->pluck('organization');
+
+        // Group projects by first letter of their name
+        $grouped = [];
+        foreach ($projects as $project) {
+            $firstLetter = strtoupper(substr($project['name'], 0, 1));
+            if (!isset($grouped[$firstLetter])) {
+                $grouped[$firstLetter] = [];
+            }
+            $grouped[$firstLetter][] = $project;
+        }
+
+        ksort($grouped);
+        $activeLetters = array_keys($grouped);
+        $letters = range('A', 'Z');
+
+        return view('projects.index', compact(
+            'grouped', 
+            'activeLetters', 
+            'letters',
+            'statuses',
+            'sectors',
+            'locations',
+            'organizations'
+        ));
     }
 
-    ksort($grouped);
-    $activeLetters = array_keys($grouped);
-    $letters = range('A', 'Z');
-
-    return view('projects.index', compact(
-        'grouped', 
-        'activeLetters', 
-        'letters',
-        'statuses',
-        'sectors',
-        'locations',
-        'organizations'
-    ));
-}
     /**
      * Show the form for creating a new resource.
      */
@@ -332,6 +346,21 @@ public function index(Request $request)
      */
     public function apiIndex()
     {
+        // Check if user has admin or authority role using DB query
+        $user = Auth::user();
+        $hasAdminRole = DB::table('model_has_roles')
+            ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+            ->where('model_has_roles.model_id', $user->id)
+            ->whereIn('roles.name', ['admin', 'authority'])
+            ->exists();
+            
+        if (!$hasAdminRole) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You do not have permission to view all projects. You can only view projects where you are the holder or runner.'
+            ], 403);
+        }
+        
         $projects = Project::with(['holder', 'runner'])->latest()->get();
         return response()->json([
             'success' => true,

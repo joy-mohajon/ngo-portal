@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\WelcomeController;
+use App\Http\Controllers\ProjectController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,3 +25,12 @@ Route::get('/gallery-images', [WelcomeController::class, 'getGalleryImages']);
 
 // NGO filtering by focus area
 Route::get('/ngos-by-focus-area', [WelcomeController::class, 'getNgosByFocusArea']);
+
+// Projects API endpoint - restricted to admin and authority roles
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::get('/projects', [ProjectController::class, 'apiIndex']);
+    Route::get('/projects/{project}', [ProjectController::class, 'apiShow']);
+    Route::post('/projects', [ProjectController::class, 'apiStore']);
+    Route::put('/projects/{project}', [ProjectController::class, 'apiUpdate']);
+    Route::delete('/projects/{project}', [ProjectController::class, 'apiDestroy']);
+});
