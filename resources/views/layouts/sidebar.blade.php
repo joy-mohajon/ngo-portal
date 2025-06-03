@@ -14,7 +14,7 @@
                 <!-- Dashboard -->
                 <li>
                     <a href="{{ route('dashboard') }}" @click="activeItem = 'dashboard'"
-                        :class="activeItem === 'dashboard' ? 'bg-gray-700 text-white' : ''"
+                        :class="activeItem === 'dashboard' || (activeItem === 'ngos.show' && Auth::user()->ngo && Auth::user()->ngo->id == Route::current()->parameter('ngo')) ? 'bg-gray-700 text-white' : ''"
                         class="flex items-center p-2 text-[15px] hover:bg-gray-700 rounded">
                         <i class="fas fa-home mr-3"></i>
                         <span>Dashboard</span>
@@ -164,10 +164,13 @@
                 </li>
                 @endif
 
-                <!-- Get Approval - Show for users without NGO or with unapproved NGO -->
-                @if(!$user->ngo || ($user->ngo && $user->ngo->status !== 'approved'))
+                <!-- Get Approval - Show only for users without NGO or with unapproved NGO, not for authority users -->
+                @if(!$hasAdminOrAuthorityRole && (($hasNgoRole && $user->ngo && $user->ngo->status !== 'approved') ||
+                !$hasNgoRole))
                 <li>
-                    <a href="{{ route('ngos.create') }}" class="flex items-center p-2 hover:bg-gray-700 rounded">
+                    <a href="{{ route('ngos.create') }}" @click="activeItem = 'ngos.create'"
+                        :class="activeItem === 'ngos.create' ? 'bg-gray-700 text-white' : ''"
+                        class="flex items-center p-2 hover:bg-gray-700 rounded">
                         <i class="fas fa-user-check mr-3"></i>
                         <span>Get Approval</span>
                     </a>

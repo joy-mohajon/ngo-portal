@@ -15,6 +15,8 @@ use App\Http\Controllers\FocalPersonController;
 use App\Http\Controllers\StudentAccessController;
 use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
 Route::get('/api/gallery-images', [WelcomeController::class, 'getGalleryImages'])->name('api.gallery-images');
@@ -23,6 +25,21 @@ Route::get('/projects/{project}/details', [WelcomeController::class, 'projectDet
 Route::get('/public/gallery', [WelcomeController::class, 'galleryIndex'])->name('gallery.public.index');
 
 Route::get('/dashboard', function () {
+    $user = Auth::user();
+    
+    // Check if user has NGO role and has an approved NGO
+    $hasNgoRole = DB::table('model_has_roles')
+        ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+        ->where('model_has_roles.model_id', $user->id)
+        ->where('roles.name', 'ngo')
+        ->exists();
+    
+    // If user is an NGO with approved status, redirect to NGO show page
+    if ($hasNgoRole && $user->ngo && $user->ngo->status === 'approved') {
+        return redirect()->route('ngos.show', $user->ngo->id);
+    }
+    
+    // Otherwise show regular dashboard
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
@@ -39,24 +56,29 @@ Route::middleware('auth')->group(function () {
     Route::get('/pending', [NgoController::class, 'pending'])->name('ngos.pending');
     Route::post('/{ngo}/approve', [NgoController::class, 'approve'])->name('ngos.approve');
     Route::post('/{ngo}/reject', [NgoController::class, 'reject'])->name('ngos.reject');
+    Route::get('/ngos/{ngo}/download-certificate', [NgoController::class, 'downloadCertificate'])->name('ngos.download-certificate');
 
     Route::resource('ngos', NgoController::class);
 
 
     // Project resource - allow only runner NGOs to edit their projects
     Route::get('projects/donner', [App\Http\Controllers\ProjectController::class, 'donnerProjects'])
+        ->middleware(\App\Http\Middleware\NgoApproved::class)
         ->name('projects.donner');
     Route::get('projects/runner', [App\Http\Controllers\ProjectController::class, 'runnerProjects'])
+        ->middleware(\App\Http\Middleware\NgoApproved::class)
         ->name('projects.runner');
     
     // Read-only routes for projects - restrict main index to admin and authority roles
     Route::get('projects', [App\Http\Controllers\ProjectController::class, 'index'])->name('projects.index');
 
     // Apply NGO approval middleware to project creation routes
-    Route::middleware(['ngo.approved'])->group(function () {
-        Route::get('projects/create', [App\Http\Controllers\ProjectController::class, 'create'])->name('projects.create');
-        Route::post('projects', [App\Http\Controllers\ProjectController::class, 'store'])->name('projects.store');
-    });
+    Route::get('projects/create', [App\Http\Controllers\ProjectController::class, 'create'])
+        ->middleware(\App\Http\Middleware\NgoApproved::class)
+        ->name('projects.create');
+    Route::post('projects', [App\Http\Controllers\ProjectController::class, 'store'])
+        ->middleware(\App\Http\Middleware\NgoApproved::class)
+        ->name('projects.store');
     
     Route::get('projects/{project}', [App\Http\Controllers\ProjectController::class, 'show'])->name('projects.show');
     
@@ -89,13 +111,21 @@ Route::middleware('auth')->group(function () {
         Route::get('students', [StudentController::class, 'index'])->name('students.index');
         
         // Only approved NGO runners can modify students
-        Route::middleware(['ngo.approved'])->group(function () {
-            Route::get('students/create', [StudentAccessController::class, 'create'])->name('students.create');
-            Route::post('students', [StudentAccessController::class, 'store'])->name('students.store');
-            Route::get('students/{student}/edit', [StudentAccessController::class, 'edit'])->name('students.edit');
-            Route::put('students/{student}', [StudentAccessController::class, 'update'])->name('students.update');
-            Route::delete('students/{student}', [StudentAccessController::class, 'destroy'])->name('students.destroy');
-        });
+        Route::get('students/create', [StudentAccessController::class, 'create'])
+            ->middleware(\App\Http\Middleware\NgoApproved::class)
+            ->name('students.create');
+        Route::post('students', [StudentAccessController::class, 'store'])
+            ->middleware(\App\Http\Middleware\NgoApproved::class)
+            ->name('students.store');
+        Route::get('students/{student}/edit', [StudentAccessController::class, 'edit'])
+            ->middleware(\App\Http\Middleware\NgoApproved::class)
+            ->name('students.edit');
+        Route::put('students/{student}', [StudentAccessController::class, 'update'])
+            ->middleware(\App\Http\Middleware\NgoApproved::class)
+            ->name('students.update');
+        Route::delete('students/{student}', [StudentAccessController::class, 'destroy'])
+            ->middleware(\App\Http\Middleware\NgoApproved::class)
+            ->name('students.destroy');
         
         Route::get('students/{student}', [StudentController::class, 'show'])->name('students.show');
     });
@@ -122,13 +152,18 @@ Route::get('/test-middleware', function () {
     return 'Middleware test successful';
 })->middleware([\App\Http\Middleware\ProjectRunnerMiddleware::class]);
 
+// Test route for NgoApprovedMiddleware
+Route::get('/test-ngo-middleware', function () {
+    return 'NGO Approved Middleware test successful';
+})->middleware(\App\Http\Middleware\NgoApproved::class);
+
 // Debug route to check logo paths
 Route::get('/debug-logo', function () {
-    if (!auth()->check()) {
+    if (!Auth::check()) {
         return "Please login first";
     }
     
-    $user = auth()->user();
+    $user = Auth::user();
     $ngo = $user->ngo;
     
     if (!$ngo) {

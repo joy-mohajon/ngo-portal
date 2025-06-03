@@ -45,19 +45,15 @@
                         <p class="text-gray-600 font-medium">{{ $ngo->description }}</p>
                     </div>
 
-                    <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div class="bg-gray-100 p-4 rounded-lg">
                             <h3 class="text-xs font-medium text-gray-500 uppercase tracking-wider">Location</h3>
                             <p class="mt-1 text-gray-800 font-medium">{{ $ngo->location }}</p>
                         </div>
                         <div class="bg-gray-100 p-4 rounded-lg">
                             <h3 class="text-xs font-medium text-gray-500 uppercase tracking-wider">Website</h3>
-                            <a href="{{ $ngo->website }}" class="mt-1 text-blue-600 font-medium">{{ $ngo->website }}</a>
+                            <a href="{{ $ngo->website }}" target="_blank" class="mt-1 text-blue-600 font-medium break-all hover:underline">{{ $ngo->website }}</a>
                         </div>
-                        <!-- <div class="bg-gray-100 p-4 rounded-lg">
-                            <h3 class="text-xs font-medium text-gray-500 uppercase tracking-wider">Phone Number</h3>
-                            <p class="mt-1 text-gray-800 font-medium">{{ $ngo->phone_number }}</p>
-                        </div> -->
                         <div class="bg-gray-100 p-4 rounded-lg">
                             <h3 class="text-xs font-medium text-gray-500 uppercase tracking-wider">Contact Email</h3>
                             <p class="mt-1 text-blue-600 font-medium">{{ $ngo->email }}</p>
@@ -79,6 +75,18 @@
                                 @endforeach
                             </ul>
                         </div>
+                        @if($ngo->certificate_path && (Auth::user()->hasRole('admin') || Auth::user()->hasRole('authority') || (Auth::user()->ngo && Auth::user()->ngo->id == $ngo->id)))
+                        <div class="bg-gray-100 p-4 rounded-lg">
+                            <h3 class="text-xs font-medium text-gray-500 uppercase tracking-wider">Registration Certificate</h3>
+                            <div class="mt-2">
+                                <a href="{{ route('ngos.download-certificate', $ngo->id) }}" 
+                                   class="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                    <i class="fas fa-download mr-2"></i>
+                                    Download Certificate
+                                </a>
+                            </div>
+                        </div>
+                        @endif
                     </div>
                 </div>
             </div>

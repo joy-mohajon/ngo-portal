@@ -1,5 +1,31 @@
+@php
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+
+$user = Auth::user();
+$canViewNgo = false;
+
+if ($user) {
+    // Check if user has admin or authority role
+    $hasAdminOrAuthorityRole = DB::table('model_has_roles')
+        ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+        ->where('model_has_roles.model_id', $user->id)
+        ->whereIn('roles.name', ['admin', 'authority'])
+        ->exists();
+    
+    // Check if this is the user's own NGO
+    $isOwnNgo = $user->ngo && $user->ngo->id === $ngo->id;
+    
+    $canViewNgo = $hasAdminOrAuthorityRole || $isOwnNgo;
+}
+@endphp
+
+@if($canViewNgo)
 <a href="{{ route('ngos.show', $ngo) }}"
     class="flex items-center rounded-lg p-4 w-[280px] bg-gradient-to-tl from-white to-transparent-300 border border-gray-200 hover:shadow-md transition-all group shadow relative">
+@else
+<div class="flex items-center rounded-lg p-4 w-[280px] bg-gradient-to-tl from-white to-transparent-300 border border-gray-200 shadow relative">
+@endif
     <div
         class="w-16 h-16 rounded-lg flex items-center justify-center overflow-hidden mr-4 flex-shrink-0 bg-gradient-to-tr from-blue-100 to-blue-50 group-hover:from-blue-200 group-hover:to-blue-100 transition-all">
         @if($ngo->logo)
@@ -21,4 +47,8 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536M9 13l6-6m2 2l-6 6m2 2H7a2 2 0 01-2-2v-6a2 2 0 012-2h6a2 2 0 012 2v6a2 2 0 01-2 2z" />
         </svg>
     </a> -->
+@if($canViewNgo)
 </a>
+@else
+</div>
+@endif

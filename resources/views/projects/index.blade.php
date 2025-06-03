@@ -36,7 +36,10 @@
                 </svg>
                 Filter Projects
             </h2>
-            <form method="GET" action="{{ route('projects.index') }}" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <form method="GET" action="{{ Route::currentRouteName() == 'projects.runner' ? route('projects.runner') : 
+                                 (Route::currentRouteName() == 'projects.donner' ? route('projects.donner') : 
+                                 route('projects.index')) }}"
+                class="grid grid-cols-1 {{ isset($viewType) && $viewType === 'authority' ? 'md:grid-cols-5' : 'md:grid-cols-4' }} gap-4">
                 <div>
                     <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
                     <div class="relative">
@@ -99,7 +102,15 @@
                 </div>
 
                 <div>
-                    <label for="organization" class="block text-sm font-medium text-gray-700 mb-1">Organization</label>
+                    <label for="organization" class="block text-sm font-medium text-gray-700 mb-1">
+                        @if(isset($viewType) && $viewType === 'donner')
+                        Runner Organization
+                        @elseif(isset($viewType) && $viewType === 'runner')
+                        Donner Organization
+                        @else
+                        Donner Organization
+                        @endif
+                    </label>
                     <div class="relative">
                         <select id="organization" name="organization"
                             class="appearance-none w-full pl-3 pr-10 py-2 rounded-lg border border-gray-300 shadow-sm focus:border-[#9229AD] focus:ring focus:ring-[#9229AD] focus:ring-opacity-50 bg-white">
@@ -118,7 +129,66 @@
                     </div>
                 </div>
 
-                <div class="md:col-span-4 flex justify-end space-x-3">
+                @if(isset($viewType) && $viewType === 'authority')
+                <div>
+                    <label for="runner_organization" class="block text-sm font-medium text-gray-700 mb-1">Runner
+                        Organization</label>
+                    <div class="relative">
+                        <select id="runner_organization" name="runner_organization"
+                            class="appearance-none w-full pl-3 pr-10 py-2 rounded-lg border border-gray-300 shadow-sm focus:border-[#9229AD] focus:ring focus:ring-[#9229AD] focus:ring-opacity-50 bg-white">
+                            <option value="">All Runner Organizations</option>
+                            @foreach($runnerOrganizations as $org)
+                            <option value="{{ $org }}" {{ request('runner_organization') == $org ? 'selected' : '' }}>
+                                {{ $org }}</option>
+                            @endforeach
+                        </select>
+                        <div
+                            class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                @endif
+
+                <div
+                    class="{{ isset($viewType) && $viewType === 'authority' ? 'md:col-span-5' : 'md:col-span-4' }} grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                    <div>
+                        <label for="budget_range" class="block text-sm font-medium text-gray-700 mb-1">Budget
+                            Range</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div class="relative">
+                                <input type="number" id="budget_min" name="budget_min" placeholder="Min Budget"
+                                    value="{{ request('budget_min') }}"
+                                    class="appearance-none w-full pl-3 pr-10 py-2 rounded-lg border border-gray-300 shadow-sm focus:border-[#9229AD] focus:ring focus:ring-[#9229AD] focus:ring-opacity-50 bg-white">
+                            </div>
+                            <div class="relative">
+                                <input type="number" id="budget_max" name="budget_max" placeholder="Max Budget"
+                                    value="{{ request('budget_max') }}"
+                                    class="appearance-none w-full pl-3 pr-10 py-2 rounded-lg border border-gray-300 shadow-sm focus:border-[#9229AD] focus:ring focus:ring-[#9229AD] focus:ring-opacity-50 bg-white">
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="date_range" class="block text-sm font-medium text-gray-700 mb-1">Date Range</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div class="relative">
+                                <input type="date" id="start_date" name="start_date" placeholder="Start Date"
+                                    value="{{ request('start_date') }}"
+                                    class="appearance-none w-full pl-3 pr-10 py-2 rounded-lg border border-gray-300 shadow-sm focus:border-[#9229AD] focus:ring focus:ring-[#9229AD] focus:ring-opacity-50 bg-white">
+                            </div>
+                            <div class="relative">
+                                <input type="date" id="end_date" name="end_date" placeholder="End Date"
+                                    value="{{ request('end_date') }}"
+                                    class="appearance-none w-full pl-3 pr-10 py-2 rounded-lg border border-gray-300 shadow-sm focus:border-[#9229AD] focus:ring focus:ring-[#9229AD] focus:ring-opacity-50 bg-white">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    class="{{ isset($viewType) && $viewType === 'authority' ? 'md:col-span-5' : 'md:col-span-4' }} flex justify-end space-x-3">
                     <button type="submit"
                         class="px-4 py-2 bg-gradient-to-r from-[#9229AD] to-[#7A1E93] text-white rounded-lg shadow hover:shadow-md transition-all duration-300 flex items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20"
@@ -129,7 +199,9 @@
                         </svg>
                         Apply Filters
                     </button>
-                    <a href="{{ route('projects.index') }}"
+                    <a href="{{ Route::currentRouteName() == 'projects.runner' ? route('projects.runner') : 
+                              (Route::currentRouteName() == 'projects.donner' ? route('projects.donner') : 
+                              route('projects.index')) }}"
                         class="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors flex items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20"
                             fill="currentColor">
@@ -335,7 +407,9 @@
             </svg>
             <h3 class="mt-4 text-lg font-medium text-gray-900">No projects found</h3>
             <p class="mt-1 text-gray-500">Try adjusting your filters to find what you're looking for.</p>
-            <a href="{{ route('projects.index') }}"
+            <a href="{{ Route::currentRouteName() == 'projects.runner' ? route('projects.runner') : 
+                      (Route::currentRouteName() == 'projects.donner' ? route('projects.donner') : 
+                      route('projects.index')) }}"
                 class="mt-4 inline-flex items-center px-6 py-2 bg-gradient-to-r from-[#9229AD] to-[#7A1E93] text-white rounded-lg shadow hover:shadow-md transition-all duration-300">
                 Reset Filters
             </a>

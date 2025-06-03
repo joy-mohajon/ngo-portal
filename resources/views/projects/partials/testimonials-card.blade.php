@@ -219,13 +219,14 @@
                         </h3>
                         <div class="mt-4">
                             <form id="requestTestimonialForm" method="POST" enctype="multipart/form-data"
-                                action="{{ route('projects.testimonials.store', $project->id) }}">
+                                action="{{ route('projects.testimonials.store', $project->id) }}" onsubmit="return validateTestimonialForm()">
                                 @csrf
                                 <div class="mb-4">
                                     <label for="testimonialTitle"
-                                        class="block text-sm font-medium text-gray-700">Title</label>
-                                    <input type="text" name="title" id="testimonialTitle"
+                                        class="block text-sm font-medium text-gray-700">Title <span class="text-red-500">*</span></label>
+                                    <input type="text" name="title" id="testimonialTitle" required
                                         class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                                    <span id="titleError" class="text-red-500 text-xs hidden"></span>
                                 </div>
 
                                 <div class="mb-4">
@@ -237,33 +238,37 @@
 
                                 <div class="mb-4">
                                     <label for="testimonialFiles"
-                                        class="block text-sm font-medium text-gray-700">Supporting Document</label>
+                                        class="block text-sm font-medium text-gray-700">Supporting Document <span class="text-red-500">*</span></label>
                                     <div
-                                        class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
-                                        <div class="space-y-1 text-center">
-                                            <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor"
-                                                fill="none" viewBox="0 0 48 48" aria-hidden="true">
-                                                <path
-                                                    d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                                            </svg>
-                                            <div class="flex text-sm text-gray-600">
-                                                <label for="testimonialFiles"
-                                                    class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
-                                                    <span>Upload files</span>
-                                                    <input id="testimonialFiles" name="application_file" type="file"
-                                                        class="sr-only" accept=".pdf,.doc,.docx" required>
-                                                </label>
-                                                <p class="pl-1">or drag and drop</p>
+                                        class="mt-1 p-4 border-2 border-gray-300 border-dashed rounded-md">
+                                        <div class="space-y-2">
+                                            <input id="testimonialFiles" name="application_file" type="file"
+                                                class="block w-full text-sm text-gray-500
+                                                file:mr-4 file:py-2 file:px-4
+                                                file:rounded-md file:border-0
+                                                file:text-sm file:font-semibold
+                                                file:bg-indigo-50 file:text-indigo-700
+                                                hover:file:bg-indigo-100" accept=".pdf,.doc,.docx" required>
+                                            <p class="text-xs text-gray-500">PDF, DOC, DOCX up to 2MB</p>
+                                            <div class="text-xs text-amber-600 mt-1">
+                                                <p>⚠️ File size limit: <strong>2MB maximum</strong></p>
+                                                <p>If your file is larger than 2MB, please:</p>
+                                                <ul class="list-disc pl-5 mt-1">
+                                                    <li>Compress your PDF using an online tool</li>
+                                                    <li>Save your Word document with lower resolution images</li>
+                                                    <li>Split large documents into smaller parts if needed</li>
+                                                </ul>
                                             </div>
-                                            <p class="text-xs text-gray-500">PDF, DOC, DOCX up to 10MB each</p>
                                             <div id="testimonialFileList" class="mt-2 text-left"></div>
+                                            <span id="fileError" class="text-red-500 text-xs hidden"></span>
                                         </div>
                                     </div>
                                 </div>
 
+                                <div id="formErrors" class="mb-4 p-3 bg-red-50 text-red-700 rounded-md hidden"></div>
+
                                 <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                                    <button type="submit"
+                                    <button type="submit" id="submitTestimonialBtn"
                                         class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm">
                                         Submit Request
                                     </button>
@@ -288,12 +293,13 @@
     <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
         <div class="text-center">
             <h3 class="text-lg leading-6 font-medium text-gray-900">Approve Testimonial</h3>
-            <form id="approveTestimonialForm" method="POST" enctype="multipart/form-data">
+            <form id="approveTestimonialForm" method="POST" enctype="multipart/form-data" onsubmit="return validateApprovalForm()">
                 @csrf
                 <input type="hidden" name="testimonial_id" id="approveTestimonialId">
                 <div class="mt-2 px-7 py-3">
                     <p class="text-sm text-gray-500 mb-4">
                         Please upload the testimonial document (PDF or Image) for this project.
+                        <span class="text-xs text-red-500 block mt-1">Maximum file size: 2MB</span>
                     </p>
                     <div class="mb-4">
                         <label for="testimonialFile" class="block text-sm font-medium text-gray-700 mb-1">Testimonial
@@ -304,10 +310,19 @@
                                     file:text-sm file:font-semibold
                                     file:bg-purple-50 file:text-purple-700
                                     hover:file:bg-purple-100" accept=".pdf,.jpg,.jpeg,.png" required>
+                        <div class="text-xs text-amber-600 mt-2">
+                            <p>⚠️ File size limit: <strong>2MB maximum</strong></p>
+                            <p>If your file is larger than 2MB, please:</p>
+                            <ul class="list-disc pl-5 mt-1">
+                                <li>Compress your PDF using an online tool</li>
+                                <li>Reduce image resolution before uploading</li>
+                            </ul>
+                        </div>
+                        <span id="approvalFileError" class="text-red-500 text-xs hidden"></span>
                     </div>
                 </div>
                 <div class="items-center px-4 py-3">
-                    <button type="submit"
+                    <button type="submit" id="approvalSubmitBtn"
                         class="px-4 py-2 bg-green-600 text-white text-base font-medium rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-300">
                         Upload & Approve
                     </button>
@@ -326,10 +341,90 @@
 function openRequestModal() {
     document.getElementById('requestTestimonialForm').reset();
     document.getElementById('requestTestimonialModal').classList.remove('hidden');
+    // Clear any previous error messages
+    document.getElementById('titleError').classList.add('hidden');
+    document.getElementById('fileError').classList.add('hidden');
+    document.getElementById('formErrors').classList.add('hidden');
+    document.getElementById('testimonialFileList').innerHTML = '';
 }
 
 function closeRequestModal() {
     document.getElementById('requestTestimonialModal').classList.add('hidden');
+}
+
+function validateTestimonialForm() {
+    let isValid = true;
+    const title = document.getElementById('testimonialTitle').value.trim();
+    const fileInput = document.getElementById('testimonialFiles');
+    const titleError = document.getElementById('titleError');
+    const fileError = document.getElementById('fileError');
+    const formErrors = document.getElementById('formErrors');
+    
+    // Reset error messages
+    titleError.classList.add('hidden');
+    fileError.classList.add('hidden');
+    formErrors.classList.add('hidden');
+    formErrors.innerHTML = '';
+    
+    let errorMessages = [];
+    
+    // Validate title
+    if (!title) {
+        titleError.textContent = 'Title is required';
+        titleError.classList.remove('hidden');
+        errorMessages.push('Title is required');
+        isValid = false;
+    } else if (title.length > 255) {
+        titleError.textContent = 'Title must be less than 255 characters';
+        titleError.classList.remove('hidden');
+        errorMessages.push('Title must be less than 255 characters');
+        isValid = false;
+    }
+    
+    // Validate file
+    if (fileInput.files.length === 0) {
+        fileError.textContent = 'Supporting document is required';
+        fileError.classList.remove('hidden');
+        errorMessages.push('Supporting document is required');
+        isValid = false;
+    } else {
+        const file = fileInput.files[0];
+        const fileType = file.type;
+        const fileSize = file.size / 1024 / 1024; // Convert to MB
+        
+        // Check file type
+        const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+        if (!allowedTypes.includes(fileType)) {
+            fileError.textContent = 'File must be PDF, DOC, or DOCX';
+            fileError.classList.remove('hidden');
+            errorMessages.push('File must be PDF, DOC, or DOCX');
+            isValid = false;
+        }
+        
+        // Check file size (max 2MB)
+        if (fileSize > 2) {
+            fileError.textContent = 'File size must be less than 2MB';
+            fileError.classList.remove('hidden');
+            errorMessages.push('File size must be less than 2MB');
+            isValid = false;
+        }
+    }
+    
+    // Display all errors in the form errors section
+    if (errorMessages.length > 0) {
+        formErrors.innerHTML = '<ul class="list-disc pl-5">' + 
+            errorMessages.map(msg => `<li>${msg}</li>`).join('') + 
+            '</ul>';
+        formErrors.classList.remove('hidden');
+    }
+    
+    if (!isValid) {
+        // Prevent multiple submissions
+        const submitBtn = document.getElementById('submitTestimonialBtn');
+        submitBtn.disabled = false;
+    }
+    
+    return isValid;
 }
 
 // Approval modal  
@@ -361,18 +456,147 @@ function submitRejectForm(testimonialId) {
     }
 }
 
+function validateApprovalForm() {
+    let isValid = true;
+    const fileInput = document.getElementById('testimonialFile');
+    const fileError = document.getElementById('approvalFileError');
+    
+    // Reset error message
+    fileError.classList.add('hidden');
+    
+    // Validate file
+    if (fileInput.files.length === 0) {
+        fileError.textContent = 'File is required';
+        fileError.classList.remove('hidden');
+        isValid = false;
+    } else {
+        const file = fileInput.files[0];
+        const fileType = file.type;
+        const fileSize = file.size / 1024 / 1024; // Convert to MB
+        
+        // Check file type
+        const allowedTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
+        if (!allowedTypes.includes(fileType)) {
+            fileError.textContent = 'File must be PDF or image (JPG, JPEG, PNG)';
+            fileError.classList.remove('hidden');
+            isValid = false;
+        }
+        
+        // Check file size (max 2MB)
+        if (fileSize > 2) {
+            fileError.textContent = 'File size must be less than 2MB';
+            fileError.classList.remove('hidden');
+            isValid = false;
+        }
+    }
+    
+    if (!isValid) {
+        // Prevent multiple submissions
+        const submitBtn = document.getElementById('approvalSubmitBtn');
+        submitBtn.disabled = false;
+    } else {
+        // Disable button to prevent multiple submissions
+        document.getElementById('approvalSubmitBtn').disabled = true;
+        document.getElementById('approvalSubmitBtn').textContent = 'Uploading...';
+    }
+    
+    return isValid;
+}
+
 document.addEventListener('DOMContentLoaded', function() {
-    const testimonialFileInput = document.getElementById('testimonialFiles');
+    const requestFileInput = document.getElementById('testimonialFiles');
     const testimonialFileList = document.getElementById('testimonialFileList');
-    if (testimonialFileInput && testimonialFileList) {
-        testimonialFileInput.addEventListener('change', function() {
+    const fileError = document.getElementById('fileError');
+    
+    if (requestFileInput && testimonialFileList) {
+        requestFileInput.addEventListener('change', function() {
             testimonialFileList.innerHTML = '';
-            for (let i = 0; i < this.files.length; i++) {
-                const file = this.files[i];
+            fileError.classList.add('hidden');
+            
+            if (this.files.length > 0) {
+                const file = this.files[0];
+                const fileType = file.type;
+                const fileSize = file.size / 1024 / 1024; // Convert to MB
+                
+                // Create file info element
                 const fileItem = document.createElement('div');
                 fileItem.className = 'text-sm py-1';
-                fileItem.textContent = file.name;
+                
+                // Add file name
+                const fileName = document.createElement('span');
+                fileName.textContent = file.name;
+                fileItem.appendChild(fileName);
+                
+                // Add file size
+                const fileSizeSpan = document.createElement('span');
+                fileSizeSpan.className = 'text-gray-500 ml-2';
+                fileSizeSpan.textContent = `(${fileSize.toFixed(2)} MB)`;
+                fileItem.appendChild(fileSizeSpan);
+                
                 testimonialFileList.appendChild(fileItem);
+                
+                // Add file size validation immediately
+                const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+                if (!allowedTypes.includes(fileType)) {
+                    fileError.textContent = 'File must be PDF, DOC, or DOCX';
+                    fileError.classList.remove('hidden');
+                } else if (fileSize > 2) {
+                    fileError.textContent = 'File size must be less than 2MB';
+                    fileError.classList.remove('hidden');
+                }
+            }
+        });
+    }
+    
+    // Add form submission handler
+    const requestForm = document.getElementById('requestTestimonialForm');
+    if (requestForm) {
+        requestForm.addEventListener('submit', function(e) {
+            const fileInput = document.getElementById('testimonialFiles');
+            if (fileInput.files.length === 0) {
+                e.preventDefault();
+                const fileError = document.getElementById('fileError');
+                fileError.textContent = 'Please select a file to upload';
+                fileError.classList.remove('hidden');
+                
+                const formErrors = document.getElementById('formErrors');
+                formErrors.innerHTML = '<ul class="list-disc pl-5"><li>Please select a file to upload</li></ul>';
+                formErrors.classList.remove('hidden');
+                return false;
+            }
+            
+            if (validateTestimonialForm()) {
+                const submitBtn = document.getElementById('submitTestimonialBtn');
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Submitting...';
+                return true;
+            }
+            return false;
+        });
+    }
+
+    // Add file validation for approval form
+    const approvalFileInput = document.getElementById('testimonialFile');
+    const approvalFileError = document.getElementById('approvalFileError');
+    
+    if (approvalFileInput && approvalFileError) {
+        approvalFileInput.addEventListener('change', function() {
+            approvalFileError.classList.add('hidden');
+            
+            if (this.files.length > 0) {
+                const file = this.files[0];
+                const fileType = file.type;
+                const fileSize = file.size / 1024 / 1024; // Convert to MB
+                
+                // Validate file type and size immediately
+                const allowedTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
+                if (!allowedTypes.includes(fileType)) {
+                    approvalFileError.textContent = 'File must be PDF or image (JPG, JPEG, PNG)';
+                    approvalFileError.classList.remove('hidden');
+                } else if (fileSize > 2) {
+                    approvalFileError.textContent = 'File size must be less than 2MB';
+                    approvalFileError.classList.remove('hidden');
+                }
             }
         });
     }

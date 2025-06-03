@@ -52,6 +52,13 @@ class ProjectController extends Controller
                 $q->where('name', 'like', '%'.$request->organization.'%');
             });
         }
+        
+        // Add filter for runner organization
+        if ($request->has('runner_organization') && $request->runner_organization != '') {
+            $query->whereHas('runner', function($q) use ($request) {
+                $q->where('name', 'like', '%'.$request->runner_organization.'%');
+            });
+        }
 
         // Get filtered projects
         $projects = $query->latest()
@@ -78,7 +85,11 @@ class ProjectController extends Controller
         $focusAreaIds = Project::select('focus_area')->distinct()->pluck('focus_area');
         $sectors = \App\Models\FocusArea::whereIn('id', $focusAreaIds)->pluck('name');
         $locations = Project::select('location')->distinct()->pluck('location');
-        $organizations = Ngo::select('name as organization')->distinct()->pluck('organization');
+        $organizations = Ngo::pluck('name');
+        $runnerOrganizations = Ngo::pluck('name');
+        
+        // Set view type for authority users
+        $viewType = 'authority';
 
         // Group projects by first letter of their name
         $grouped = [];
@@ -101,7 +112,9 @@ class ProjectController extends Controller
             'statuses',
             'sectors',
             'locations',
-            'organizations'
+            'organizations',
+            'runnerOrganizations',
+            'viewType'
         ));
     }
 
@@ -512,8 +525,13 @@ class ProjectController extends Controller
                 ->with('error', 'Your NGO registration is pending approval. You will be able to access donner projects once approved.');
         }
         
+        // Set the donner_id filter and call the filteredProjectsByRole method
         $request->merge(['donner_id' => $ngoId]);
-        return $this->filteredProjectsByRole($request, 'donner_id');
+        
+        // Set the view type for proper form action URL generation
+        $viewType = 'donner';
+        
+        return $this->filteredProjectsByRole($request, 'donner_id', $viewType);
     }
 
     public function runnerProjects(Request $request)
@@ -533,31 +551,68 @@ class ProjectController extends Controller
                 ->with('error', 'Your NGO registration is pending approval. You will be able to access runner projects once approved.');
         }
         
+        // Set the runner_id filter and call the filteredProjectsByRole method
         $request->merge(['runner_id' => $ngoId]);
-        return $this->filteredProjectsByRole($request, 'runner_id');
+        
+        // Set the view type for proper form action URL generation
+        $viewType = 'runner';
+        
+        return $this->filteredProjectsByRole($request, 'runner_id', $viewType);
     }
 
-    protected function filteredProjectsByRole(Request $request, $roleField)
+    protected function filteredProjectsByRole(Request $request, $roleField, $viewType = null)
     {
         $query = Project::with(['donner', 'runner', 'focusArea']);
         $query->where($roleField, $request[$roleField]);
-        // Apply other filters as in index()
+        
+        // Apply filters
         if ($request->has('status') && $request->status != '') {
             $query->where('status', $request->status);
         }
+        
         if ($request->has('sector') && $request->sector != '') {
             $query->whereHas('focusArea', function($q) use ($request) {
                 $q->where('name', $request->sector);
             });
         }
+        
         if ($request->has('location') && $request->location != '') {
             $query->where('location', 'like', '%'.$request->location.'%');
         }
+        
+        // Enhanced filtering for NGOs
         if ($request->has('organization') && $request->organization != '') {
-            $query->whereHas('donner', function($q) use ($request) {
-                $q->where('name', 'like', '%'.$request->organization.'%');
-            });
+            // If we're in donner projects view, filter by runner organization
+            if ($roleField === 'donner_id') {
+                $query->whereHas('runner', function($q) use ($request) {
+                    $q->where('name', 'like', '%'.$request->organization.'%');
+                });
+            } 
+            // If we're in runner projects view, filter by donner organization
+            else if ($roleField === 'runner_id') {
+                $query->whereHas('donner', function($q) use ($request) {
+                    $q->where('name', 'like', '%'.$request->organization.'%');
+                });
+            }
         }
+        
+        // Additional filters can be added here
+        if ($request->has('budget_min') && $request->budget_min != '') {
+            $query->where('budget', '>=', $request->budget_min);
+        }
+        
+        if ($request->has('budget_max') && $request->budget_max != '') {
+            $query->where('budget', '<=', $request->budget_max);
+        }
+        
+        if ($request->has('start_date') && $request->start_date != '') {
+            $query->whereDate('start_date', '>=', $request->start_date);
+        }
+        
+        if ($request->has('end_date') && $request->end_date != '') {
+            $query->whereDate('end_date', '<=', $request->end_date);
+        }
+        
         $projects = $query->latest()->get()->map(function ($project) {
             return [
                 'id' => $project->id,
@@ -574,12 +629,27 @@ class ProjectController extends Controller
                 'focus_area_name' => $project->focusArea->name ?? '-',
             ];
         });
-        // Get unique values for filter dropdowns (reuse logic from index)
+        
+        // Get unique values for filter dropdowns
         $statuses = Project::select('status')->distinct()->pluck('status');
         $focusAreaIds = Project::select('focus_area')->distinct()->pluck('focus_area');
         $sectors = \App\Models\FocusArea::whereIn('id', $focusAreaIds)->pluck('name');
         $locations = Project::select('location')->distinct()->pluck('location');
-        $organizations = \App\Models\Ngo::select('name as organization')->distinct()->pluck('organization');
+        
+        // Get organizations based on the current view (donner or runner)
+        if ($roleField === 'donner_id') {
+            // For donner view, show runner organizations
+            $runnerIds = Project::where('donner_id', $request[$roleField])->distinct()->pluck('runner_id')->toArray();
+            $organizations = \App\Models\Ngo::whereIn('id', $runnerIds)->get()->pluck('name');
+        } else {
+            // For runner view, show donner organizations
+            $donnerIds = Project::where('runner_id', $request[$roleField])->distinct()->pluck('donner_id')->toArray();
+            $organizations = \App\Models\Ngo::whereIn('id', $donnerIds)->get()->pluck('name');
+        }
+        
+        // Add runner organizations for consistency with the index method
+        $runnerOrganizations = \App\Models\Ngo::pluck('name');
+        
         $grouped = [];
         foreach ($projects as $project) {
             $firstLetter = strtoupper(substr($project['name'], 0, 1));
@@ -588,9 +658,11 @@ class ProjectController extends Controller
             }
             $grouped[$firstLetter][] = $project;
         }
+        
         ksort($grouped);
         $activeLetters = array_keys($grouped);
         $letters = range('A', 'Z');
+        
         return view('projects.index', compact(
             'grouped', 
             'activeLetters', 
@@ -598,7 +670,9 @@ class ProjectController extends Controller
             'statuses',
             'sectors',
             'locations',
-            'organizations'
+            'organizations',
+            'runnerOrganizations',
+            'viewType'
         ));
     }
 }

@@ -8,6 +8,8 @@ use App\Models\Ngo;
 use App\Models\Project;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class NgoController extends Controller
 {
@@ -44,8 +46,16 @@ class NgoController extends Controller
      */
     public function create()
     {
-        // Pass the logged-in user's name and email to the view
+        // Get the logged-in user
         $user = request()->user();
+        
+        // Check if the user already has an approved NGO
+        if ($user->ngo && $user->ngo->status === 'approved') {
+            return redirect()->route('dashboard')
+                ->with('info', 'Your NGO has already been approved. You cannot create another one.');
+        }
+        
+        // Pass the logged-in user's name and email to the view
         $focusAreas = \App\Models\FocusArea::orderBy('name')->get();
         return view('ngos.create', [
             'userName' => $user ? $user->name : '',
@@ -162,6 +172,25 @@ class NgoController extends Controller
      */
     public function show(Ngo $ngo)
     {
+        // Check if the user is authorized to view this NGO's details
+        $user = Auth::user();
+        
+        if ($user) {
+            // Check if user has NGO role using direct database query
+            $hasNgoRole = DB::table('model_has_roles')
+                ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+                ->where('model_has_roles.model_id', $user->id)
+                ->where('roles.name', 'ngo')
+                ->exists();
+            
+            // If user is an NGO and not viewing their own NGO, restrict access
+            if ($hasNgoRole && (!$user->ngo || $user->ngo->id !== $ngo->id)) {
+                return redirect()->route('dashboard')
+                    ->with('error', 'You do not have permission to view other NGOs\' details.');
+            }
+        }
+        
+        // Allow access for admins, authorities, or the NGO viewing its own details
         $allProjects = \App\Models\Project::where(function($q) use ($ngo) {
             $q->where('donner_id', $ngo->id)
               ->orWhere('runner_id', $ngo->id);
@@ -198,6 +227,32 @@ class NgoController extends Controller
     public function edit(string $id)
     {
         $ngo = Ngo::with('focusAreas')->findOrFail($id);
+        
+        // Check if the user is authorized to edit this NGO
+        $user = Auth::user();
+        
+        if ($user) {
+            // Check if user has NGO role
+            $hasNgoRole = DB::table('model_has_roles')
+                ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+                ->where('model_has_roles.model_id', $user->id)
+                ->where('roles.name', 'ngo')
+                ->exists();
+            
+            // Check if user has admin or authority role
+            $hasAdminOrAuthorityRole = DB::table('model_has_roles')
+                ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+                ->where('model_has_roles.model_id', $user->id)
+                ->whereIn('roles.name', ['admin', 'authority'])
+                ->exists();
+            
+            // If user is an NGO and not editing their own NGO, restrict access
+            if ($hasNgoRole && !$hasAdminOrAuthorityRole && (!$user->ngo || $user->ngo->id != $ngo->id)) {
+                return redirect()->route('dashboard')
+                    ->with('error', 'You do not have permission to edit other NGOs\' profiles.');
+            }
+        }
+        
         $focusAreas = FocusArea::orderBy('name')->get();
         return view('ngos.edit', compact('ngo', 'focusAreas'));
     }
@@ -209,6 +264,32 @@ class NgoController extends Controller
     {
         try {
             $ngo = Ngo::findOrFail($id);
+            
+            // Check if the user is authorized to update this NGO
+            $user = Auth::user();
+            
+            if ($user) {
+                // Check if user has NGO role
+                $hasNgoRole = DB::table('model_has_roles')
+                    ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+                    ->where('model_has_roles.model_id', $user->id)
+                    ->where('roles.name', 'ngo')
+                    ->exists();
+                
+                // Check if user has admin or authority role
+                $hasAdminOrAuthorityRole = DB::table('model_has_roles')
+                    ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+                    ->where('model_has_roles.model_id', $user->id)
+                    ->whereIn('roles.name', ['admin', 'authority'])
+                    ->exists();
+                
+                // If user is an NGO and not updating their own NGO, restrict access
+                if ($hasNgoRole && !$hasAdminOrAuthorityRole && (!$user->ngo || $user->ngo->id != $ngo->id)) {
+                    return redirect()->route('dashboard')
+                        ->with('error', 'You do not have permission to update other NGOs\' profiles.');
+                }
+            }
+            
             $validated = $request->validate([
                 'name' => 'required|string|max:255',
                 'email' => 'required|email',
@@ -337,5 +418,57 @@ class NgoController extends Controller
 
         return redirect()->route('ngos.pending')
             ->with('success', 'NGO rejected successfully!');
+    }
+
+    /**
+     * Download NGO registration certificate.
+     */
+    public function downloadCertificate(Ngo $ngo)
+    {
+        $user = Auth::user();
+        
+        // Check if user is authorized to download the certificate
+        // Allow if: admin, authority, or the NGO owner
+        $isAdminOrAuthority = DB::table('model_has_roles')
+            ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+            ->where('model_has_roles.model_id', $user->id)
+            ->whereIn('roles.name', ['admin', 'authority'])
+            ->exists();
+        
+        $isNgoOwner = $user->ngo && $user->ngo->id === $ngo->id;
+        
+        if (!$isAdminOrAuthority && !$isNgoOwner) {
+            return back()->with('error', 'You are not authorized to download this certificate.');
+        }
+        
+        // Check if certificate exists
+        if (!$ngo->certificate_path) {
+            return back()->with('error', 'No certificate found for this NGO.');
+        }
+        
+        $path = storage_path('app/public/' . $ngo->certificate_path);
+        
+        // Check if file exists physically
+        if (!file_exists($path)) {
+            return back()->with('error', 'Certificate file not found.');
+        }
+        
+        // Get file extension to determine content type
+        $extension = pathinfo($path, PATHINFO_EXTENSION);
+        $contentType = 'application/octet-stream'; // Default
+        
+        if ($extension === 'pdf') {
+            $contentType = 'application/pdf';
+        } elseif (in_array($extension, ['jpg', 'jpeg', 'png'])) {
+            $contentType = 'image/' . $extension;
+        }
+        
+        // Generate a clean filename for download
+        $filename = $ngo->name . '_Registration_Certificate.' . $extension;
+        
+        return response()->file($path, [
+            'Content-Type' => $contentType,
+            'Content-Disposition' => 'inline; filename="' . $filename . '"'
+        ]);
     }
 }
