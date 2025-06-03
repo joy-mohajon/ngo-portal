@@ -110,9 +110,18 @@ class ProjectController extends Controller
      */
     public function create()
     {
-        $ngos = Ngo::pluck('name', 'id');
+        $user = Auth::user();
+        $userNgo = null;
+        
+        // If user has an NGO and it's approved, get it for auto-selection
+        if ($user && $user->ngo && $user->ngo->status === 'approved') {
+            $userNgo = $user->ngo;
+        }
+        
+        $ngos = Ngo::where('status', 'approved')->pluck('name', 'id');
         $focusAreas = \App\Models\FocusArea::where('type', 'Project')->orderBy('name')->get();
-        return view('projects.create', compact('ngos', 'focusAreas'));
+        
+        return view('projects.create', compact('ngos', 'focusAreas', 'userNgo'));
     }
 
     /**
@@ -490,7 +499,19 @@ class ProjectController extends Controller
     {
         $user = Auth::user();
         $ngoId = $user && $user->ngo ? $user->ngo->id : null;
-        if (!$ngoId) abort(403);
+        
+        // Check if user has an NGO
+        if (!$ngoId) {
+            return redirect()->route('dashboard')
+                ->with('error', 'You need to register and get approval for your NGO before accessing donner projects.');
+        }
+        
+        // Check if user's NGO is approved
+        if ($user->ngo->status !== 'approved') {
+            return redirect()->route('dashboard')
+                ->with('error', 'Your NGO registration is pending approval. You will be able to access donner projects once approved.');
+        }
+        
         $request->merge(['donner_id' => $ngoId]);
         return $this->filteredProjectsByRole($request, 'donner_id');
     }
@@ -499,7 +520,19 @@ class ProjectController extends Controller
     {
         $user = Auth::user();
         $ngoId = $user && $user->ngo ? $user->ngo->id : null;
-        if (!$ngoId) abort(403);
+        
+        // Check if user has an NGO
+        if (!$ngoId) {
+            return redirect()->route('dashboard')
+                ->with('error', 'You need to register and get approval for your NGO before accessing runner projects.');
+        }
+        
+        // Check if user's NGO is approved
+        if ($user->ngo->status !== 'approved') {
+            return redirect()->route('dashboard')
+                ->with('error', 'Your NGO registration is pending approval. You will be able to access runner projects once approved.');
+        }
+        
         $request->merge(['runner_id' => $ngoId]);
         return $this->filteredProjectsByRole($request, 'runner_id');
     }

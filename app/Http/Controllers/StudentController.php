@@ -13,7 +13,39 @@ class StudentController extends Controller
 {
     public function __construct()
     {
-        // Auth middleware is applied at the route level
+        $this->middleware('auth');
+        
+        // Add middleware to check if user has access to student-related features
+        $this->middleware(function ($request, $next) {
+            $user = Auth::user();
+            
+            // Check if user has NGO role
+            $hasNgoRole = DB::table('model_has_roles')
+                ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+                ->where('model_has_roles.model_id', $user->id)
+                ->where('roles.name', 'ngo')
+                ->exists();
+            
+            // If user is NGO, check if they have an approved NGO
+            if ($hasNgoRole && (!$user->ngo || $user->ngo->status !== 'approved')) {
+                return redirect()->route('dashboard')
+                    ->with('error', 'Your NGO must be approved to access student features. Please complete the approval process.');
+            }
+            
+            // Admin and authority roles always have access
+            $hasAdminOrAuthorityRole = DB::table('model_has_roles')
+                ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+                ->where('model_has_roles.model_id', $user->id)
+                ->whereIn('roles.name', ['admin', 'authority'])
+                ->exists();
+                
+            if (!$hasAdminOrAuthorityRole && !($hasNgoRole && $user->ngo && $user->ngo->status === 'approved')) {
+                return redirect()->route('dashboard')
+                    ->with('error', 'You do not have permission to access student features.');
+            }
+            
+            return $next($request);
+        });
     }
 
     public function index(Request $request)

@@ -2,6 +2,13 @@
     <div class="container mx-auto max-w-2xl py-10">
         <div class="bg-white shadow-xl rounded-lg p-8 border border-gray-200 premium-form">
             <h2 class="text-3xl font-bold text-center text-indigo-700 mb-6">Update Profile</h2>
+            
+            @if(session('error'))
+            <div class="mb-4 p-4 bg-red-50 border-l-4 border-red-500 text-red-700">
+                <p>{{ session('error') }}</p>
+            </div>
+            @endif
+            
             <form method="POST" action="{{ route('ngos.update', $ngo->id) }}" enctype="multipart/form-data"
                 class="space-y-6">
                 @csrf
@@ -69,12 +76,13 @@
                         <label for="logo" class="block text-sm font-medium text-gray-700 mb-2">NGO Logo</label>
                         @if($ngo->logo)
                         <div class="mb-2">
-                            <img src="{{ asset('storage/' . $ngo->logo) }}" alt="Current Logo"
+                            <img src="{{ asset('storage/' . $ngo->logo) }}?v={{ time() }}" alt="Current Logo"
                                 class="h-16 w-16 object-contain rounded-lg border" />
                         </div>
                         @endif
                         <input type="file" id="logo" name="logo"
                             class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" />
+                        <p class="text-xs text-gray-500 mt-1">Accepted formats: JPEG, PNG, JPG, GIF (Max: 2MB, Min dimensions: 100x100px)</p>
                         @error('logo')
                         <div class="text-red-600 text-sm mt-1">{{ $message }}</div>
                         @enderror
@@ -153,6 +161,7 @@
                     @endif
                     <input type="file" id="certificate_path" name="certificate_path"
                         class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" />
+                    <p class="text-xs text-gray-500 mt-1">Accepted formats: PDF, JPEG, JPG, PNG (Max: 4MB)</p>
                     @error('certificate_path')
                     <div class="text-red-600 text-sm mt-1">{{ $message }}</div>
                     @enderror

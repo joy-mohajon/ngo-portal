@@ -23,7 +23,17 @@
 
                 @php
                 $user = Auth::user();
+                if (!$user) {
+                // If user is not authenticated, redirect to login
+                header('Location: ' . route('login'));
+                exit;
+                }
                 $userId = $user->id;
+
+                // Force reload the NGO relationship to ensure fresh data
+                if ($user) {
+                $user->load('ngo');
+                }
 
                 // Check for admin or authority role
                 $hasAdminOrAuthorityRole = DB::table('model_has_roles')
@@ -44,6 +54,12 @@
                 ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
                 ->where('model_has_roles.model_id', $userId)
                 ->value('roles.name');
+
+                // Get count of pending NGOs for authority role
+                $pendingNgosCount = 0;
+                if ($hasAdminOrAuthorityRole) {
+                $pendingNgosCount = \App\Models\Ngo::where('status', 'pending')->count();
+                }
                 @endphp
 
                 @if($hasAdminOrAuthorityRole)
@@ -73,7 +89,8 @@
                                 class="p-2 hover:bg-gray-700 rounded flex items-center gap-3">
                                 <i class="fa fa-angle-right" aria-hidden="true"></i>
                                 <span>Pending NGOs</span>
-                                <span class="ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full">5</span>
+                                <span
+                                    class="ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full">{{ $pendingNgosCount }}</span>
                             </a>
                         </li>
 
@@ -93,7 +110,7 @@
                 </li>
                 @endif
 
-                @if($hasNgoRole)
+                @if($hasNgoRole && $user->ngo && $user->ngo->status === 'approved')
                 <li x-data="{ open: false }" class="opcion-con-desplegable">
                     <div @click="open = !open" @click="activeItem = 'projects.donner'"
                         :class="activeItem === 'projects.donner' ? 'bg-gray-700 text-white' : ''"
@@ -122,20 +139,33 @@
                                 <span>As a Runner</span>
                             </a>
                         </li>
-
                     </ul>
+                </li>
+                @elseif($hasNgoRole)
+                <!-- For NGO users without approval, show Projects link that redirects to dashboard with message -->
+                <li>
+                    <a href="{{ route('dashboard') }}"
+                        onclick="event.preventDefault(); alert('Your NGO needs approval before you can access projects.');"
+                        class="flex items-center p-2 hover:bg-gray-700 rounded">
+                        <i class="fas fa-chalkboard-teacher mr-3"></i>
+                        <span>Projects</span>
+                        <span class="ml-2 bg-yellow-500 text-xs text-white px-2 py-0.5 rounded-full">Pending</span>
+                    </a>
                 </li>
                 @endif
 
                 <!-- Students -->
+                @if($hasNgoRole && $user->ngo && $user->ngo->status === 'approved')
                 <li>
                     <a href="{{ route('students.index') }}" class="flex items-center p-2 hover:bg-gray-700 rounded">
                         <i class="fas fa-user-graduate mr-3"></i>
                         <span>Students</span>
                     </a>
                 </li>
+                @endif
 
-                @if($hasNgoRole && $user->ngo && $user->ngo->status !== 'approved')
+                <!-- Get Approval - Show for users without NGO or with unapproved NGO -->
+                @if(!$user->ngo || ($user->ngo && $user->ngo->status !== 'approved'))
                 <li>
                     <a href="{{ route('ngos.create') }}" class="flex items-center p-2 hover:bg-gray-700 rounded">
                         <i class="fas fa-user-check mr-3"></i>
@@ -153,7 +183,17 @@
                     <button
                         class="inline-flex items-center gap-4 text-base leading-4 font-medium rounded-md text-white transition ease-in-out duration-150">
                         <!-- Profile Image or Default Icon -->
-                        @if(Auth::user()->profile_photo_path)
+                        @if($hasNgoRole && Auth::user()->ngo && Auth::user()->ngo->logo)
+                        @php
+                        $logoPath = Auth::user()->ngo->logo;
+                        $fullLogoUrl = asset('storage/' . $logoPath) . '?v=' . time();
+                        // Check if file exists
+                        $physicalPath = public_path('storage/' . $logoPath);
+                        $fileExists = file_exists($physicalPath);
+                        @endphp
+                        <img class="w-8 h-8 rounded-full object-cover" src="{{ $fullLogoUrl }}"
+                            alt="{{ Auth::user()->name }}" />
+                        @elseif(Auth::user()->profile_photo_path)
                         <img class="w-8 h-8 rounded-full object-cover"
                             src="{{ asset('storage/' . Auth::user()->profile_photo_path) }}"
                             alt="{{ Auth::user()->name }}" />
@@ -176,7 +216,7 @@
                 </x-slot>
 
                 <x-slot name="content">
-                    @if($hasNgoRole && $user->ngo)
+                    @if($hasNgoRole && $user && $user->ngo)
                     <x-dropdown-link :href="route('ngos.edit', $user->ngo->id)">
                         {{ __('Profile') }}
                     </x-dropdown-link>

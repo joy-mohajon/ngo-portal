@@ -44,14 +44,20 @@ Route::middleware('auth')->group(function () {
 
 
     // Project resource - allow only runner NGOs to edit their projects
-    Route::get('projects/donner', [App\Http\Controllers\ProjectController::class, 'donnerProjects'])->name('projects.donner');
-    Route::get('projects/runner', [App\Http\Controllers\ProjectController::class, 'runnerProjects'])->name('projects.runner');
+    Route::get('projects/donner', [App\Http\Controllers\ProjectController::class, 'donnerProjects'])
+        ->name('projects.donner');
+    Route::get('projects/runner', [App\Http\Controllers\ProjectController::class, 'runnerProjects'])
+        ->name('projects.runner');
     
     // Read-only routes for projects - restrict main index to admin and authority roles
     Route::get('projects', [App\Http\Controllers\ProjectController::class, 'index'])->name('projects.index');
 
-    Route::get('projects/create', [App\Http\Controllers\ProjectController::class, 'create'])->name('projects.create');
-    Route::post('projects', [App\Http\Controllers\ProjectController::class, 'store'])->name('projects.store');
+    // Apply NGO approval middleware to project creation routes
+    Route::middleware(['ngo.approved'])->group(function () {
+        Route::get('projects/create', [App\Http\Controllers\ProjectController::class, 'create'])->name('projects.create');
+        Route::post('projects', [App\Http\Controllers\ProjectController::class, 'store'])->name('projects.store');
+    });
+    
     Route::get('projects/{project}', [App\Http\Controllers\ProjectController::class, 'show'])->name('projects.show');
     
     // Runner-only routes - can only be accessed by the NGO that is the runner of the project
@@ -82,12 +88,14 @@ Route::middleware('auth')->group(function () {
     Route::middleware(['auth'])->group(function () {
         Route::get('students', [StudentController::class, 'index'])->name('students.index');
         
-        // Only NGO runners can modify students - using StudentAccessController instead of middleware
-        Route::get('students/create', [StudentAccessController::class, 'create'])->name('students.create');
-        Route::post('students', [StudentAccessController::class, 'store'])->name('students.store');
-        Route::get('students/{student}/edit', [StudentAccessController::class, 'edit'])->name('students.edit');
-        Route::put('students/{student}', [StudentAccessController::class, 'update'])->name('students.update');
-        Route::delete('students/{student}', [StudentAccessController::class, 'destroy'])->name('students.destroy');
+        // Only approved NGO runners can modify students
+        Route::middleware(['ngo.approved'])->group(function () {
+            Route::get('students/create', [StudentAccessController::class, 'create'])->name('students.create');
+            Route::post('students', [StudentAccessController::class, 'store'])->name('students.store');
+            Route::get('students/{student}/edit', [StudentAccessController::class, 'edit'])->name('students.edit');
+            Route::put('students/{student}', [StudentAccessController::class, 'update'])->name('students.update');
+            Route::delete('students/{student}', [StudentAccessController::class, 'destroy'])->name('students.destroy');
+        });
         
         Route::get('students/{student}', [StudentController::class, 'show'])->name('students.show');
     });
@@ -113,5 +121,37 @@ Route::middleware('auth')->group(function () {
 Route::get('/test-middleware', function () {
     return 'Middleware test successful';
 })->middleware([\App\Http\Middleware\ProjectRunnerMiddleware::class]);
+
+// Debug route to check logo paths
+Route::get('/debug-logo', function () {
+    if (!auth()->check()) {
+        return "Please login first";
+    }
+    
+    $user = auth()->user();
+    $ngo = $user->ngo;
+    
+    if (!$ngo) {
+        return "No NGO found for this user";
+    }
+    
+    $logoPath = $ngo->logo;
+    $fullPath = storage_path('app/public/' . $logoPath);
+    $publicPath = public_path('storage/' . $logoPath);
+    $assetUrl = asset('storage/' . $logoPath);
+    
+    $result = [
+        'ngo_id' => $ngo->id,
+        'logo_path' => $logoPath,
+        'full_path' => $fullPath,
+        'full_path_exists' => file_exists($fullPath) ? 'Yes' : 'No',
+        'public_path' => $publicPath,
+        'public_path_exists' => file_exists($publicPath) ? 'Yes' : 'No',
+        'asset_url' => $assetUrl,
+        'storage_link_exists' => file_exists(public_path('storage')) ? 'Yes' : 'No',
+    ];
+    
+    return response()->json($result);
+})->middleware(['auth']);
 
 require __DIR__.'/auth.php';

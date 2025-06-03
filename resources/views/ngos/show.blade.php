@@ -7,7 +7,7 @@
                 <div class="md:w-1/4 p-8 bg-gradient-to-br from-indigo-50 to-blue-50 flex items-center justify-center">
                     @if($ngo->logo)
                     <div class="p-4 bg-white rounded-xl shadow-inner border border-gray-100">
-                        <img src="{{ asset('storage/' . $ngo->logo) }}" alt="{{ $ngo->name }} logo"
+                        <img src="{{ asset('storage/' . $ngo->logo) }}?v={{ time() }}" alt="{{ $ngo->name }} logo"
                             class="h-32 w-32 object-contain">
                     </div>
                     @else
@@ -95,11 +95,11 @@
                     <i class="fas fa-running mr-2"></i>
                     Run By {{ $ngo->name }} ({{ $projectsRunner->count() }})
                 </button>
-                <button @click="activeTab = 'holder'"
-                    :class="{ 'border-blue-500 text-blue-600': activeTab === 'holder', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': activeTab !== 'holder' }"
+                <button @click="activeTab = 'donner'"
+                    :class="{ 'border-blue-500 text-blue-600': activeTab === 'donner', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': activeTab !== 'donner' }"
                     class="whitespace-nowrap py-4 px-6 border-b-2 font-medium text-lg flex items-center">
                     <i class="fas fa-coins mr-2"></i>
-                    Funded By {{ $ngo->name }} ({{ $projectsHolder->count() }})
+                    Funded By {{ $ngo->name }} ({{ $projectsDonner->count() }})
                 </button>
                 <button @click="activeTab = 'both'"
                     :class="{ 'border-blue-500 text-blue-600': activeTab === 'both', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': activeTab !== 'both' }"
@@ -122,15 +122,15 @@
                 @endforelse
             </div>
 
-            <!-- Holder Projects -->
-            <div x-show="activeTab === 'holder'" class="mt-6 grid grid-cols-1 gap-8" x-cloak>
-                @forelse($projectsHolder as $project)
+            <!-- Donner Projects -->
+            <div x-show="activeTab === 'donner'" class="mt-6 grid grid-cols-1 gap-8" x-cloak>
+                @forelse($projectsDonner as $project)
                 <!-- Project card -->
                 @include('ngos.partials.p_card', ['project' => $project])
                 @empty
                 <div class="bg-white rounded-xl shadow p-8 text-center border border-gray-100">
                     <i class="fas fa-inbox text-4xl text-gray-300 mb-4"></i>
-                    <p class="text-gray-500 font-medium">No holding projects found</p>
+                    <p class="text-gray-500 font-medium">No donner projects found</p>
                 </div>
                 @endforelse
             </div>
