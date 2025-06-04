@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Testimonial;
 use App\Models\Project;
+use App\Mail\TestimonialRequestSubmitted;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class TestimonialController extends Controller
 {
@@ -111,6 +113,24 @@ class TestimonialController extends Controller
                 // If testimonial creation fails, delete the uploaded file
                 Storage::disk('public')->delete($filePath);
                 return back()->with('error', 'Failed to create testimonial record. Please try again.');
+            }
+            
+            // Send email notification to authority and NGO
+            try {
+                // Send to authority email
+                Mail::mailer('smtp')->to('dcgaibandha@mopa.gov.bd')
+                    ->send(new TestimonialRequestSubmitted($testimonial));
+                
+                // Send to NGO's email if available
+                if ($user->ngo->email) {
+                    Mail::mailer('smtp')->to($user->ngo->email)
+                        ->send(new TestimonialRequestSubmitted($testimonial));
+                }
+                
+                Log::info('Testimonial request notification sent successfully');
+            } catch (\Exception $e) {
+                Log::error('Failed to send email notification: ' . $e->getMessage());
+                // Continue execution even if email fails
             }
             
             return back()->with('success', 'Testimonial request submitted successfully.');

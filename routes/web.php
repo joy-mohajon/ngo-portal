@@ -189,4 +189,15 @@ Route::get('/debug-logo', function () {
     return response()->json($result);
 })->middleware(['auth']);
 
+// Add this route at the end of the file
+Route::get('/test-mail', function () {
+    try {
+        \Illuminate\Support\Facades\Mail::mailer('smtp')->to('codecode2024@gmail.com')
+            ->send(new \App\Mail\TestimonialRequestSubmitted(\App\Models\Testimonial::first()));
+        return 'Mail sent successfully via SMTP. Check your inbox.';
+    } catch (\Exception $e) {
+        return 'Error: ' . $e->getMessage();
+    }
+});
+
 require __DIR__.'/auth.php';
