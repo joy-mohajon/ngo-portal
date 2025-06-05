@@ -19,8 +19,85 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
 
+    <!-- Custom styles -->
+    <style>
+        /* Fix horizontal scrolling issues */
+        html, body {
+            overflow-x: hidden;
+            max-width: 100%;
+        }
+        
+        /* Responsive table handling */
+        @media (max-width: 1024px) {
+            table.table-fixed {
+                table-layout: fixed;
+                width: 100%;
+                min-width: 800px; /* Ensure minimum width for content */
+            }
+        }
+        
+        /* Project badges wrapping */
+        .flex-wrap span {
+            margin-bottom: 0.25rem;
+            display: inline-block;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        /* Prevent overflow on main container */
+        main {
+            overflow-x: hidden;
+        }
+        
+        /* Make table containers scrollable */
+        .overflow-x-auto {
+            -webkit-overflow-scrolling: touch;
+        }
+    </style>
+
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    
+    <script>
+        // Force refresh of images on page load to prevent caching issues
+        document.addEventListener('DOMContentLoaded', function() {
+            const timestamp = new Date().getTime();
+            
+            // Function to refresh all images with storage paths
+            function refreshImages() {
+                const images = document.querySelectorAll('img[src*="storage"]');
+                images.forEach(img => {
+                    const src = img.getAttribute('src');
+                    // Only add timestamp if not already present
+                    if (src && src.indexOf('?v=') === -1) {
+                        img.setAttribute('src', src + '?v=' + timestamp);
+                    }
+                    
+                    // Add error handler for images
+                    img.onerror = function() {
+                        console.log('Image failed to load:', src);
+                        // Try reloading once more with a new timestamp
+                        if (!this.dataset.retried) {
+                            this.dataset.retried = 'true';
+                            this.src = src.split('?')[0] + '?v=' + new Date().getTime();
+                        }
+                    };
+                });
+            }
+            
+            // Initial refresh
+            refreshImages();
+            
+            // Set up Alpine.js watcher for navigation events
+            if (window.Alpine) {
+                document.addEventListener('alpine:initialized', () => {
+                    // Refresh images when Alpine components are initialized
+                    setTimeout(refreshImages, 100);
+                });
+            }
+        });
+    </script>
 </head>
 
 <body class="font-sans antialiased">
@@ -34,7 +111,7 @@
             @include('layouts.navbar')
 
             <!-- Page Content -->
-            <main class="flex-1 overflow-y-auto px-6 py-4 bg-[#F5F3EB]">
+            <main class="flex-1 overflow-y-auto overflow-x-hidden px-3 md:px-6 py-4 bg-[#F5F3EB]">
                 {{ $slot }}
             </main>
         </div>

@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 use \ZipArchive;
 
 class ReportController extends Controller
@@ -37,47 +38,84 @@ class ReportController extends Controller
     {
         $request->validate([
             'project_id' => 'required|exists:projects,id',
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'month' => 'required|string',
-            'files.*' => 'required|file|max:10240', // 10MB max per file
+            'title' => 'required|string|min:3|max:255',
+            'description' => 'nullable|string|max:1000',
+            'month' => 'required|string|regex:/^\d{4}-\d{2}$/',
+            'files' => 'required|array|min:1',
+            'files.*' => 'required|file|max:10240|mimes:pdf,doc,docx,xls,xlsx', // 10MB max per file, specific file types
+        ], [
+            'project_id.required' => 'Project ID is required.',
+            'project_id.exists' => 'Selected project does not exist.',
+            'title.required' => 'Report title is required.',
+            'title.min' => 'Report title must be at least 3 characters.',
+            'title.max' => 'Report title cannot exceed 255 characters.',
+            'description.max' => 'Description cannot exceed 1000 characters.',
+            'month.required' => 'Report month is required.',
+            'month.regex' => 'Report month must be in YYYY-MM format.',
+            'files.required' => 'At least one file must be uploaded.',
+            'files.min' => 'At least one file must be uploaded.',
+            'files.*.max' => 'Each file size cannot exceed 10MB.',
+            'files.*.mimes' => 'Only PDF, DOC, DOCX, XLS, and XLSX files are allowed.',
         ]);
 
-        $files = $request->file('files');
-        $reports = [];
-        $projectId = $request->project_id;
-
-        foreach ($files as $file) {
-            $filePath = $file->store('reports', 'public');
+        try {
+            $files = $request->file('files');
+            $reports = [];
+            $projectId = $request->project_id;
             
-            $report = new Report([
-                'project_id' => $projectId,
-                'submitted_by' => Auth::id(),
-                'title' => $request->title,
-                'description' => $request->description,
-                'month' => $request->month,
-                'file_path' => $filePath,
-                'file_name' => $file->getClientOriginalName(),
-                'file_size' => $file->getSize(),
-                'file_type' => $file->getClientMimeType(),
-                'status' => 'submitted'
+            // Check if user has permission to upload for this project
+            $project = Project::findOrFail($projectId);
+            $this->authorize('update', $project);
+    
+            foreach ($files as $file) {
+                $filePath = $file->store('reports', 'public');
+                
+                $report = new Report([
+                    'project_id' => $projectId,
+                    'submitted_by' => Auth::id(),
+                    'title' => $request->title,
+                    'description' => $request->description,
+                    'month' => $request->month,
+                    'file_path' => $filePath,
+                    'file_name' => $file->getClientOriginalName(),
+                    'file_size' => $file->getSize(),
+                    'file_type' => $file->getClientMimeType(),
+                    'status' => 'submitted'
+                ]);
+                
+                $report->save();
+                $reports[] = $report;
+            }
+    
+            // Check if this is an AJAX request
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => count($reports) . ' report(s) uploaded successfully',
+                    'reports' => $reports
+                ]);
+            }
+            
+            // For regular form submissions, redirect back with success message
+            return back()->with('success', count($reports) . ' report(s) uploaded successfully');
+        } catch (\Exception $e) {
+            // Log the error
+            Log::error('Report upload failed: ' . $e->getMessage(), [
+                'user_id' => Auth::id(),
+                'project_id' => $request->project_id,
+                'exception' => $e,
             ]);
             
-            $report->save();
-            $reports[] = $report;
+            // Return appropriate error response
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Failed to upload reports: ' . $e->getMessage()
+                ], 500);
+            }
+            
+            return back()->withErrors(['error' => 'Failed to upload reports: ' . $e->getMessage()])->withInput();
         }
-
-        // Check if this is an AJAX request
-        if ($request->ajax()) {
-            return response()->json([
-                'success' => true,
-                'message' => count($reports) . ' reports uploaded successfully',
-                'reports' => $reports
-            ]);
-        }
-        
-        // For regular form submissions, redirect back with success message
-        return back()->with('success', count($reports) . ' reports uploaded successfully');
     }
 
     /**
@@ -164,5 +202,20 @@ class ReportController extends Controller
         }
         
         return redirect()->back()->with('error', 'Could not create ZIP file');
+    }
+
+    /**
+     * Download an individual report file
+     */
+    public function download(Report $report)
+    {
+        // Check if file exists
+        $filePath = storage_path('app/public/' . $report->file_path);
+        if (!File::exists($filePath)) {
+            return redirect()->back()->with('error', 'File not found');
+        }
+        
+        // Return the file for download with original file name
+        return response()->download($filePath, $report->file_name);
     }
 }

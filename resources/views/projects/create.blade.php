@@ -34,7 +34,7 @@
                 <div class="flex justify-between items-center">
                     <label for="focus_area" class="block text-sm font-medium text-gray-700">Focus Area <span
                             class="text-red-500">*</span></label>
-                    <a href="{{ route('focus-areas.create') }}"
+                    <a href="{{ route('focus-areas.create', ['redirect_url' => route('projects.create')]) }}"
                         class="px-4 py-2 text-white bg-indigo-600 rounded-lg shadow transition text-sm font-semibold">+
                         Add Focus Area</a>
                 </div>
@@ -93,17 +93,19 @@
             </script>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <label for="holder_id" class="block text-sm font-medium text-gray-700">Holder NGO <span
+                    <label for="donner_id" class="block text-sm font-medium text-gray-700">Donner NGO <span
                             class="text-red-500">*</span></label>
-                    <select name="holder_id" id="holder_id" required
+                    <select name="donner_id" id="donner_id" required
                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
                         <option value="">Select NGO</option>
-                        @foreach(App\Models\Ngo::all() as $ngo)
-                        <option value="{{ $ngo->id }}" {{ old('holder_id') == $ngo->id ? 'selected' : '' }}>
-                            {{ $ngo->name }}</option>
+                        @foreach(App\Models\Ngo::where('status', 'approved')->get() as $ngo)
+                        <option value="{{ $ngo->id }}" 
+                            {{ old('donner_id') == $ngo->id ? 'selected' : '' }}
+                            {{ (isset($userNgo) && $userNgo->id == $ngo->id) ? 'selected' : '' }}>
+                            {{ $ngo->name }}{{ (isset($userNgo) && $userNgo->id == $ngo->id) ? ' (Your NGO)' : '' }}</option>
                         @endforeach
                     </select>
-                    @error('holder_id')<span class="text-xs text-red-600">{{ $message }}</span>@enderror
+                    @error('donner_id')<span class="text-xs text-red-600">{{ $message }}</span>@enderror
                 </div>
                 <div>
                     <label for="runner_id" class="block text-sm font-medium text-gray-700">Runner NGO <span
@@ -111,9 +113,11 @@
                     <select name="runner_id" id="runner_id" required
                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
                         <option value="">Select NGO</option>
-                        @foreach(App\Models\Ngo::all() as $ngo)
-                        <option value="{{ $ngo->id }}" {{ old('runner_id') == $ngo->id ? 'selected' : '' }}>
-                            {{ $ngo->name }}</option>
+                        @foreach(App\Models\Ngo::where('status', 'approved')->get() as $ngo)
+                        <option value="{{ $ngo->id }}" 
+                            {{ old('runner_id') == $ngo->id ? 'selected' : '' }}
+                            {{ (isset($userNgo) && $userNgo->id == $ngo->id) ? 'selected' : '' }}>
+                            {{ $ngo->name }}{{ (isset($userNgo) && $userNgo->id == $ngo->id) ? ' (Your NGO)' : '' }}</option>
                         @endforeach
                     </select>
                     @error('runner_id')<span class="text-xs text-red-600">{{ $message }}</span>@enderror

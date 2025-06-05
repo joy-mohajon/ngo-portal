@@ -19,7 +19,7 @@ class Project extends Model
         'budget',
         'focus_area',
         'major_activities',
-        'holder_id',
+        'donner_id',
         'runner_id',
         'start_date',
         'end_date',
@@ -33,9 +33,9 @@ class Project extends Model
         'major_activities' => 'array',
     ];
 
-    public function holder(): BelongsTo
+    public function donner(): BelongsTo
     {
-        return $this->belongsTo(Ngo::class, 'holder_id');
+        return $this->belongsTo(Ngo::class, 'donner_id');
     }
 
     public function runner(): BelongsTo
@@ -68,5 +68,16 @@ class Project extends Model
     public function focusArea()
     {
         return $this->belongsTo(FocusArea::class, 'focus_area');
+    }
+
+    public function galleries()
+    {
+        return $this->hasMany(ProjectGallery::class)->orderBy('sort_order');
+    }
+
+    // For backward compatibility during transition
+    public function holder(): BelongsTo
+    {
+        return $this->donner();
     }
 }

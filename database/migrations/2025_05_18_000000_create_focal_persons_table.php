@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('designation');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

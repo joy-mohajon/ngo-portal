@@ -17,6 +17,7 @@ class StudentSeeder extends Seeder
         $genders = ['male', 'female', 'other'];
         $educationLevels = ['Primary', 'Secondary', 'Higher Secondary', 'Undergraduate'];
         $institutions = ['Kurigram High School', 'Dhaka College', 'BRAC University', 'Rajshahi University'];
+        $batches = ['Spring 2022', 'Fall 2022', 'Spring 2023', 'Fall 2023', 'Spring 2024'];
 
         for ($i = 1; $i <= 20; $i++) {
             $student = Student::create([
@@ -39,6 +40,7 @@ class StudentSeeder extends Seeder
                 'education_institution' => Arr::random($institutions),
                 'status' => 'active',
                 'notes' => 'Notes for student ' . $i,
+                'batch' => Arr::random($batches),
             ]);
 
             // Attach to 1-2 random projects with pivot data

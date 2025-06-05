@@ -9,6 +9,122 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@700&display=swap"
         rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+    <style>
+    .animate-float {
+        animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+        0% {
+            transform: translateY(0px);
+        }
+
+        50% {
+            transform: translateY(-10px);
+        }
+
+        100% {
+            transform: translateY(0px);
+        }
+    }
+
+    .gallery-item img {
+        transition: all 0.4s ease;
+    }
+
+    .gallery-item:hover img {
+        transform: scale(1.05);
+    }
+    
+    .gallery-item {
+        position: relative;
+        border-radius: 0.75rem;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        transition: all 0.4s ease;
+    }
+    
+    .gallery-item:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+    }
+    
+    .gallery-item img {
+        transition: all 0.5s ease;
+        transform-origin: center;
+    }
+    
+    .gallery-item:hover img {
+        transform: scale(1.08);
+    }
+    
+    .gallery-item .overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0) 100%);
+        opacity: 0.85;
+        transition: all 0.4s ease;
+        z-index: 1;
+    }
+    
+    .gallery-item:hover .overlay {
+        opacity: 0.95;
+    }
+    
+    .gallery-item .focus-area-badge {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        z-index: 2;
+        padding: 6px 12px;
+        background-color: rgba(255, 255, 255, 0.9);
+        color: #1e40af;
+        font-weight: 600;
+        font-size: 0.75rem;
+        border-radius: 20px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+    
+    .gallery-item:hover .focus-area-badge {
+        background-color: #ffffff;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    .gallery-item .ngo-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 6px 14px;
+        background-color: rgba(37, 99, 235, 0.9);
+        color: white;
+        font-weight: 500;
+        border-radius: 6px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+    }
+    
+    .gallery-item:hover .ngo-badge {
+        background-color: rgb(37, 99, 235);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    }
+
+    .animate-fadeIn {
+        animation: fadeIn 0.5s ease-in-out forwards;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    </style>
 </head>
 
 <body class="font-sans antialiased bg-gray-50">
@@ -21,14 +137,16 @@
                         <svg class="h-8 w-8 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3z" />
                         </svg>
-                        <span class="ml-2 text-xl font-bold text-gray-800">NGOConnect</span>
+                        <span class="ml-2 text-xl font-bold text-gray-800">NGO Portal</span>
                     </a>
                 </div>
                 <div class="hidden md:flex items-center space-x-8">
                     <a href="#" class="text-gray-700 hover:text-blue-600">Home</a>
-                    <a href="#" class="text-gray-700 hover:text-blue-600">NGOs</a>
-                    <a href="#" class="text-gray-700 hover:text-blue-600">Projects</a>
-                    <a href="#" class="text-gray-700 hover:text-blue-600">About</a>
+                    <a href="#ngos" class="text-gray-700 hover:text-blue-600">NGOs</a>
+                    <a href="#gallery" class="text-gray-700 hover:text-blue-600">Gallery</a>
+                    <a href="#impact-stories" class="text-gray-700 hover:text-blue-600">Impact Stories</a>
+                    <a href="#achievements" class="text-gray-700 hover:text-blue-600">Achievements</a>
+                    <a href="{{ route('gallery.public.index') }}" class="text-gray-700 hover:text-blue-600">All Images</a>
                     <button
                         class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition duration-200">
                         @auth
@@ -70,14 +188,21 @@
                     Search verified NGOs, track development projects, and measure impact with transparent reporting.
                 </p>
                 <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
-                    <button
-                        class="bg-white text-blue-600 hover:bg-gray-100 px-6 py-3 rounded-lg font-medium transition duration-200">
+                    @auth
+                    <a href="{{ url('/dashboard') }}"
+                        class="bg-white text-blue-600 hover:bg-gray-100 px-6 py-3 rounded-lg font-medium transition duration-200 text-center">
+                        Go to Dashboard
+                    </a>
+                    @else
+                    <a href="{{ route('login') }}"
+                        class="bg-white text-blue-600 hover:bg-gray-100 px-6 py-3 rounded-lg font-medium transition duration-200 text-center">
                         Login
-                    </button>
-                    <button
-                        class="border-2 border-white text-white hover:bg-blue-700 px-6 py-3 rounded-lg font-medium transition duration-200">
-                        How It Works
-                    </button>
+                    </a>
+                    <a href="{{ route('register') }}"
+                        class="border-2 border-white text-white hover:bg-blue-700 px-6 py-3 rounded-lg font-medium transition duration-200 text-center">
+                        Register
+                    </a>
+                    @endauth
                 </div>
                 <div class="mt-10 flex items-center space-x-6">
                     <div class="flex items-center">
@@ -98,466 +223,842 @@
                 </div>
             </div>
             <div class="md:w-1/2 flex justify-center">
-                <img src="{{ asset('images/hero-illustration.png') }}" alt="Collaboration Illustration"
-                    class="w-full max-w-md animate-float">
+                    <div class="relative">
+                    <div class="absolute -right-4 -bottom-4 w-full h-full bg-blue-400 rounded-xl opacity-50"></div>
+                    <div class="absolute inset-0 bg-gradient-to-tr from-blue-500/20 to-transparent rounded-xl"></div>
+                    <img src="{{ asset('images/hero-illustration.jpg') }}" alt="Collaboration Illustration"
+                        class="w-full max-w-md rounded-xl shadow-xl relative z-10 animate-float">
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- Search Section -->
-    <section class="py-12 bg-white">
+    <!-- Project Gallery Section -->
+    <section id="gallery" class="py-16 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="bg-white rounded-xl shadow-md p-6 -mt-10">
-                <div class="mb-6">
-                    <div class="relative">
-                        <input type="text" placeholder="Search NGOs by name, sector, or location..."
-                            class="w-full px-5 py-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                        <button
-                            class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-blue-600">
-                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                            </svg>
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-900 font-serif">Latest Projects</h2>
+                <p class="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
+                    Explore recent images from our NGO projects
+                </p>
+            </div>
+
+            <!-- Focus Area Filter -->
+            <div class="flex flex-wrap justify-center gap-3 mb-10">
+                <button type="button" data-focus-area=""
+                    class="focus-filter px-4 py-2 rounded-full text-sm font-medium {{ !request('focus_area') ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300' }}">
+                    All Projects
+                </button>
+                @foreach($projectFocusAreas as $area)
+                <button type="button" data-focus-area="{{ $area->id }}"
+                    class="focus-filter px-4 py-2 rounded-full text-sm font-medium {{ request('focus_area') == $area->id ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300' }}">
+                    {{ $area->name }}
                         </button>
+                @endforeach
+                </div>
+
+            <!-- Gallery Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                @forelse($galleryImages as $image)
+                <div class="gallery-item">
+                    <a href="{{ route('projects.public.details', $image->project_id) }}" class="block">
+                        <div class="overlay"></div>
+                        
+                        @if(isset($image->project) && isset($image->project->focusArea))
+                        <div class="focus-area-badge">
+                            {{ $image->project->focusArea->name }}
+                        </div>
+                        @endif
+                        
+                        <img src="{{ asset('storage/' . $image->image_path) }}"
+                            alt="{{ $image->project_title ?? 'Project Image' }}" class="w-full h-64 object-cover">
+                        
+                        <div class="absolute bottom-0 left-0 right-0 px-5 py-4 z-10">
+                            <h3 class="text-white font-bold text-xl mb-3 leading-tight">{{ $image->project_title ?? 'Project' }}</h3>
+                            
+                            <div class="flex items-center">
+                                <div class="ngo-badge">
+                                    <svg class="w-4 h-4 mr-2 opacity-90" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"></path>
+                                    </svg>
+                                    {{ $image->ngo_name ?? 'NGO' }}
+                            </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                @empty
+                <div class="col-span-3 text-center py-10">
+                    <p class="text-gray-500">No gallery images available</p>
+                </div>
+                @endforelse
+            </div>
+
+            <!-- View All Projects Button -->
+            <div class="text-center mt-12">
+                <a href="{{ route('gallery.public.index') }}" 
+                   class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 transition duration-300 ease-in-out">
+                    View All Images
+                    <svg class="ml-2 -mr-1 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials/Impact Stories Section -->
+    <section id="impact-stories" class="py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-900 font-serif">Impact Stories</h2>
+                <p class="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
+                    Real-world results and transformations from our NGO partners
+                </p>
+            </div>
+            
+            <!-- Testimonial Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Testimonial 1 -->
+                <div class="bg-white rounded-xl shadow-md overflow-hidden relative">
+                    <div class="absolute top-0 right-0 bg-blue-600 text-white px-4 py-1 text-sm font-medium">
+                        Education
+                    </div>
+                    <div class="h-48 bg-blue-600 flex items-center justify-center">
+                        <svg class="text-white/20 w-24 h-24" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M20 17.722c.595-.347 1-.985 1-1.722V5c0-1.103-.897-2-2-2H5c-1.103 0-2 .897-2 2v11c0 1.103.897 2 2 2h7.5c.5 0 .5 0 1.5 1l3.5 2.5a1 1 0 0 0 1.5-.8V18.5c0-.15-.1-.3-.2-.4-.1-.2-.2-.3-.3-.378z"></path>
+                        </svg>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-gray-600 italic mb-4">
+                            "The educational initiatives have transformed our village. Children who never had access to quality education are now excelling in school and dreaming of bright futures."
+                        </p>
+                        <div class="flex items-center">
+                            <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+                                <svg class="h-6 w-6 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <div class="ml-3">
+                                <h4 class="text-base font-semibold text-gray-900">Rahima Begum</h4>
+                                <p class="text-sm text-gray-500">Village Leader, Sylhet</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Sector</label>
-                        <select
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                            <option>All Categories</option>
-                            <option>Education</option>
-                            <option>Healthcare</option>
-                            <option>Environment</option>
-                        </select>
+                
+                <!-- Testimonial 2 -->
+                <div class="bg-white rounded-xl shadow-md overflow-hidden relative">
+                    <div class="absolute top-0 right-0 bg-green-600 text-white px-4 py-1 text-sm font-medium">
+                        Healthcare
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Location</label>
-                        <select
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                            <option>All Regions</option>
-                            <option>Dhaka</option>
-                            <option>Chittagong</option>
-                        </select>
+                    <div class="h-48 bg-green-600 flex items-center justify-center">
+                        <svg class="text-white/20 w-24 h-24" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M20 17.722c.595-.347 1-.985 1-1.722V5c0-1.103-.897-2-2-2H5c-1.103 0-2 .897-2 2v11c0 1.103.897 2 2 2h7.5c.5 0 .5 0 1.5 1l3.5 2.5a1 1 0 0 0 1.5-.8V18.5c0-.15-.1-.3-.2-.4-.1-.2-.2-.3-.3-.378z"></path>
+                        </svg>
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Project Type</label>
-                        <select
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                            <option>All Projects</option>
-                            <option>Ongoing</option>
-                            <option>Completed</option>
-                        </select>
-                    </div>
-                    <div class="flex items-end">
-                        <button
-                            class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md transition duration-200">
-                            Apply Filters
-                        </button>
+                    <div class="p-6">
+                        <p class="text-gray-600 italic mb-4">
+                            "The mobile health clinic has been life-changing for our community. Now elderly people and pregnant women receive regular check-ups without traveling long distances."
+                        </p>
+                        <div class="flex items-center">
+                            <div class="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center">
+                                <svg class="h-6 w-6 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <div class="ml-3">
+                                <h4 class="text-base font-semibold text-gray-900">Dr. Kamal Hossain</h4>
+                                <p class="text-sm text-gray-500">Local Physician, Rangpur</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
+                
+                <!-- Testimonial 3 -->
+                <div class="bg-white rounded-xl shadow-md overflow-hidden relative">
+                    <div class="absolute top-0 right-0 bg-yellow-600 text-white px-4 py-1 text-sm font-medium">
+                        Livelihood
+                    </div>
+                    <div class="h-48 bg-yellow-600 flex items-center justify-center">
+                        <svg class="text-white/20 w-24 h-24" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M20 17.722c.595-.347 1-.985 1-1.722V5c0-1.103-.897-2-2-2H5c-1.103 0-2 .897-2 2v11c0 1.103.897 2 2 2h7.5c.5 0 .5 0 1.5 1l3.5 2.5a1 1 0 0 0 1.5-.8V18.5c0-.15-.1-.3-.2-.4-.1-.2-.2-.3-.3-.378z"></path>
+                        </svg>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-gray-600 italic mb-4">
+                            "The microfinance program helped me start my tailoring business. Now I can support my family and even employ two other women from my village."
+                        </p>
+                        <div class="flex items-center">
+                            <div class="h-10 w-10 rounded-full bg-yellow-100 flex items-center justify-center">
+                                <svg class="h-6 w-6 text-yellow-600" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <div class="ml-3">
+                                <h4 class="text-base font-semibold text-gray-900">Fatima Akter</h4>
+                                <p class="text-sm text-gray-500">Entrepreneur, Khulna</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- View More Button -->
+            <div class="text-center mt-10">
+                <a href="#" class="inline-block border border-blue-600 text-blue-600 hover:bg-blue-50 px-6 py-3 rounded-lg transition duration-200">
+                    View More Success Stories
+                </a>
             </div>
         </div>
     </section>
 
     <!-- Featured NGOs -->
-    <section class="py-16 bg-gray-50">
+    <section id="ngos" class="py-16 bg-gray-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-12">
                 <h2 class="text-3xl font-bold text-gray-900 font-serif">Verified NGO Partners</h2>
                 <p class="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
-                    Trusted organizations working with government authorities
+                    All verified organizations working with government authorities
                 </p>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- NGO Card 1 -->
-                <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300">
-                    <div class="p-6">
-                        <div class="flex items-center justify-between mb-4">
-                            <img src="{{ asset('images/brac-logo.png') }}" alt="BRAC Logo" class="h-12">
-                            <span class="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded">Govt.
-                                Verified</span>
-                        </div>
-                        <h3 class="text-xl font-bold text-gray-900 mb-2">BRAC</h3>
-                        <p class="text-gray-600 mb-6">
-                            Largest NGO in Bangladesh focusing on poverty alleviation through multifaceted programs.
-                        </p>
-                        <div class="flex justify-between mb-6">
-                            <div class="text-center">
-                                <span class="block text-2xl font-bold text-blue-600">1,200+</span>
-                                <span class="text-sm text-gray-500">Projects</span>
-                            </div>
-                            <div class="text-center">
-                                <span class="block text-2xl font-bold text-green-600">98%</span>
-                                <span class="text-sm text-gray-500">Success Rate</span>
-                            </div>
-                        </div>
-                        <button
-                            class="w-full border border-blue-600 text-blue-600 hover:bg-blue-50 py-2 px-4 rounded-lg transition duration-200">
-                            View Profile
-                        </button>
-                    </div>
-                </div>
 
-                <!-- NGO Card 2 -->
-                <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300">
-                    <div class="p-6">
-                        <div class="flex items-center justify-between mb-4">
-                            <img src="{{ asset('images/asa-logo.png') }}" alt="ASA Logo" class="h-12">
-                            <span class="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded">Govt.
-                                Verified</span>
-                        </div>
-                        <h3 class="text-xl font-bold text-gray-900 mb-2">ASA</h3>
-                        <p class="text-gray-600 mb-6">
-                            Microfinance institution providing financial services to low-income populations.
-                        </p>
-                        <div class="flex justify-between mb-6">
-                            <div class="text-center">
-                                <span class="block text-2xl font-bold text-blue-600">850+</span>
-                                <span class="text-sm text-gray-500">Projects</span>
-                            </div>
-                            <div class="text-center">
-                                <span class="block text-2xl font-bold text-green-600">95%</span>
-                                <span class="text-sm text-gray-500">Success Rate</span>
-                            </div>
-                        </div>
-                        <button
-                            class="w-full border border-blue-600 text-blue-600 hover:bg-blue-50 py-2 px-4 rounded-lg transition duration-200">
-                            View Profile
-                        </button>
-                    </div>
-                </div>
-
-                <!-- NGO Card 3 -->
-                <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300">
-                    <div class="p-6">
-                        <div class="flex items-center justify-between mb-4">
-                            <img src="{{ asset('images/grameen-logo.png') }}" alt="Grameen Logo" class="h-12">
-                            <span class="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded">Govt.
-                                Verified</span>
-                        </div>
-                        <h3 class="text-xl font-bold text-gray-900 mb-2">Grameen Foundation</h3>
-                        <p class="text-gray-600 mb-6">
-                            Works to replicate the Grameen Bank microcredit model worldwide.
-                        </p>
-                        <div class="flex justify-between mb-6">
-                            <div class="text-center">
-                                <span class="block text-2xl font-bold text-blue-600">700+</span>
-                                <span class="text-sm text-gray-500">Projects</span>
-                            </div>
-                            <div class="text-center">
-                                <span class="block text-2xl font-bold text-green-600">97%</span>
-                                <span class="text-sm text-gray-500">Success Rate</span>
-                            </div>
-                        </div>
-                        <button
-                            class="w-full border border-blue-600 text-blue-600 hover:bg-blue-50 py-2 px-4 rounded-lg transition duration-200">
-                            View Profile
-                        </button>
-                    </div>
+            <!-- NGO Focus Area Filter -->
+            @if(count($ngoFocusAreas) > 0)
+            <div class="mb-10">
+                <h3 class="text-lg font-medium text-gray-800 mb-4 text-center">Filter NGOs by Expertise</h3>
+                <div class="flex flex-wrap justify-center gap-2">
+                    <button type="button" data-ngo-focus-area=""
+                        class="ngo-focus-filter px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200 {{ !$selectedNgoFocusArea ? 'bg-blue-600 text-white' : 'bg-white border-2 border-blue-600 text-blue-700 hover:bg-blue-50' }}">
+                        All Areas
+                    </button>
+                    @foreach($ngoFocusAreas as $area)
+                    <button type="button" data-ngo-focus-area="{{ $area->id }}"
+                        class="ngo-focus-filter px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200 {{ $selectedNgoFocusArea == $area->id ? 'bg-blue-600 text-white' : 'bg-white border-2 border-blue-600 text-blue-700 hover:bg-blue-50' }}">
+                        {{ $area->name }}
+                    </button>
+                    @endforeach
                 </div>
             </div>
-            <div class="mt-12 text-center">
-                <button
-                    class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition duration-200">
-                    View All NGOs
+            @endif
+
+            <div id="ngos-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                @forelse($ngos as $ngo)
+                <!-- NGO Card -->
+                <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300">
+                        <div class="p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            @if($ngo->logo)
+                            <img src="{{ asset('storage/' . $ngo->logo) }}" alt="{{ $ngo->name }} Logo"
+                                class="h-12 object-contain">
+                            @else
+                            <div class="h-12 w-12 bg-blue-100 rounded-full flex items-center justify-center">
+                                <span class="text-blue-600 font-semibold text-lg">{{ substr($ngo->name, 0, 1) }}</span>
+                            </div>
+                            @endif
+                            <span class="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded">Govt.
+                                Verified</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">{{ $ngo->name }}</h3>
+                        <p class="text-gray-600 mb-6">
+                            {{ Str::limit($ngo->description ?? 'Working on development and social welfare projects', 120) }}
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            @foreach($ngo->focusAreas->take(3) as $area)
+                            <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
+                                {{ $area->name }}
+                            </span>
+                            @endforeach
+                            @if($ngo->focusAreas->count() > 3)
+                            <span class="px-2 py-1 bg-gray-100 text-gray-800 text-xs rounded-full">
+                                +{{ $ngo->focusAreas->count() - 3 }} more
+                            </span>
+                            @endif
+                        </div>
+                        <a href="{{ route('ngos.show', $ngo) }}"
+                            class="block w-full text-center border border-blue-600 text-blue-600 hover:bg-blue-50 py-2 px-4 rounded-lg transition duration-200">
+                            View Profile
+                        </a>
+                    </div>
+                </div>
+                @empty
+                <!-- No NGOs Found Message -->
+                <div class="col-span-3 text-center py-12">
+                    <div class="mx-auto w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                        <svg class="w-12 h-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-medium text-gray-700 mb-2">No NGOs Available</h3>
+                    <p class="text-gray-500 max-w-md mx-auto">
+                        Currently, there are no verified NGO partners in the system. Please check back later.
+                    </p>
+                </div>
+                @endforelse
+                    </div>
+
+            <!-- Load More Button -->
+            <div class="mt-10 text-center" id="load-more-container">
+                @if(isset($ngos) && $ngos->count() > 6)
+                <button id="load-more-ngos"
+                    class="inline-block bg-white border border-blue-600 text-blue-600 hover:bg-blue-50 px-6 py-3 rounded-lg transition duration-200">
+                    Load More NGOs
                 </button>
+                @else
+                <button id="load-more-ngos" style="display: none;"
+                    class="inline-block bg-white border border-blue-600 text-blue-600 hover:bg-blue-50 px-6 py-3 rounded-lg transition duration-200">
+                    Load More NGOs
+                </button>
+                @endif
             </div>
         </div>
     </section>
 
-    <!-- Projects Section -->
-    <section class="py-16 bg-white">
+    <!-- Statistics/Achievements Section -->
+    <section id="achievements" class="py-20 bg-gradient-to-br from-blue-900 to-blue-700 text-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold text-gray-900 font-serif">Authority-Approved Projects</h2>
-                <p class="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
-                    Collaborative initiatives making measurable impact
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold font-serif">Our Collective Impact</h2>
+                <p class="mt-4 text-blue-100 max-w-2xl mx-auto">
+                    Together with our NGO partners, we've made significant progress across Bangladesh
                 </p>
             </div>
-
-            <div class="flex justify-center mb-8">
-                <div class="inline-flex rounded-md shadow-sm">
-                    <button class="px-6 py-2 text-sm font-medium rounded-l-lg bg-blue-600 text-white">
-                        Ongoing
-                    </button>
-                    <button
-                        class="px-6 py-2 text-sm font-medium border-t border-b border-gray-300 text-gray-700 hover:bg-gray-50">
-                        Completed
-                    </button>
-                    <button
-                        class="px-6 py-2 text-sm font-medium rounded-r-lg border border-gray-300 text-gray-700 hover:bg-gray-50">
-                        High Impact
-                    </button>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <!-- Project Card 1 -->
-                <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300">
-                    <div class="md:flex">
-                        <div class="md:flex-shrink-0">
-                            <img class="h-48 w-full md:w-48 object-cover"
-                                src="{{ asset('images/education-project.jpg') }}" alt="Education project">
-                        </div>
-                        <div class="p-6">
-                            <div class="flex items-center justify-between mb-2">
-                                <span
-                                    class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">Ongoing</span>
-                                <span class="text-xs text-gray-500">Ministry of Education</span>
-                            </div>
-                            <h3 class="text-xl font-bold text-gray-900 mb-2">Digital Education for Rural Bangladesh</h3>
-                            <p class="text-gray-600 text-sm mb-4">
-                                Providing tablet-based learning to 50,000 students in remote areas with BRAC and
-                                government partnership.
-                            </p>
-                            <div class="mb-4">
-                                <div class="flex justify-between text-sm text-gray-500 mb-1">
-                                    <span>Progress</span>
-                                    <span>65%</span>
-                                </div>
-                                <div class="w-full bg-gray-200 rounded-full h-2">
-                                    <div class="bg-blue-600 h-2 rounded-full" style="width: 65%"></div>
-                                </div>
-                            </div>
-                            <div class="flex items-center">
-                                <img class="h-10 w-10 rounded-full" src="{{ asset('images/minister-avatar.jpg') }}"
-                                    alt="Minister">
-                                <div class="ml-3">
-                                    <p class="text-sm text-gray-500 italic">"This project shows how NGO-govt
-                                        collaboration should work."</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Project Card 2 -->
-                <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300">
-                    <div class="md:flex">
-                        <div class="md:flex-shrink-0">
-                            <img class="h-48 w-full md:w-48 object-cover" src="{{ asset('images/health-project.jpg') }}"
-                                alt="Health project">
-                        </div>
-                        <div class="p-6">
-                            <div class="flex items-center justify-between mb-2">
-                                <span
-                                    class="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded">Completed</span>
-                                <span class="text-xs text-gray-500">Ministry of Health</span>
-                            </div>
-                            <h3 class="text-xl font-bold text-gray-900 mb-2">Community Health Worker Training</h3>
-                            <p class="text-gray-600 text-sm mb-4">
-                                Trained 5,000 community health workers to provide primary care in underserved regions.
-                            </p>
-                            <div class="mb-4">
-                                <div class="flex justify-between text-sm text-gray-500 mb-1">
-                                    <span>Progress</span>
-                                    <span>100%</span>
-                                </div>
-                                <div class="w-full bg-gray-200 rounded-full h-2">
-                                    <div class="bg-green-600 h-2 rounded-full" style="width: 100%"></div>
-                                </div>
-                            </div>
-                            <div class="flex items-center">
-                                <img class="h-10 w-10 rounded-full"
-                                    src="{{ asset('images/health-minister-avatar.jpg') }}" alt="Health Minister">
-                                <div class="ml-3">
-                                    <p class="text-sm text-gray-500 italic">"Exceeded all targets with measurable health
-                                        improvements."</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Trust Indicators -->
-    <section class="py-16 bg-gray-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold text-gray-900 font-serif">Built for Transparency</h2>
-                <p class="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
-                    Our platform ensures accountability at every step
-                </p>
-            </div>
+            
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                <div class="text-center p-6 bg-white rounded-xl shadow-sm hover:shadow-md transition duration-300">
-                    <div
-                        class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 text-blue-600 mb-4">
-                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                <!-- Stat 1 -->
+                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center border border-white/20 hover:transform hover:scale-105 transition-all duration-300">
+                    <div class="inline-block p-4 rounded-full bg-white/10 mb-4">
+                        <svg class="w-10 h-10 text-blue-200" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"></path>
                         </svg>
                     </div>
-                    <h3 class="text-lg font-medium text-gray-900 mb-2">Verified Reporting</h3>
-                    <p class="text-gray-600">
-                        All projects include audited impact reports with government validation
-                    </p>
+                    <h3 class="text-4xl font-bold mb-2">250+</h3>
+                    <p class="text-xl text-blue-100">NGO Partners</p>
                 </div>
-                <div class="text-center p-6 bg-white rounded-xl shadow-sm hover:shadow-md transition duration-300">
-                    <div
-                        class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 text-green-600 mb-4">
-                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                
+                <!-- Stat 2 -->
+                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center border border-white/20 hover:transform hover:scale-105 transition-all duration-300">
+                    <div class="inline-block p-4 rounded-full bg-white/10 mb-4">
+                        <svg class="w-10 h-10 text-blue-200" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 01-1.5.87l-4.5-2.58-4.5 2.58A1 1 0 014 16V4z" clip-rule="evenodd"></path>
                         </svg>
                     </div>
-                    <h3 class="text-lg font-medium text-gray-900 mb-2">Real-time Tracking</h3>
-                    <p class="text-gray-600">
-                        Monitor project progress with live updates and milestones
-                    </p>
+                    <h3 class="text-4xl font-bold mb-2">1,200+</h3>
+                    <p class="text-xl text-blue-100">Projects Completed</p>
                 </div>
-                <div class="text-center p-6 bg-white rounded-xl shadow-sm hover:shadow-md transition duration-300">
-                    <div
-                        class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-purple-100 text-purple-600 mb-4">
-                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                
+                <!-- Stat 3 -->
+                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center border border-white/20 hover:transform hover:scale-105 transition-all duration-300">
+                    <div class="inline-block p-4 rounded-full bg-white/10 mb-4">
+                        <svg class="w-10 h-10 text-blue-200" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z"></path>
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clip-rule="evenodd"></path>
                         </svg>
                     </div>
-                    <h3 class="text-lg font-medium text-gray-900 mb-2">Secure Platform</h3>
-                    <p class="text-gray-600">
-                        Enterprise-grade security with role-based access control
-                    </p>
+                    <h3 class="text-4xl font-bold mb-2">৳65B+</h3>
+                    <p class="text-xl text-blue-100">Funds Distributed</p>
                 </div>
-                <div class="text-center p-6 bg-white rounded-xl shadow-sm hover:shadow-md transition duration-300">
-                    <div
-                        class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-yellow-100 text-yellow-600 mb-4">
-                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                
+                <!-- Stat 4 -->
+                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center border border-white/20 hover:transform hover:scale-105 transition-all duration-300">
+                    <div class="inline-block p-4 rounded-full bg-white/10 mb-4">
+                        <svg class="w-10 h-10 text-blue-200" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
                         </svg>
                     </div>
-                    <h3 class="text-lg font-medium text-gray-900 mb-2">Standardized Processes</h3>
-                    <p class="text-gray-600">
-                        Government-approved workflows for seamless collaboration
-                    </p>
+                    <h3 class="text-4xl font-bold mb-2">42</h3>
+                    <p class="text-xl text-blue-100">Districts Covered</p>
+                </div>
+            </div>
+            
+            <!-- Additional Impact Details -->
+            <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white/5 backdrop-blur-sm rounded-lg p-6 border border-white/10">
+                    <h4 class="text-xl font-semibold mb-3 flex items-center">
+                        <svg class="w-6 h-6 mr-2 text-blue-300" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                        </svg>
+                        Health Achievements
+                    </h4>
+                    <ul class="space-y-2 text-blue-100">
+                        <li class="flex items-start">
+                            <svg class="w-5 h-5 text-blue-300 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                            </svg>
+                            <span>150+ mobile health clinics deployed</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="w-5 h-5 text-blue-300 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                            </svg>
+                            <span>750,000+ medical consultations</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="w-5 h-5 text-blue-300 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                            </svg>
+                            <span>85% increase in maternal healthcare access</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="bg-white/5 backdrop-blur-sm rounded-lg p-6 border border-white/10">
+                    <h4 class="text-xl font-semibold mb-3 flex items-center">
+                        <svg class="w-6 h-6 mr-2 text-blue-300" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z" />
+                        </svg>
+                        Education Progress
+                    </h4>
+                    <ul class="space-y-2 text-blue-100">
+                        <li class="flex items-start">
+                            <svg class="w-5 h-5 text-blue-300 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                            </svg>
+                            <span>320 schools built or renovated</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="w-5 h-5 text-blue-300 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                            </svg>
+                            <span>120,000+ children received education</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="w-5 h-5 text-blue-300 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                            </svg>
+                            <span>5,000+ teachers trained and employed</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="bg-white/5 backdrop-blur-sm rounded-lg p-6 border border-white/10">
+                    <h4 class="text-xl font-semibold mb-3 flex items-center">
+                        <svg class="w-6 h-6 mr-2 text-blue-300" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 3a1 1 0 01.707.293l3 3a1 1 0 01-1.414 1.414L10 5.414 7.707 7.707a1 1 0 01-1.414-1.414l3-3A1 1 0 0110 3zm-3.707 9.293a1 1 0 011.414 0L10 14.586l2.293-2.293a1 1 0 011.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                        Economic Impact
+                    </h4>
+                    <ul class="space-y-2 text-blue-100">
+                        <li class="flex items-start">
+                            <svg class="w-5 h-5 text-blue-300 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                            </svg>
+                            <span>45,000+ microloans disbursed</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="w-5 h-5 text-blue-300 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                            </svg>
+                            <span>12,500 small businesses created</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="w-5 h-5 text-blue-300 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                            </svg>
+                            <span>68% average income increase for participants</span>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- CTA Section -->
-    <section class="py-16 bg-blue-700 text-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 class="text-3xl font-bold font-serif mb-6">Ready to Collaborate?</h2>
-            <p class="text-xl text-blue-100 max-w-3xl mx-auto mb-8">
-                Join the platform trusted by 500+ NGOs and 20+ government agencies
-            </p>
-            <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
-                <button
-                    class="bg-white text-blue-700 hover:bg-gray-100 px-8 py-3 rounded-lg font-medium transition duration-200">
-                    Register Your NGO
-                </button>
-                <button
-                    class="border-2 border-white text-white hover:bg-blue-800 px-8 py-3 rounded-lg font-medium transition duration-200">
+    <!-- Call to Action -->
+    <section class="py-20 bg-blue-600 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row items-center justify-between">
+                <div class="md:w-2/3 mb-8 md:mb-0">
+                    <h2 class="text-3xl font-serif font-bold mb-4">Join Our Network Today</h2>
+                    <p class="text-blue-100 text-lg max-w-2xl mb-6">
+                        Register your NGO and connect with government authorities, access funding opportunities, and showcase your impact through our trusted platform.
+                    </p>
+                    <div class="flex flex-wrap gap-4 mt-2">
+                        <div class="flex items-center bg-white/10 px-4 py-2 rounded-lg">
+                            <svg class="w-5 h-5 mr-2 text-blue-200" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span>Verified Profile</span>
+                        </div>
+                        <div class="flex items-center bg-white/10 px-4 py-2 rounded-lg">
+                            <svg class="w-5 h-5 mr-2 text-blue-200" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"></path>
+                            </svg>
+                            <span>Project Analytics</span>
+                        </div>
+                        <div class="flex items-center bg-white/10 px-4 py-2 rounded-lg">
+                            <svg class="w-5 h-5 mr-2 text-blue-200" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span>Networking</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="md:w-1/3 bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/20 shadow-lg">
+                    <h3 class="text-xl font-semibold mb-4">Create an Account</h3>
                     @auth
-                    <a href="{{ url('/dashboard') }}"
-                        class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Dashboard</a>
+                        <div class="bg-white/20 backdrop-blur-sm p-4 rounded-lg mb-6">
+                            <p class="font-medium">You're already logged in!</p>
+                            <p class="text-sm text-blue-100 mt-1">Access your dashboard to manage projects and settings.</p>
+                        </div>
+                        <a href="{{ url('/dashboard') }}"
+                           class="block w-full bg-white text-blue-600 hover:bg-blue-50 text-center px-6 py-3 rounded-lg font-medium transition duration-200">
+                            Go to Dashboard
+                        </a>
                     @else
-                    <a href="{{ route('login') }}"
-                        class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Log
-                        in</a>
-
-                    @if (Route::has('register'))
-                    <a href="{{ route('register') }}"
-                        class="ml-4 font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Register</a>
-                    @endif
+                        <div class="space-y-4 mb-6">
+                            <a href="{{ route('register') }}"
+                               class="block w-full bg-white text-blue-600 hover:bg-blue-50 text-center px-6 py-3 rounded-lg font-medium transition duration-200">
+                                Register Now
+                            </a>
+                            <a href="{{ route('login') }}"
+                               class="block w-full border-2 border-white text-white hover:bg-blue-700 text-center px-6 py-3 rounded-lg font-medium transition duration-200">
+                                Login
+                            </a>
+                        </div>
+                        <p class="text-sm text-center text-blue-100">
+                            Join over 250 verified NGOs using our platform
+                        </p>
                     @endauth
-                </button>
+                </div>
             </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="bg-gray-900 text-gray-300">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <div>
-                    <a href="#" class="flex items-center">
+                <div class="col-span-1 md:col-span-2">
+                    <div class="flex items-center mb-4">
                         <svg class="h-8 w-8 text-blue-400" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3z" />
                         </svg>
-                        <span class="ml-2 text-xl font-bold text-white">NGOConnect</span>
-                    </a>
-                    <p class="mt-4 text-sm">
-                        Connecting NGOs and Authorities since 2023
+                        <span class="ml-2 text-xl font-bold">NGO Portal</span>
+                    </div>
+                    <p class="text-gray-400 mb-4 max-w-md">
+                        Connecting NGOs and government authorities for greater transparency, accountability, and impact.
                     </p>
-                    <div class="mt-6 flex space-x-6">
+                    <div class="flex space-x-4">
                         <a href="#" class="text-gray-400 hover:text-white">
-                            <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
-                                <path
-                                    d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" />
-                            </svg>
+                            <i class="fab fa-facebook-f"></i>
                         </a>
                         <a href="#" class="text-gray-400 hover:text-white">
-                            <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
-                                <path
-                                    d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
-                            </svg>
+                            <i class="fab fa-twitter"></i>
                         </a>
                         <a href="#" class="text-gray-400 hover:text-white">
-                            <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
-                                <path fill-rule="evenodd"
-                                    d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z"
-                                    clip-rule="evenodd" />
-                            </svg>
+                            <i class="fab fa-linkedin-in"></i>
                         </a>
                     </div>
                 </div>
                 <div>
-                    <h3 class="text-sm font-semibold text-white uppercase tracking-wider">Platform</h3>
-                    <ul class="mt-4 space-y-2">
-                        <li><a href="#" class="text-sm hover:text-white">Features</a></li>
-                        <li><a href="#" class="text-sm hover:text-white">How It Works</a></li>
-                        <li><a href="#" class="text-sm hover:text-white">Pricing</a></li>
-                        <li><a href="#" class="text-sm hover:text-white">API</a></li>
+                    <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white">Home</a></li>
+                        <li><a href="#ngos" class="hover:text-white">NGOs</a></li>
+                        <li><a href="#gallery" class="hover:text-white">Gallery</a></li>
+                        <li><a href="#impact-stories" class="hover:text-white">Impact Stories</a></li>
+                        <li><a href="#achievements" class="hover:text-white">Achievements</a></li>
+                        <li><a href="{{ route('gallery.public.index') }}" class="hover:text-white">All Images</a></li>
                     </ul>
                 </div>
                 <div>
-                    <h3 class="text-sm font-semibold text-white uppercase tracking-wider">Resources</h3>
-                    <ul class="mt-4 space-y-2">
-                        <li><a href="#" class="text-sm hover:text-white">Documentation</a></li>
-                        <li><a href="#" class="text-sm hover:text-white">Help Center</a></li>
-                        <li><a href="#" class="text-sm hover:text-white">Webinars</a></li>
-                        <li><a href="#" class="text-sm hover:text-white">Community</a></li>
+                    <h3 class="text-lg font-semibold mb-4">Contact</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li class="flex items-start">
+                            <i class="fas fa-map-marker-alt mt-1 mr-2"></i>
+                            <span>123 Development Rd, Dhaka, Bangladesh</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-envelope mr-2"></i>
+                            <span>info@ngoportal.org</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-phone mr-2"></i>
+                            <span>+880 1712 345678</span>
+                        </li>
                     </ul>
-                </div>
-                <div>
-                    <h3 class="text-sm font-semibold text-white uppercase tracking-wider">Contact</h3>
-                    <address class="mt-4 not-italic">
-                        <div class="text-sm">Level 5, Tech Hub</div>
-                        <div class="text-sm">Dhaka 1212, Bangladesh</div>
-                        <div class="mt-2 text-sm"><a href="mailto:contact@ngoconnect.gov.bd"
-                                class="hover:text-white">contact@ngoconnect.gov.bd</a></div>
-                        <div class="text-sm"><a href="tel:+880212345678" class="hover:text-white">+880 2 12345678</a>
-                        </div>
-                    </address>
                 </div>
             </div>
-            <div class="mt-12 pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between">
-                <p class="text-sm">&copy; 2023 NGO Collaboration Platform. All rights reserved.</p>
-                <div class="mt-4 md:mt-0 flex space-x-6">
-                    <a href="#" class="text-sm hover:text-white">Privacy Policy</a>
-                    <a href="#" class="text-sm hover:text-white">Terms of Service</a>
-                    <a href="#" class="text-sm hover:text-white">Cookie Policy</a>
-                </div>
+            <div class="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
+                <p>&copy; {{ date('Y') }} NGO Portal. All rights reserved.</p>
             </div>
         </div>
     </footer>
 
-    <!-- Floating Help Button -->
-    <div class="fixed bottom-6 right-6">
-        <button class="bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-full shadow-lg transition duration-200">
-            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Handle project focus area filter clicks
+        document.querySelectorAll('.focus-filter').forEach(button => {
+            button.addEventListener('click', function() {
+                const focusArea = this.getAttribute('data-focus-area');
+                
+                // Update active button styling
+                document.querySelectorAll('.focus-filter').forEach(btn => {
+                    btn.classList.remove('bg-blue-600', 'text-white');
+                    btn.classList.add('bg-gray-200', 'text-gray-700',
+                        'hover:bg-gray-300');
+                });
+
+                this.classList.remove('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300');
+                this.classList.add('bg-blue-600', 'text-white');
+
+                // Show loading indicator
+                const galleryGrid = document.querySelector('.grid');
+                galleryGrid.innerHTML =
+                    '<div class="col-span-3 text-center py-10"><div class="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-600"></div><p class="mt-2 text-gray-600">Loading images...</p></div>';
+                
+                // Fetch filtered gallery images
+                fetch(`/api/gallery-images${focusArea ? '?focus_area=' + focusArea : ''}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Update URL without reloading the page
+                        const url = new URL(window.location);
+                        if (focusArea) {
+                            url.searchParams.set('focus_area', focusArea);
+                        } else {
+                            url.searchParams.delete('focus_area');
+                        }
+                        window.history.pushState({}, '', url);
+                        
+                        // Update gallery with new images
+                        updateGallery(data);
+                    })
+                    .catch(error => {
+                        console.error('Error fetching gallery images:', error);
+                        galleryGrid.innerHTML =
+                            '<div class="col-span-3 text-center py-10"><p class="text-red-500">Error loading images. Please try again.</p></div>';
+                    });
+            });
+        });
+
+        // Handle NGO focus area filter clicks
+        document.querySelectorAll('.ngo-focus-filter').forEach(button => {
+            button.addEventListener('click', function() {
+                const focusArea = this.getAttribute('data-ngo-focus-area');
+
+                // Update all buttons to inactive state
+                document.querySelectorAll('.ngo-focus-filter').forEach(btn => {
+                    // Remove active styling
+                    btn.classList.remove('bg-blue-600', 'text-white');
+                    btn.classList.add('bg-white', 'border-2', 'border-blue-600',
+                        'text-blue-700', 'hover:bg-blue-50');
+                });
+
+                // Apply active styling to clicked button
+                this.classList.remove('bg-white', 'border-2', 'border-blue-600',
+                    'text-blue-700', 'hover:bg-blue-50');
+                this.classList.add('bg-blue-600', 'text-white');
+
+                // Show loading indicator
+                const ngosGrid = document.getElementById('ngos-grid');
+                ngosGrid.innerHTML =
+                    '<div class="col-span-3 text-center py-10"><div class="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-600"></div><p class="mt-2 text-gray-600">Loading NGOs...</p></div>';
+
+                // Fetch filtered NGOs
+                fetch(`/api/ngos-by-focus-area${focusArea ? '?focus_area=' + focusArea : ''}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Update URL without reloading the page
+                        const url = new URL(window.location);
+                        if (focusArea) {
+                            url.searchParams.set('ngo_focus_area', focusArea);
+                        } else {
+                            url.searchParams.delete('ngo_focus_area');
+                        }
+                        window.history.pushState({}, '', url);
+
+                        // Update NGO grid with new NGOs
+                        updateNgos(data);
+                    })
+                    .catch(error => {
+                        console.error('Error fetching NGOs:', error);
+                        ngosGrid.innerHTML =
+                            '<div class="col-span-3 text-center py-10"><p class="text-red-500">Error loading NGOs. Please try again.</p></div>';
+                    });
+            });
+        });
+
+        // Handle Load More NGOs button
+        const loadMoreNgosBtn = document.getElementById('load-more-ngos');
+        if (loadMoreNgosBtn) {
+            const ngoCards = document.querySelectorAll('#ngos-grid > div');
+            const cardsPerPage = 6;
+            let currentlyShown = cardsPerPage;
+
+            // Initially hide cards beyond the first page
+            for (let i = cardsPerPage; i < ngoCards.length; i++) {
+                ngoCards[i].style.display = 'none';
+            }
+
+            loadMoreNgosBtn.addEventListener('click', function() {
+                // Show the next batch of cards
+                for (let i = currentlyShown; i < currentlyShown + cardsPerPage && i < ngoCards
+                    .length; i++) {
+                    ngoCards[i].style.display = 'block';
+
+                    // Add a fade-in effect
+                    ngoCards[i].classList.add('animate-fadeIn');
+                }
+
+                currentlyShown += cardsPerPage;
+
+                // Hide button if all cards are shown
+                if (currentlyShown >= ngoCards.length) {
+                    loadMoreNgosBtn.style.display = 'none';
+                }
+            });
+        }
+
+        function updateGallery(images) {
+            const galleryGrid = document.querySelector('.grid');
+
+            if (images.length === 0) {
+                galleryGrid.innerHTML =
+                    '<div class="col-span-3 text-center py-10"><p class="text-gray-500">No gallery images available</p></div>';
+                return;
+            }
+
+            // Clear existing gallery
+            galleryGrid.innerHTML = '';
+
+            // Add new images
+            images.forEach(image => {
+                const galleryItem = createGalleryItem(image);
+                galleryGrid.appendChild(galleryItem);
+            });
+        }
+
+        function updateNgos(ngos) {
+            const ngosGrid = document.getElementById('ngos-grid');
+            
+            if (ngos.length === 0) {
+                ngosGrid.innerHTML = `
+                    <div class="col-span-3 text-center py-12">
+                        <div class="mx-auto w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                            <svg class="w-12 h-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                                    d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
             </svg>
-        </button>
+                        </div>
+                        <h3 class="text-xl font-medium text-gray-700 mb-2">No NGOs Found</h3>
+                        <p class="text-gray-500 max-w-md mx-auto">
+                            No NGOs match the selected filter criteria. Please try a different filter.
+                        </p>
+                    </div>
+                `;
+                
+                // Hide load more button when no NGOs
+                document.getElementById('load-more-ngos').style.display = 'none';
+                return;
+            }
+
+            // Clear existing NGOs
+            ngosGrid.innerHTML = '';
+
+            // Add new NGOs
+            ngos.forEach(ngo => {
+                const ngoCard = document.createElement('div');
+                ngoCard.className =
+                    'bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300';
+
+                // Create focus areas HTML
+                let focusAreasHtml = '';
+                ngo.focus_areas.forEach(area => {
+                    focusAreasHtml += `
+                        <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
+                            ${area.name}
+                        </span>
+                    `;
+                });
+
+                if (ngo.focus_areas_count > 3) {
+                    focusAreasHtml += `
+                        <span class="px-2 py-1 bg-gray-100 text-gray-800 text-xs rounded-full">
+                            +${ngo.focus_areas_count - 3} more
+                        </span>
+                    `;
+                }
+
+                ngoCard.innerHTML = `
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            ${ngo.logo ? 
+                                `<img src="${ngo.logo}" alt="${ngo.name} Logo" class="h-12 object-contain">` : 
+                                `<div class="h-12 w-12 bg-blue-100 rounded-full flex items-center justify-center">
+                                    <span class="text-blue-600 font-semibold text-lg">${ngo.name.charAt(0)}</span>
+                                </div>`
+                            }
+                            <span class="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded">Govt. Verified</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">${ngo.name}</h3>
+                        <p class="text-gray-600 mb-6">
+                            ${ngo.description.length > 120 ? ngo.description.substring(0, 120) + '...' : ngo.description}
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            ${focusAreasHtml}
+                        </div>
+                        <a href="${ngo.profile_url}"
+                            class="block w-full text-center border border-blue-600 text-blue-600 hover:bg-blue-50 py-2 px-4 rounded-lg transition duration-200">
+                            View Profile
+                        </a>
+                    </div>
+                `;
+
+                ngosGrid.appendChild(ngoCard);
+            });
+
+            // Set up load more functionality
+            const ngoCards = document.querySelectorAll('#ngos-grid > div');
+            const cardsPerPage = 6;
+            let currentlyShown = cardsPerPage;
+
+            // Show/hide load more button
+            const loadMoreBtn = document.getElementById('load-more-ngos');
+            loadMoreBtn.style.display = ngoCards.length > cardsPerPage ? 'inline-block' : 'none';
+
+            // Initially hide cards beyond the first page
+            for (let i = cardsPerPage; i < ngoCards.length; i++) {
+                ngoCards[i].style.display = 'none';
+            }
+        }
+
+        // Function to create a gallery item element
+        function createGalleryItem(image) {
+            const galleryItem = document.createElement('div');
+            galleryItem.className = 'gallery-item';
+            
+            galleryItem.innerHTML = `
+                <a href="/projects/${image.project_id}/details" class="block">
+                    <div class="overlay"></div>
+                    
+                    ${image.focus_area_name ? 
+                    `<div class="focus-area-badge">
+                        ${image.focus_area_name}
+                    </div>` : ''}
+                    
+                    <img src="/storage/${image.image_path}" alt="${image.project_title || 'Project Image'}"
+                        class="w-full h-64 object-cover">
+                    
+                    <div class="absolute bottom-0 left-0 right-0 px-5 py-4 z-10">
+                        <h3 class="text-white font-bold text-xl mb-3 leading-tight">${image.project_title || 'Project'}</h3>
+                        
+                        <div class="flex items-center">
+                            <div class="ngo-badge">
+                                <svg class="w-4 h-4 mr-2 opacity-90" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"></path>
+                                </svg>
+                                ${image.ngo_name || 'NGO'}
+                            </div>
+                        </div>
     </div>
+                </a>
+            `;
+            
+            return galleryItem;
+        }
+    });
+    </script>
 </body>
 
 </html>

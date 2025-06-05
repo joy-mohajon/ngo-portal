@@ -31,7 +31,7 @@ class NgoRequest extends FormRequest
             'focus_activities' => 'required|array',
             'focus_activities.*' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'logo' => 'required|file|image|max:2048',
+            'logo' => 'required|file|image|mimes:jpeg,png,jpg,gif|max:2048|dimensions:min_width=100,min_height=100',
             'certificate_path' => 'required|file|mimes:pdf,jpg,jpeg,png|max:4096',
             'established_year' => 'required|digits:4|integer|min:1900|max:'.(date('Y')+1),
         ];
@@ -64,11 +64,15 @@ class NgoRequest extends FormRequest
             'focus_activities.array' => 'Invalid focus activities format.',
             'focus_activities.*.max' => 'Each focus activity may not be longer than 255 characters.',
             
-            'logo.required' => 'The logo is required.',
-            'logo.mimes' => 'The logo must be a JPG, JPEG, or PNG file.',
+            'logo.required' => 'The NGO logo is required.',
+            'logo.file' => 'The logo must be a valid file.',
+            'logo.image' => 'The uploaded file must be an image.',
+            'logo.mimes' => 'The logo must be a JPEG, PNG, JPG or GIF file.',
             'logo.max' => 'The logo may not be larger than 2MB.',
+            'logo.dimensions' => 'The logo must be at least 100x100 pixels.',
             
-            'certificate_path.required' => 'The certificate file is required.',
+            'certificate_path.required' => 'The registration certificate file is required.',
+            'certificate_path.file' => 'The certificate must be a valid file.',
             'certificate_path.mimes' => 'The certificate must be a PDF, JPG, JPEG, or PNG file.',
             'certificate_path.max' => 'The certificate file may not be larger than 4MB.',
             

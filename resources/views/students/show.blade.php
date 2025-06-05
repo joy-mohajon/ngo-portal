@@ -117,6 +117,10 @@
                                 <p class="mt-1 text-sm text-gray-900">{{ $student->birth_certificate_number ?? 'N/A' }}
                                 </p>
                             </div>
+                            <div>
+                                <h4 class="text-sm font-medium text-gray-500">Batch</h4>
+                                <p class="mt-1 text-sm text-gray-900">{{ $student->batch ?? 'N/A' }}</p>
+                            </div>
                         </div>
                     </div>
 
@@ -179,9 +183,14 @@
                         @if($student->projects->count() > 0)
                         <div class="space-y-4">
                             @foreach($student->projects as $project)
-
                             <div class="border-b border-gray-200 pb-4 last:border-0 last:pb-0">
-                                <h4 class="text-md font-medium text-blue-600">{{ $project->title }}</h4>
+                                <h4 class="text-md font-medium text-blue-600">
+                                    <a href="{{ route('projects.show', $project) }}" class="hover:underline">{{ $project->title }}</a>
+                                </h4>
+                                <div class="text-xs text-gray-500 mt-1 mb-2">
+                                    <span class="mr-2"><strong>Donner NGO:</strong> {{ $project->donner?->name ?? '-' }}</span>
+                                    <span><strong>Runner NGO:</strong> {{ $project->runner?->name ?? '-' }}</span>
+                                </div>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2">
                                     <div>
                                         <span class="text-xs font-medium text-gray-500">Enrollment:</span>

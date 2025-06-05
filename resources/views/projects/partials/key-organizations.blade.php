@@ -10,14 +10,14 @@
     </div>
     <div class="px-6 py-5 space-y-4">
         <div>
-            <h4 class="text-sm font-medium text-gray-500 mb-2">Project Holder</h4>
+            <h4 class="text-sm font-medium text-gray-500 mb-2">Project Donner</h4>
             <div class="flex items-center">
                 <div class="flex-shrink-0 h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center">
-                    <span class="text-indigo-600 font-medium">{{ isset($project->holder->name) ? strtoupper(substr($project->holder->name, 0, 2)) : 'NA' }}</span>
+                    <span class="text-indigo-600 font-medium">{{ isset($project->donner->name) ? strtoupper(substr($project->donner->name, 0, 2)) : 'NA' }}</span>
                 </div>
                 <div class="ml-3">
-                    <p class="text-sm font-medium text-gray-900">{{ $project->holder->name ?? 'Not Assigned' }}</p>
-                    <p class="text-sm text-indigo-600">{{ $project->holder->email ?? '' }}</p>
+                    <p class="text-sm font-medium text-gray-900">{{ $project->donner->name ?? 'Not Assigned' }}</p>
+                    <p class="text-sm text-indigo-600">{{ $project->donner->email ?? '' }}</p>
                 </div>
             </div>
         </div>

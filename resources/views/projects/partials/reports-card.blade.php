@@ -8,7 +8,7 @@
             Project Reports
         </h3>
         <div class="flex space-x-2">
-            @hasrole(['admin', 'ngo'])
+            @can('manageAsRunner', $project)
             <button onclick="openUploadModal(`{{ $project->id }}`, `{{ $project->name }}`)"
                 class="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700">
                 <svg class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -17,7 +17,7 @@
                 </svg>
                 Upload
             </button>
-            @endhasrole
+            @endcan
             @hasrole(['admin', 'authority'])
             <button onclick="openDownloadModal()"
                 class="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-emerald-600 hover:bg-emerald-700">
@@ -75,19 +75,11 @@
                                 @endif
                             </div>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <div class="flex space-x-3">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-center font-medium">
+                            @can('manageAsRunner', $project)
+                            <div class="flex justify-center space-x-3">
                                 @if($report->file_path)
-                                <a href="{{ asset('storage/' . $report->file_path) }}" target="_blank"
-                                    class="text-indigo-600 hover:text-indigo-900" title="View">
-                                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                    </svg>
-                                </a>
-                                <a href="{{ asset('storage/' . $report->file_path) }}" download
+                                <a href="{{ route('reports.download', $report->id) }}"
                                     class="text-emerald-600 hover:text-emerald-900" title="Download">
                                     <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -95,7 +87,6 @@
                                     </svg>
                                 </a>
                                 @endif
-                                @hasrole(['admin', 'ngo'])
                                 <form action="{{ route('reports.destroy', $report->id) }}" method="POST"
                                     onsubmit="return confirm('Are you sure you want to delete this report?');">
                                     @csrf
@@ -107,8 +98,28 @@
                                         </svg>
                                     </button>
                                 </form>
-                                @endhasrole
                             </div>
+                            @endcan
+                            @can('manageAsHolder', $project)
+                            <div class="flex justify-center space-x-3">
+                                @if($report->file_path)
+                                <a href="{{ route('reports.download', $report->id) }}"
+                                    class="text-emerald-600 hover:text-emerald-900" title="Download">
+                                    Download
+                                </a>
+                                @endif
+                            </div>
+                            @endcan
+                            @hasrole(['admin', 'authority'])
+                            <div class="flex justify-center space-x-3">
+                                @if($report->file_path)
+                                <a href="{{ route('reports.download', $report->id) }}"
+                                    class="text-emerald-600 hover:text-emerald-900" title="Download">
+                                    Download
+                                </a>
+                                @endif
+                            </div>
+                            @endhasrole
                         </td>
                     </tr>
                     @empty
@@ -206,6 +217,12 @@
                                     </div>
                                 </div>
 
+                                <!-- Progress bar for uploads -->
+                                <div id="report-upload-progress"
+                                    class="w-full h-2 bg-gray-200 rounded overflow-hidden mb-4 hidden">
+                                    <div class="h-full bg-indigo-500 transition-all" style="width:0%"></div>
+                                </div>
+
                                 <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                                     <button type="submit" id="uploadButton"
                                         class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm">
@@ -247,9 +264,9 @@
                             Download Reports
                         </h3>
                         <div class="mt-4">
-                            <form id="downloadReportForm" method="GET">
-                                <input type="hidden" id="downloadProjectId" name="project_id"
-                                    value="{{ $project->id }}">
+                            <form id="downloadReportForm" method="GET"
+                                action="{{ route('projects.download-reports', $project) }}">
+                                <input type="hidden" name="project_id" value="{{ $project->id }}">
                                 <div class="mb-4">
                                     <label for="from_date" class="block text-sm font-medium text-gray-700">From
                                     </label>
@@ -262,7 +279,7 @@
                                         class="mt-1 focus:ring-emerald-500 focus:border-emerald-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
                                 </div>
                                 <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                                    <button type="submit" id="downloadButton"
+                                    <button type="submit"
                                         class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-emerald-600 text-base font-medium text-white hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 sm:ml-3 sm:w-auto sm:text-sm">
                                         Download
                                     </button>
@@ -279,6 +296,9 @@
         </div>
     </div>
 </div>
+
+<!-- Flash Message Container -->
+<div id="flash-message-container" class="fixed top-4 right-4 z-50 max-w-md"></div>
 
 <script>
 function openUploadModal(projectId, projectTitle) {
@@ -302,30 +322,271 @@ function clearUploadReportErrors() {
     document.getElementById('uploadReportFilesError').textContent = '';
 }
 
+function openDownloadModal() {
+    document.getElementById('downloadReportModal').classList.remove('hidden');
+}
+
+function closeDownloadModal() {
+    document.getElementById('downloadReportModal').classList.add('hidden');
+}
+
+// Show flash message function
+function showFlashMessage(type, message, duration = 5000) {
+    const container = document.getElementById('flash-message-container');
+
+    // Create message element
+    const flashMessage = document.createElement('div');
+    flashMessage.className =
+        `${type === 'success' ? 'bg-emerald-100 border-emerald-500 text-emerald-700' : 'bg-red-100 border-red-500 text-red-700'} border-l-4 p-4 mb-4 rounded-lg shadow-sm transform transition-all duration-300 ease-in-out opacity-0 translate-x-4`;
+
+    // Create icon based on type
+    const iconPath = type === 'success' ?
+        'M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z' :
+        'M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z';
+
+    // Set HTML content
+    flashMessage.innerHTML = `
+        <div class="flex items-center justify-between">
+            <div class="flex items-center">
+                <svg class="h-5 w-5 ${type === 'success' ? 'text-emerald-500' : 'text-red-500'} mr-3" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="${iconPath}" clip-rule="evenodd" />
+                </svg>
+                <span class="font-medium">${message}</span>
+            </div>
+            <button type="button" class="text-gray-400 hover:text-gray-600" onclick="this.parentElement.parentElement.remove()">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+    `;
+
+    // Add to container
+    container.appendChild(flashMessage);
+
+    // Animate in
+    setTimeout(() => {
+        flashMessage.classList.remove('opacity-0', 'translate-x-4');
+    }, 10);
+
+    // Auto remove after duration
+    if (duration > 0) {
+        setTimeout(() => {
+            if (flashMessage.parentElement) {
+                flashMessage.classList.add('opacity-0', 'translate-x-4');
+                setTimeout(() => {
+                    if (flashMessage.parentElement) {
+                        flashMessage.remove();
+                    }
+                }, 300);
+            }
+        }, duration);
+    }
+
+    return flashMessage;
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     const uploadForm = document.getElementById('uploadReportForm');
     if (uploadForm) {
         uploadForm.addEventListener('submit', function(e) {
+            e.preventDefault(); // Always prevent default to handle validation
             clearUploadReportErrors();
+
             let valid = true;
             const title = document.getElementById('title').value.trim();
             const month = document.getElementById('month').value.trim();
             const files = document.getElementById('files').files;
+
+            // Validate title
             if (!title) {
                 document.getElementById('uploadReportTitleError').textContent = 'Title is required.';
                 valid = false;
+            } else if (title.length < 3) {
+                document.getElementById('uploadReportTitleError').textContent =
+                    'Title must be at least 3 characters.';
+                valid = false;
+            } else if (title.length > 255) {
+                document.getElementById('uploadReportTitleError').textContent =
+                    'Title cannot exceed 255 characters.';
+                valid = false;
             }
+
+            // Validate month
             if (!month) {
                 document.getElementById('uploadReportMonthError').textContent = 'Month is required.';
                 valid = false;
+            } else {
+                // Check if it's a valid month format (YYYY-MM)
+                const monthRegex = /^\d{4}-\d{2}$/;
+                if (!monthRegex.test(month)) {
+                    document.getElementById('uploadReportMonthError').textContent =
+                        'Month must be in YYYY-MM format.';
+                    valid = false;
+                }
             }
+
+            // Validate files
             if (!files || files.length === 0) {
                 document.getElementById('uploadReportFilesError').textContent =
                     'At least one file is required.';
                 valid = false;
+            } else {
+                // Check file types and sizes
+                const allowedTypes = ['application/pdf', 'application/msword',
+                    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                    'application/vnd.ms-excel',
+                    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                ];
+                const maxSize = 10 * 1024 * 1024; // 10MB
+
+                let fileErrors = [];
+
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+
+                    // Check file type
+                    if (!allowedTypes.includes(file.type)) {
+                        fileErrors.push(
+                            `"${file.name}" is not an allowed file type. Only PDF, DOC, DOCX, XLS, and XLSX are supported.`
+                        );
+                    }
+
+                    // Check file size
+                    if (file.size > maxSize) {
+                        fileErrors.push(
+                            `"${file.name}" exceeds the 10MB size limit (${(file.size / (1024 * 1024)).toFixed(2)}MB).`
+                        );
+                    }
+                }
+
+                if (fileErrors.length > 0) {
+                    document.getElementById('uploadReportFilesError').innerHTML = fileErrors.join(
+                        '<br>');
+                    valid = false;
+                }
             }
-            if (!valid) {
-                e.preventDefault();
+
+            if (valid) {
+                // Show loading state
+                const uploadButton = document.getElementById('uploadButton');
+                const originalText = uploadButton.innerHTML;
+                uploadButton.disabled = true;
+                uploadButton.innerHTML =
+                    '<svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Uploading...';
+
+                // Show progress bar
+                const progressBar = document.getElementById('report-upload-progress');
+                const progressIndicator = progressBar.querySelector('div');
+                progressBar.classList.remove('hidden');
+                progressIndicator.style.width = '0%';
+
+                // Create FormData
+                const formData = new FormData(this);
+
+                // Use XMLHttpRequest for upload with progress
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', this.action, true);
+
+                // Add progress event listener
+                xhr.upload.addEventListener('progress', function(e) {
+                    if (e.lengthComputable) {
+                        const percentComplete = (e.loaded / e.total) * 100;
+                        progressIndicator.style.width = percentComplete + '%';
+                    }
+                });
+
+                // Add load event listener
+                xhr.addEventListener('load', function() {
+                    if (xhr.status >= 200 && xhr.status < 300) {
+                        try {
+                            const response = JSON.parse(xhr.responseText);
+
+                            // Show flash message instead of alert
+                            showFlashMessage('success', response.message ||
+                                'Reports uploaded successfully');
+
+                            // Close modal
+                            closeUploadModal();
+
+                            // Refresh page to show new reports
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 1000); // Short delay to allow user to see the message
+                        } catch (error) {
+                            console.error('Error parsing response:', error);
+                            showFlashMessage('error',
+                                'An error occurred while processing the response');
+
+                            // Reset button
+                            uploadButton.disabled = false;
+                            uploadButton.innerHTML = originalText;
+                        }
+                    } else {
+                        // Handle error response
+                        try {
+                            const response = JSON.parse(xhr.responseText);
+                            let errorMessage = response.message || 'Upload failed';
+
+                            // Handle validation errors
+                            if (response.errors) {
+                                if (response.errors.title) {
+                                    document.getElementById('uploadReportTitleError')
+                                        .textContent = response.errors.title[0];
+                                }
+                                if (response.errors.month) {
+                                    document.getElementById('uploadReportMonthError')
+                                        .textContent = response.errors.month[0];
+                                }
+                                if (response.errors.files) {
+                                    document.getElementById('uploadReportFilesError')
+                                        .textContent = response.errors.files[0];
+                                }
+                                errorMessage = 'Please fix the errors above';
+                            }
+
+                            showFlashMessage('error', 'Upload failed: ' + errorMessage);
+                        } catch (error) {
+                            console.error('Error parsing error response:', error);
+                            showFlashMessage('error', 'Upload failed: ' + xhr.statusText);
+                        }
+
+                        // Reset button
+                        uploadButton.disabled = false;
+                        uploadButton.innerHTML = originalText;
+                    }
+
+                    // Hide progress bar
+                    progressBar.classList.add('hidden');
+                });
+
+                // Add error event listener
+                xhr.addEventListener('error', function() {
+                    showFlashMessage('error',
+                        'Upload failed. Please check your connection and try again.');
+
+                    // Reset button
+                    uploadButton.disabled = false;
+                    uploadButton.innerHTML = originalText;
+
+                    // Hide progress bar
+                    progressBar.classList.add('hidden');
+                });
+
+                // Set proper headers
+                xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+
+                // Send the request
+                xhr.send(formData);
+            } else {
+                // Scroll to the first error
+                const firstError = document.querySelector('.text-red-600:not(:empty)');
+                if (firstError) {
+                    firstError.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+                }
             }
         });
     }
@@ -335,34 +596,101 @@ document.addEventListener('DOMContentLoaded', function() {
     if (fileInput && fileList) {
         fileInput.addEventListener('change', function() {
             fileList.innerHTML = '';
+            document.getElementById('uploadReportFilesError').textContent =
+                ''; // Clear file errors when new files are selected
+
+            if (this.files.length === 0) {
+                return;
+            }
+
+            const allowedTypes = ['application/pdf', 'application/msword',
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                'application/vnd.ms-excel',
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            ];
+            const maxSize = 10 * 1024 * 1024; // 10MB
+
             for (let i = 0; i < this.files.length; i++) {
                 const file = this.files[i];
                 const fileItem = document.createElement('div');
-                fileItem.className = 'text-sm py-1';
-                fileItem.textContent = file.name;
+                fileItem.className = 'flex items-center text-sm py-1';
+
+                // Determine icon based on file type
+                let icon =
+                    'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z';
+
+                if (file.type === 'application/pdf') {
+                    icon =
+                        'M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z';
+                } else if (file.type.includes('spreadsheet') || file.type.includes('excel')) {
+                    icon =
+                        'M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z';
+                } else if (file.type.includes('word')) {
+                    icon =
+                        'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z';
+                }
+
+                // Format file size
+                let fileSize;
+                if (file.size < 1024) {
+                    fileSize = file.size + ' B';
+                } else if (file.size < 1048576) {
+                    fileSize = (file.size / 1024).toFixed(1) + ' KB';
+                } else {
+                    fileSize = (file.size / 1048576).toFixed(1) + ' MB';
+                }
+
+                // Determine if file has any issues
+                const isInvalidType = !allowedTypes.includes(file.type);
+                const isOversized = file.size > maxSize;
+                const hasIssue = isInvalidType || isOversized;
+
+                fileItem.innerHTML = `
+                    <svg class="inline h-4 w-4 mr-1 ${hasIssue ? 'text-red-500' : 'text-gray-400'}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${icon}"/>
+                    </svg>
+                    <span class="truncate max-w-xs ${hasIssue ? 'text-red-500' : ''}">${file.name}</span>
+                    <span class="${hasIssue ? 'text-red-500 font-medium' : 'text-gray-500'} ml-1">(${fileSize})</span>
+                    ${isInvalidType ? '<span class="text-xs text-red-600 ml-2">Invalid type</span>' : ''}
+                    ${isOversized ? '<span class="text-xs text-red-600 ml-2">Too large</span>' : ''}
+                `;
+
                 fileList.appendChild(fileItem);
             }
         });
+
+        // Add drag and drop support
+        const dropArea = fileInput.closest('div.border-dashed');
+        if (dropArea) {
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }, false);
+            });
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropArea.addEventListener(eventName, () => {
+                    dropArea.classList.add('border-indigo-500', 'bg-indigo-50');
+                }, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, () => {
+                    dropArea.classList.remove('border-indigo-500', 'bg-indigo-50');
+                }, false);
+            });
+
+            dropArea.addEventListener('drop', (e) => {
+                fileInput.files = e.dataTransfer.files;
+
+                // Trigger change event
+                const event = new Event('change', {
+                    bubbles: true
+                });
+                fileInput.dispatchEvent(event);
+            }, false);
+        }
     }
 });
-
-function openDownloadModal() {
-    document.getElementById('downloadReportModal').classList.remove('hidden');
-}
-
-function closeDownloadModal() {
-    document.getElementById('downloadReportModal').classList.add('hidden');
-}
-
-document.getElementById('downloadReportForm').onsubmit = function(e) {
-    e.preventDefault();
-    const projectId = document.getElementById('downloadProjectId').value;
-    const fromDate = document.getElementById('from_date').value;
-    const toDate = document.getElementById('to_date').value;
-    let url = `/projects/${projectId}/download-reports?`;
-    if (fromDate) url += `from_date=${fromDate}&`;
-    if (toDate) url += `to_date=${toDate}`;
-    window.location.href = url;
-    closeDownloadModal();
-};
 </script>

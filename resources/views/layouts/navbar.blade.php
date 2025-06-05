@@ -16,14 +16,40 @@
                     class="inline-flex items-center gap-4 text-base leading-4 font-medium rounded-md text-white transition ease-in-out duration-150">
                     <div class="flex flex-col items-end gap-1">
                         <span>{{ Auth::user()->name }}</span>
-                        @php $role = Auth::user()->getRoleNames()->first(); @endphp
-                        @if($role)
-                            <span class="text-xs text-gray-300">{{ ucfirst($role) }}</span>
+                        @php 
+                            $roleName = DB::table('model_has_roles')
+                                ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+                                ->where('model_has_roles.model_id', Auth::id())
+                                ->value('roles.name');
+                        @endphp
+                        @if($roleName)
+                            <span class="text-xs text-gray-300">{{ ucfirst($roleName) }}</span>
                         @endif
                     </div>
 
                     <!-- Profile Image or Default Icon -->
-                    @if(Auth::user()->profile_photo_path)
+                    @php 
+                        $hasNgoRole = DB::table('model_has_roles')
+                            ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+                            ->where('model_has_roles.model_id', Auth::id())
+                            ->where('roles.name', 'ngo')
+                            ->exists();
+                            
+                        // Force reload the NGO relationship
+                        if (Auth::user()) {
+                            Auth::user()->load('ngo');
+                        }
+                    @endphp
+                    
+                    @if($hasNgoRole && Auth::user()->ngo && Auth::user()->ngo->logo)
+                        @php
+                            $logoPath = Auth::user()->ngo->logo;
+                            $fullLogoUrl = asset('storage/' . $logoPath) . '?v=' . time();
+                        @endphp
+                        <img class="w-8 h-8 rounded-full object-cover"
+                            src="{{ $fullLogoUrl }}"
+                            alt="{{ Auth::user()->name }}" />
+                    @elseif(Auth::user()->profile_photo_path)
                         <img class="w-8 h-8 rounded-full object-cover"
                             src="{{ asset('storage/' . Auth::user()->profile_photo_path) }}"
                             alt="{{ Auth::user()->name }}" />

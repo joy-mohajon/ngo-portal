@@ -43,7 +43,7 @@ class Ngo extends Model
 
     public function focalPersons()
     {
-        return $this->belongsToMany(FocalPerson::class, 'ngo_has_focal_persons')
+        return $this->belongsToMany(FocalPerson::class, 'ngo_has_focal_person')
                     ->withTimestamps();
     }                                                                                                                                                                       
 

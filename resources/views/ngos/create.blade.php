@@ -1,7 +1,14 @@
 <x-app-layout>
     <div class="container mx-auto max-w-2xl py-10">
         <div class="bg-white shadow-xl rounded-lg p-8 border border-gray-200 premium-form">
-            <h2 class="text-3xl font-bold text-center text-indigo-700 mb-6">Create New NGO</h2>
+            <h2 class="text-3xl font-bold text-center text-indigo-700 mb-6">Get Approval for your NGO</h2>
+            
+            @if(session('error'))
+            <div class="mb-4 p-4 bg-red-50 border-l-4 border-red-500 text-red-700">
+                <p>{{ session('error') }}</p>
+            </div>
+            @endif
+            
             <form method="POST" action="{{ route('ngos.store') }}" enctype="multipart/form-data" class="space-y-6">
                 @csrf
                 <div>
@@ -32,7 +39,7 @@
                     <div class="flex items-center justify-between mb-2">
                         <label for="focus_areas" class="block text-sm font-medium text-gray-700 mb-2">Focus
                             Areas</label>
-                        <a href="{{ route('focus-areas.create') }}"
+                        <a href="{{ route('focus-areas.create', ['redirect_url' => route('ngos.create')]) }}"
                             class="px-4 py-2 text-white bg-indigo-600 rounded-lg shadow transition text-sm font-semibold">+
                             Add Focus Area</a>
                     </div>
@@ -68,9 +75,10 @@
                         @enderror
                     </div>
                     <div class="w-1/2 flex flex-col items-start">
-                        <label for="logo" class="block text-sm font-medium text-gray-700 mb-2">NGO Logo</label>
+                        <label for="logo" class="block text-sm font-medium text-gray-700 mb-2">NGO Logo <span class="text-red-500">*</span></label>
                         <input type="file" id="logo" name="logo"
                             class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" />
+                        <p class="text-xs text-gray-500 mt-1">Accepted formats: JPEG, PNG, JPG, GIF (Max: 2MB, Min dimensions: 100x100px)</p>
                         @error('logo')
                         <div class="text-red-600 text-sm mt-1">{{ $message }}</div>
                         @enderror
@@ -127,9 +135,10 @@
                 </div>
                 <div>
                     <label for="certificate_path" class="block text-sm font-medium text-gray-700">Registration
-                        Certificate</label>
+                        Certificate <span class="text-red-500">*</span></label>
                     <input type="file" id="certificate_path" name="certificate_path"
                         class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" />
+                    <p class="text-xs text-gray-500 mt-1">Accepted formats: PDF, JPEG, JPG, PNG (Max: 4MB)</p>
                     @error('certificate_path')
                     <div class="text-red-600 text-sm mt-1">{{ $message }}</div>
                     @enderror

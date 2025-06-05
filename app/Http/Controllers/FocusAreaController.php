@@ -14,9 +14,10 @@ class FocusAreaController extends Controller
         return view('focus-areas.index', compact('focusAreas'));
     }
 
-    public function create()
+    public function create(Request $request)
     {
-        return view('focus-areas.create');
+        $redirectUrl = $request->input('redirect_url', route('focus-areas.index'));
+        return view('focus-areas.create', compact('redirectUrl'));
     }
 
     public function store(Request $request)
@@ -25,14 +26,20 @@ class FocusAreaController extends Controller
             'name' => 'required|string|max:255|unique:focus_areas,name',
             'description' => 'nullable|string',
             'type' => 'required|in:Project,NGO',
+            'redirect_url' => 'nullable|string',
         ]);
+        
         $focusArea = FocusArea::create([
             'name' => $validated['name'],
             'slug' => Str::slug($validated['name']),
             'description' => $validated['description'] ?? null,
             'type' => $validated['type'],
         ]);
-        return redirect()->route('focus-areas.index')->with('success', 'Focus Area created successfully.');
+        
+        // Determine where to redirect
+        $redirectUrl = $validated['redirect_url'] ?? route('focus-areas.index');
+        
+        return redirect($redirectUrl)->with('success', 'Focus Area created successfully.');
     }
 
     public function edit(FocusArea $focus_area)

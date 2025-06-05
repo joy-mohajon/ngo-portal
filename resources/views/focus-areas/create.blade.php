@@ -4,6 +4,7 @@
             <h2 class="text-2xl font-bold text-indigo-700 mb-6">Add New Focus Area</h2>
             <form method="POST" action="{{ route('focus-areas.store') }}" class="space-y-6">
                 @csrf
+                <input type="hidden" name="redirect_url" value="{{ $redirectUrl ?? route('focus-areas.index') }}">
                 <div>
                     <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
                     <input type="text" id="name" name="name" value="{{ old('name') }}"
